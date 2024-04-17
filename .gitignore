@@ -1,3 +1,6 @@
+### User template
+**/appsettings.*.json
+
 ### VisualStudioCode template
 .vscode/*
 !.vscode/settings.json
