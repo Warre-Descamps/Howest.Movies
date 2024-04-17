@@ -2,6 +2,10 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Howest.Movies.WebApi", "Howest.Movies.WebApi\Howest.Movies.WebApi.csproj", "{A9558C62-BBED-4D17-BCE8-18F1EB4EDBFB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Howest.Movies.Data", "Howest.Movies.Data\Howest.Movies.Data.csproj", "{DBB2A537-8F3A-45D4-B07C-7719E2683A3F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Howest.Movies.Models", "Howest.Movies.Models\Howest.Movies.Models.csproj", "{FBE859A5-634A-4141-A966-3E5EDAA754FC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +16,13 @@ Global
 		{A9558C62-BBED-4D17-BCE8-18F1EB4EDBFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A9558C62-BBED-4D17-BCE8-18F1EB4EDBFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A9558C62-BBED-4D17-BCE8-18F1EB4EDBFB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DBB2A537-8F3A-45D4-B07C-7719E2683A3F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DBB2A537-8F3A-45D4-B07C-7719E2683A3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DBB2A537-8F3A-45D4-B07C-7719E2683A3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DBB2A537-8F3A-45D4-B07C-7719E2683A3F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FBE859A5-634A-4141-A966-3E5EDAA754FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FBE859A5-634A-4141-A966-3E5EDAA754FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FBE859A5-634A-4141-A966-3E5EDAA754FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FBE859A5-634A-4141-A966-3E5EDAA754FC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
