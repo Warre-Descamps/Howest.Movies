@@ -1,4 +1,5 @@
 using Howest.Movies.Data;
+using Howest.Movies.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
@@ -13,7 +14,7 @@ builder.Services
 
 builder.Services
     .AddDbContext<MovieDbContext>()
-    .AddIdentityApiEndpoints<IdentityUser>()
+    .AddIdentityApiEndpoints<User>()
     .AddEntityFrameworkStores<MovieDbContext>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -31,10 +32,12 @@ builder.Services
         options.OperationFilter<SecurityRequirementsOperationFilter>();
     });
 
+builder.Services.AddCors();
+
 var app = builder.Build();
 
 // Routes
-app.MapGroup("/identity").MapIdentityApi<IdentityUser>();
+app.MapGroup("/identity").MapIdentityApi<User>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

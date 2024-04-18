@@ -8,7 +8,6 @@ public class Movie
     public required string Director { get; set; } = null!;
     public required string Description { get; set; } = null!;
     
-    // Add property to store the user who added the movie
     public required Guid AddedById { get; set; }
     public User? AddedByUser { get; set; }
     public ICollection<MovieGenre> Genres { get; set; } = new List<MovieGenre>();

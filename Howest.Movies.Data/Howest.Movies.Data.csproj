@@ -12,4 +12,8 @@
       <PackageReference Include="MySql.EntityFrameworkCore" Version="8.0.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Howest.Movies.Models\Howest.Movies.Models.csproj" />
+    </ItemGroup>
+
 </Project>
