@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Howest.Movies.Data.Migrations
 {
     [DbContext(typeof(MovieDbContext))]
-    [Migration("20240418123647_Initial")]
+    [Migration("20240418173516_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -284,7 +284,7 @@ namespace Howest.Movies.Data.Migrations
             modelBuilder.Entity("Howest.Movies.Models.Movie", b =>
                 {
                     b.HasOne("Howest.Movies.Models.User", "AddedByUser")
-                        .WithMany()
+                        .WithMany("AddedMovies")
                         .HasForeignKey("AddedByUserId");
 
                     b.Navigation("AddedByUser");
@@ -342,6 +342,8 @@ namespace Howest.Movies.Data.Migrations
 
             modelBuilder.Entity("Howest.Movies.Models.User", b =>
                 {
+                    b.Navigation("AddedMovies");
+
                     b.Navigation("Reviews");
                 });
 #pragma warning restore 612, 618

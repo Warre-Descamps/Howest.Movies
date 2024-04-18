@@ -4,7 +4,6 @@ namespace Howest.Movies.Models;
 
 public class User : IdentityUser<Guid>
 {
-    public override Guid Id { get; set; } = Guid.NewGuid();
-
+    public ICollection<Movie> AddedMovies { get; set; } = new List<Movie>();
     public ICollection<MovieReview> Reviews { get; set; } = new List<MovieReview>();
 }
