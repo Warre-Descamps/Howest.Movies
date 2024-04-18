@@ -6,28 +6,30 @@ using Swashbuckle.AspNetCore.Filters;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddAuthentication()
+builder.Services
+    .AddAuthorization()
+    .AddAuthentication()
     .AddJwtBearer();
-builder.Services.AddAuthorization();
 
-builder.Services.AddDbContext<MovieDbContext>();
-
-builder.Services.AddIdentityApiEndpoints<IdentityUser>()
+builder.Services
+    .AddDbContext<MovieDbContext>()
+    .AddIdentityApiEndpoints<IdentityUser>()
     .AddEntityFrameworkStores<MovieDbContext>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+builder.Services
+    .AddEndpointsApiExplorer()
+    .AddSwaggerGen(options =>
     {
-        In = ParameterLocation.Header,
-        Name = "Authorization",
-        Type = SecuritySchemeType.ApiKey
+        options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+        {
+            In = ParameterLocation.Header,
+            Name = "Authorization",
+            Type = SecuritySchemeType.ApiKey
+        });
+        
+        options.OperationFilter<SecurityRequirementsOperationFilter>();
     });
-    
-    options.OperationFilter<SecurityRequirementsOperationFilter>();
-});
 
 var app = builder.Build();
 
