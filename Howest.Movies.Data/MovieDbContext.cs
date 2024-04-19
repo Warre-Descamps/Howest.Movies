@@ -49,5 +49,17 @@ public class MovieDbContext : IdentityDbContext<User, Role, Guid>
         {
             e.HasKey(mg => new { mg.MovieId, mg.GenreId });
         });
+        
+        builder.Entity<Movie>(e =>
+        {
+            e.HasIndex(g => g.Title)
+                .IsUnique();
+        });
+        
+        builder.Entity<Genre>(e =>
+        {
+            e.HasIndex(g => g.Name)
+                .IsUnique();
+        });
     }
 }

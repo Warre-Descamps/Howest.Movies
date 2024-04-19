@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>Howest.Movies.Services</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Howest.Movies.Common\Howest.Movies.Common.csproj" />
+      <ProjectReference Include="..\Howest.Movies.Data\Howest.Movies.Data.csproj" />
+      <ProjectReference Include="..\Howest.Movies.Dtos\Howest.Movies.Dtos.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Extensions\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="AutoMapper" Version="13.0.1" />
+    </ItemGroup>
+
+</Project>
