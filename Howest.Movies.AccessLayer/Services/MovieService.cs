@@ -13,28 +13,25 @@ public class MovieService : IMovieService
 {
     private readonly IMapper _mapper;
     private readonly IMovieRepository _movieRepository;
+    private readonly IGenreRepository _genreRepository;
 
-    public MovieService(IMapper mapper, IMovieRepository movieRepository)
+    public MovieService(IMapper mapper, IMovieRepository movieRepository, IGenreRepository genreRepository)
     {
         _mapper = mapper;
         _movieRepository = movieRepository;
+        _genreRepository = genreRepository;
     }
 
     public async Task<ServiceResult<PaginationResult<IList<MovieResult>>>> FindAsync(MoviesFilter filter, PaginationFilter pagination)
     {
-        var movies = _movieRepository.Find(filter.Query, filter.Genres, pagination.From, pagination.Size);
+        Guid[] genreIds = [];
+        if (filter.Genres.Length > 0)
+        {
+            var genres = await _genreRepository.FindAsync(filter.Genres);
+            genreIds = genres.Select(g => g.Id).ToArray();
+        }
+        var movies = await _movieRepository.FindAsync(filter.Query, genreIds, pagination.From, pagination.Size);
 
-        var orderedMovies = !string.IsNullOrWhiteSpace(filter.Query)
-            ? movies
-                .OrderByDescending(m => m.Title.Contains(filter.Query, StringComparison.CurrentCultureIgnoreCase))
-                .ThenByDescending(m => m.Title)
-            : movies
-                .OrderByDescending(m => m.Title);
-
-        var paginatedMovies = _mapper.Map<List<MovieResult>>(await orderedMovies
-            .ApplyPagination(pagination.From, pagination.Size)
-            .ToListAsync());
-
-        return new PaginationResult<IList<MovieResult>>(paginatedMovies, pagination.From, pagination.Size);
+        return new PaginationResult<IList<MovieResult>>(_mapper.Map<List<MovieResult>>(movies), pagination.From, pagination.Size);
     }
 }

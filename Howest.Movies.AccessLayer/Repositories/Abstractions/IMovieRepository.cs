@@ -5,5 +5,5 @@ namespace Howest.Movies.Services.Repositories.Abstractions;
 
 public interface IMovieRepository : IBaseRepository<Movie, Guid>
 {
-    IQueryable<Movie> Find(string? query, string[] genres, int from, int size);
+    Task<IList<Movie>> FindAsync(string? query, Guid[] genres, int from, int size);
 }

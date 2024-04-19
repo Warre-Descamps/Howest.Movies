@@ -19,19 +19,34 @@ public class MovieRepository : IMovieRepository
         return await _dbContext.Movies.ToListAsync();
     }
 
-    public IQueryable<Movie> Find(string? query, string[] genres, int from, int size)
+    public async Task<IList<Movie>> FindAsync(string? query, Guid[] genres, int from, int size)
     {
         var movies = _dbContext.Movies.AsQueryable();
+        
         if (!string.IsNullOrWhiteSpace(query))
             movies = movies.Where(m => m.Title.Contains(query) || m.Description.Contains(query));
-        
+
         if (genres.Length > 0)
-            movies = movies
-                .Include(m => m.Genres)
-                .ThenInclude(mg => mg.Genre)
-                .Where(m => m.Genres.Any(mg => genres.Contains(mg.Genre!.Name)));
+        {
+            movies = movies.Where(m => m.Genres.Any(mg => genres.Any(gid => mg.GenreId == gid)));
+        }
         
-        return movies;
+        var orderedMovies = !string.IsNullOrWhiteSpace(query)
+            ? movies
+                .OrderByDescending(m => m.Title.Contains(query))
+                .ThenByDescending(m => m.Description.Contains(query))
+                .ThenByDescending(m => m.Title)
+                .ThenByDescending(m => m.Description)
+            : movies
+                .OrderByDescending(m => m.Title)
+                .ThenByDescending(m => m.Description);
+        
+        var paginatedMovies = await orderedMovies
+            .Skip(from)
+            .Take(size)
+            .ToListAsync();
+        
+        return paginatedMovies;
     }
     
     public Task<Movie?> GetByIdAsync(Guid id)

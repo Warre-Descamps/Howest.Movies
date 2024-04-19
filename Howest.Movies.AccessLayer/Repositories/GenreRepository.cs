@@ -19,6 +19,20 @@ public class GenreRepository : IGenreRepository
         return await _dbContext.Genres.ToListAsync();
     }
 
+    public async Task<IList<Genre>> FindAsync(string[] genreNames)
+    {
+        genreNames = genreNames
+            .Select(s => s.Trim())
+            .Where(s => s.Length > 1)
+            .Select(s => char.ToUpper(s[0]) + s[1..].ToLower())
+            .ToArray();
+        
+        var genres = await _dbContext.Genres
+            .Where(g => genreNames.Contains(g.Name)).ToListAsync();
+
+        return genres;
+    }
+
     public Task<Genre?> GetByIdAsync(Guid id)
     {
         return _dbContext.Genres.FirstOrDefaultAsync(g => g.Id == id);

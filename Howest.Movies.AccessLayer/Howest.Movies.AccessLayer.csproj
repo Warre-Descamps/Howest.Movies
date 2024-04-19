@@ -8,7 +8,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Howest.Movies.Common\Howest.Movies.Common.csproj" />
       <ProjectReference Include="..\Howest.Movies.Data\Howest.Movies.Data.csproj" />
       <ProjectReference Include="..\Howest.Movies.Dtos\Howest.Movies.Dtos.csproj" />
     </ItemGroup>

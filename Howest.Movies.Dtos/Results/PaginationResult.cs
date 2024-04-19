@@ -2,13 +2,13 @@
 
 public class PaginationResult<T>
 {
-    public T Data { get; set; }
+    public T Items { get; set; }
     public int From { get; set; }
     public int Size { get; set; }
     
     public PaginationResult(T data, int from, int size)
     {
-        Data = data;
+        Items = data;
         From = from;
         Size = size;
     }
