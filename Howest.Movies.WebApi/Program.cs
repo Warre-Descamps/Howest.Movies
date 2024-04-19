@@ -67,9 +67,13 @@ app.MapGet("/movies", async ([FromQuery] MoviesFilter? moviesFilter, [FromQuery]
     return Results.Ok(movies);
 });
 
-app.MapGet("/movies/{id:guid}", async () =>
+app.MapGet("/movies/{id:guid}", async (Guid id, IMovieService movieService) =>
 {
+    var movie = await movieService.FindByIdAsync(id);
     
+    return movie.IsSuccess
+        ? Results.Ok(movie)
+        : Results.BadRequest(movie);
 });
 
 app.MapGet("/movies/{id:guid}/poster", async () =>

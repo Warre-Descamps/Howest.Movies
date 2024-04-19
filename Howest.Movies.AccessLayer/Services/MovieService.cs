@@ -1,11 +1,10 @@
 ﻿using AutoMapper;
-using Howest.Movies.Common.Extensions;
 using Howest.Movies.Dtos.Core;
+using Howest.Movies.Dtos.Core.Extensions;
 using Howest.Movies.Dtos.Filters;
 using Howest.Movies.Dtos.Results;
 using Howest.Movies.Services.Repositories.Abstractions;
 using Howest.Movies.Services.Services.Abstractions;
-using Microsoft.EntityFrameworkCore;
 
 namespace Howest.Movies.Services.Services;
 
@@ -20,6 +19,15 @@ public class MovieService : IMovieService
         _mapper = mapper;
         _movieRepository = movieRepository;
         _genreRepository = genreRepository;
+    }
+    
+    public async Task<ServiceResult<MovieDetailResult>> FindByIdAsync(Guid id)
+    {
+        var movie = await _movieRepository.GetByIdAsync(id);
+        if (movie == null)
+            return new ServiceResult<MovieDetailResult>().NotFound();
+        
+        return _mapper.Map<MovieDetailResult>(movie);
     }
 
     public async Task<ServiceResult<PaginationResult<IList<MovieResult>>>> FindAsync(MoviesFilter filter, PaginationFilter pagination)
