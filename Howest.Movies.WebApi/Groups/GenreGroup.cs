@@ -22,7 +22,8 @@ public static class GenreGroup
                 return Results.BadRequest((ServiceResult) result);
             
             return Results.Created($"/genre/{result.Data!.Id}", result );
-        });
+        })
+        .RequireAuthorization();
         
         return endpoints;
     }
