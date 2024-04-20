@@ -13,8 +13,8 @@ public static class MovieGroup
 {
     public static RouteGroupBuilder AddMovies(this RouteGroupBuilder endpoints)
     {
+        const string fileFormat = "yyyy-MM-ddTHHmmss.fffffff";
         var postersPath = Path.Combine(Directory.GetCurrentDirectory(), "posters");
-        var fileFormat = "yyyy-MM-ddTHHmmss.fffffff";
         
         endpoints.MapGet("/movies", async ([FromQuery] MoviesFilter? moviesFilter, [FromQuery] PaginationFilter? paginationFilter, HttpRequest request, IMovieService movieService) =>
         {
@@ -65,12 +65,21 @@ public static class MovieGroup
             return Results.File(file, $"image/{fileInfo.fileExtension[1..]}", id + fileInfo.fileExtension);
         });
 
-        endpoints.MapGet("/movies/top", async () =>
+        endpoints.MapGet("/movies/top", async ([FromQuery] PaginationFilter? paginationFilter, HttpRequest request, IMovieService movieService) =>
         {
-
+            var pagination = new PaginationFilter();
+            if (request.Query.ContainsKey("from") && int.TryParse(request.Query["from"], out var from))
+                pagination.From = from;
+            if (request.Query.ContainsKey("size") && int.TryParse(request.Query["size"], out var size))
+                pagination.Size = size;
+            
+            var result = await movieService.FindTopAsync(pagination);
+            return result.IsSuccess
+                ? Results.Ok(result)
+                : Results.BadRequest(result);
         });
 
-        endpoints.MapPost("/movies", async (MovieRequest request, ClaimsPrincipal user, IMovieService movieService) =>
+        endpoints.MapPost("/movies", async ([FromBody] MovieRequest request, ClaimsPrincipal user, IMovieService movieService) =>
         {
             if (user.FindFirst(ClaimTypes.NameIdentifier) is null ||
                 !Guid.TryParse(user.FindFirst(ClaimTypes.NameIdentifier)!.Value, out var userId))
@@ -109,10 +118,11 @@ public static class MovieGroup
         .RequireAuthorization()
         .DisableAntiforgery();
 
-        endpoints.MapPost("/movies/{id:guid}/rate", async () =>
+        endpoints.MapPost("/movies/{id:guid}/review", async (Guid id, ClaimsPrincipal user) =>
         {
 
-        });
+        })
+        .RequireAuthorization();
 
         return endpoints;
     }

@@ -11,4 +11,5 @@ public interface IMovieService
     Task<ServiceResult<PaginationResult<IList<MovieResult>>>> FindAsync(MoviesFilter filter, PaginationFilter pagination);
     Task<ServiceResult<MovieDetailResult>> CreateAsync(MovieRequest request, Guid userId);
     Task<bool> ExistsAsync(Guid id);
+    Task<ServiceResult<PaginationResult<IList<MovieResult>>>> FindTopAsync(PaginationFilter pagination);
 }

@@ -45,6 +45,13 @@ public class MovieService : IMovieService
         return new PaginationResult<IList<MovieResult>>(_mapper.Map<List<MovieResult>>(movies), pagination.From, pagination.Size);
     }
 
+    public async Task<ServiceResult<PaginationResult<IList<MovieResult>>>> FindTopAsync(PaginationFilter pagination)
+    {
+        var movies = await _movieRepository.FindTopAsync(pagination.From, pagination.Size);
+        
+        return new PaginationResult<IList<MovieResult>>(_mapper.Map<List<MovieResult>>(movies), pagination.From, pagination.Size);
+    }
+
     public async Task<ServiceResult<MovieDetailResult>> CreateAsync(MovieRequest request, Guid userId)
     {
         var existingMovie = await _movieRepository.FindAsync(request.Title);

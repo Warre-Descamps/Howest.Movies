@@ -54,6 +54,15 @@ public class MovieRepository : IMovieRepository
         return _dbContext.Movies.FirstOrDefaultAsync(m => m.Title == title);
     }
 
+    public async Task<IList<Movie>> FindTopAsync(int from, int size)
+    {
+        return await _dbContext.Movies
+            .OrderByDescending(m => m.Reviews.Sum(mr => mr.Rating) / m.Reviews.Count)
+            .Skip(from)
+            .Take(size)
+            .ToListAsync();
+    }
+
     public Task<bool> ExistsAsync(Guid id)
     {
         return _dbContext.Movies.AnyAsync(m => m.Id == id);
