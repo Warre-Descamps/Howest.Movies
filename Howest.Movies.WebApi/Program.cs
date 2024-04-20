@@ -40,7 +40,7 @@ builder.Services.AddCors();
 
 var app = builder.Build();
 
-await app.Services.SeedDbAsync();
+await app.Services.SetupDatabaseAsync();
 
 // Add routes to the app.
 app.AddApiGroup();

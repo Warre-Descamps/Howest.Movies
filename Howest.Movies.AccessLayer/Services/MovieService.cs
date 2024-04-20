@@ -2,7 +2,9 @@
 using Howest.Movies.Dtos.Core;
 using Howest.Movies.Dtos.Core.Extensions;
 using Howest.Movies.Dtos.Filters;
+using Howest.Movies.Dtos.Requests;
 using Howest.Movies.Dtos.Results;
+using Howest.Movies.Models;
 using Howest.Movies.Services.Repositories.Abstractions;
 using Howest.Movies.Services.Services.Abstractions;
 
@@ -41,5 +43,36 @@ public class MovieService : IMovieService
         var movies = await _movieRepository.FindAsync(filter.Query, genreIds, pagination.From, pagination.Size);
 
         return new PaginationResult<IList<MovieResult>>(_mapper.Map<List<MovieResult>>(movies), pagination.From, pagination.Size);
+    }
+
+    public async Task<ServiceResult<MovieDetailResult>> CreateAsync(MovieRequest request, Guid userId)
+    {
+        var existingMovie = await _movieRepository.FindAsync(request.Title);
+        if (existingMovie != null)
+            return new ServiceResult<MovieDetailResult>().AlreadyExists();
+        
+        Guid[] genreIds = [];
+        if (request.Genres.Length > 0)
+        {
+            var genres = await _genreRepository.FindAsync(request.Genres);
+            genreIds = genres.Select(g => g.Id).ToArray();
+        }
+
+        var movie = await _movieRepository.AddAsync(new Movie
+        {
+            Title = request.Title,
+            Description = request.Description,
+            ReleaseDate = request.ReleaseDate,
+            Director = request.Director,
+            AddedById = userId,
+            Genres = genreIds.Select(g => new MovieGenre { GenreId = g }).ToList()
+        });
+        
+        return _mapper.Map<MovieDetailResult>(movie);
+    }
+
+    public Task<bool> ExistsAsync(Guid id)
+    {
+        return _movieRepository.ExistsAsync(id);
     }
 }

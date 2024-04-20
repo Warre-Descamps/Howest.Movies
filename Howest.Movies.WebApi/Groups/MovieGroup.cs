@@ -1,4 +1,9 @@
-﻿using Howest.Movies.Dtos.Filters;
+﻿using System.Globalization;
+using System.Security.Claims;
+using Howest.Movies.Dtos.Core;
+using Howest.Movies.Dtos.Core.Extensions;
+using Howest.Movies.Dtos.Filters;
+using Howest.Movies.Dtos.Requests;
 using Howest.Movies.Services.Services.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,6 +13,9 @@ public static class MovieGroup
 {
     public static RouteGroupBuilder AddMovies(this RouteGroupBuilder endpoints)
     {
+        var postersPath = Path.Combine(Directory.GetCurrentDirectory(), "posters");
+        var fileFormat = "yyyy-MM-ddTHHmmss.fffffff";
+        
         endpoints.MapGet("/movies", async ([FromQuery] MoviesFilter? moviesFilter, [FromQuery] PaginationFilter? paginationFilter, HttpRequest request, IMovieService movieService) =>
         {
             var filter = new MoviesFilter
@@ -35,9 +43,26 @@ public static class MovieGroup
                 : Results.BadRequest(movie);
         });
 
-        endpoints.MapGet("/movies/{id:guid}/poster", async () =>
+        endpoints.MapGet("/moies/{id:guid}/poster", async (Guid id, IMovieService movieService) =>
         {
+            var path = Path.Combine(postersPath, id.ToString());
+            if (!Directory.Exists(path) || !await movieService.ExistsAsync(id))
+                return Results.NotFound(new ServiceResult().NotFound());
 
+            var fileInfo = Directory.GetFiles(path)
+                .Select(f => new FileInfo(f))
+                .Select(f => new
+                {
+                    fullPath = f.FullName,
+                    fileName = f.Name[..^f.Extension.Length],
+                    fileExtension = f.Extension
+                })
+                .MaxBy(s => DateTime.ParseExact(s.fileName, fileFormat, CultureInfo.InvariantCulture));
+            if (fileInfo is null)
+                return Results.NotFound(new ServiceResult().NotFound());
+            
+            var file = File.OpenRead(fileInfo.fullPath);
+            return Results.File(file, $"image/{fileInfo.fileExtension[1..]}", id + fileInfo.fileExtension);
         });
 
         endpoints.MapGet("/movies/top", async () =>
@@ -45,10 +70,44 @@ public static class MovieGroup
 
         });
 
-        endpoints.MapPost("/movies", async () =>
+        endpoints.MapPost("/movies", async (MovieRequest request, ClaimsPrincipal user, IMovieService movieService) =>
         {
+            if (user.FindFirst(ClaimTypes.NameIdentifier) is null ||
+                !Guid.TryParse(user.FindFirst(ClaimTypes.NameIdentifier)!.Value, out var userId))
+                return Results.Unauthorized();
 
-        });
+            var result = await movieService.CreateAsync(request, userId);
+            return result.IsSuccess
+                ? Results.Ok(result)
+                : Results.BadRequest(result);
+        })
+        .RequireAuthorization();
+
+        endpoints.MapPost("/movies/{id:guid}/poster", async (Guid id, IFormFile file, ClaimsPrincipal user, IMovieService movieService) =>
+        {
+            if (user.FindFirst(ClaimTypes.NameIdentifier) is null || !Guid.TryParse(user.FindFirst(ClaimTypes.NameIdentifier)!.Value, out _))
+                return Results.Unauthorized();
+            
+            if (!await movieService.ExistsAsync(id))
+                return Results.NotFound(new ServiceResult().NotFound());
+            
+            if (file.Length == 0)
+                return Results.BadRequest(new ServiceResult().BadRequest("File is empty!"));
+            var fileInfo = new FileInfo(file.FileName);
+            if (fileInfo.Extension != ".jpg")
+                return Results.BadRequest(new ServiceResult().BadRequest("Invalid file extension. Only .jpg is allowed!"));
+            
+            var path = Path.Combine(postersPath, id.ToString());
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+            path = Path.Combine(path, DateTime.UtcNow.ToString(fileFormat) + fileInfo.Extension);
+            await using var fileStream = new FileStream(path, FileMode.Create);
+            await file.CopyToAsync(fileStream);
+
+            return Results.Ok();
+        })
+        .RequireAuthorization()
+        .DisableAntiforgery();
 
         endpoints.MapPost("/movies/{id:guid}/rate", async () =>
         {

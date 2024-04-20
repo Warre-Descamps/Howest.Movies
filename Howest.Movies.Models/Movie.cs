@@ -8,7 +8,7 @@ public class Movie
     public required DateTime ReleaseDate { get; set; }
     public required string Director { get; set; } = null!;
     
-    public required Guid AddedById { get; set; }
+    public Guid AddedById { get; set; }
     public User? AddedByUser { get; set; }
     
     public ICollection<MovieGenre> Genres { get; set; } = new List<MovieGenre>();

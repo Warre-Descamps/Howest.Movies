@@ -48,7 +48,17 @@ public class MovieRepository : IMovieRepository
         
         return paginatedMovies;
     }
-    
+
+    public Task<Movie?> FindAsync(string title)
+    {
+        return _dbContext.Movies.FirstOrDefaultAsync(m => m.Title == title);
+    }
+
+    public Task<bool> ExistsAsync(Guid id)
+    {
+        return _dbContext.Movies.AnyAsync(m => m.Id == id);
+    }
+
     public Task<Movie?> GetByIdAsync(Guid id)
     {
         return _dbContext.Movies.FirstOrDefaultAsync(m => m.Id == id);
