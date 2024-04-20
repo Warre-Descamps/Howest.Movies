@@ -6,16 +6,42 @@ using Howest.Movies.Dtos.Filters;
 using Howest.Movies.Dtos.Requests;
 using Howest.Movies.Services.Services.Abstractions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Design;
+using MySqlX.XDevAPI.Common;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 
 namespace Howest.Movies.WebApi.Groups;
 
 public static class MovieGroup
 {
+    private static readonly string PostersPath = Path.Combine(Directory.GetCurrentDirectory(), "posters");
+    private const string FileFormat = "yyyy-MM-ddTHHmmss.fffffff";
+    private const string Thumbnail = "-thumbnail";
+    
+    private static async Task<ServiceResult<(string fullPath, string fileName, string fileExtension)>> GetFileInfoAsync(Guid id, IMovieService movieService)
+    {
+        var path = Path.Combine(PostersPath, id.ToString());
+        if (!Directory.Exists(path) || !await movieService.ExistsAsync(id))
+            return new ServiceResult<(string, string, string)>().NotFound();
+
+        var fileInfo = Directory.GetFiles(path)
+            .Select(f => new FileInfo(f))
+            .Select(f => (
+                fullPath: f.FullName,
+                fileName: f.Name[..^f.Extension.Length],
+                fileExtension: f.Extension
+            ))
+            .Where(t => !t.fileName.EndsWith(Thumbnail))
+            .MaxBy(s => DateTime.ParseExact(s.fileName, FileFormat, CultureInfo.InvariantCulture));
+        
+        return fileInfo.fileName is null
+            ? new ServiceResult<(string, string, string)>().NotFound()
+            : fileInfo;
+    }
+    
     public static RouteGroupBuilder AddMovies(this RouteGroupBuilder endpoints)
     {
-        const string fileFormat = "yyyy-MM-ddTHHmmss.fffffff";
-        var postersPath = Path.Combine(Directory.GetCurrentDirectory(), "posters");
-        
         endpoints.MapGet("/movies", async ([FromQuery] MoviesFilter? moviesFilter, [FromQuery] PaginationFilter? paginationFilter, HttpRequest request, IMovieService movieService) =>
         {
             var filter = new MoviesFilter
@@ -43,26 +69,24 @@ public static class MovieGroup
                 : Results.BadRequest(movie);
         });
 
+        endpoints.MapGet("/moies/{id:guid}/poster-thumbnail", async (Guid id, IMovieService movieService) =>
+        {
+            var fileInfo = await GetFileInfoAsync(id, movieService);
+            if (!fileInfo.IsSuccess)
+                return Results.File(Path.Combine(PostersPath, "default.jpg"), "image/jpg", "default.jpg");
+            
+            var file = File.OpenRead(fileInfo.Data.fullPath[..^fileInfo.Data.fileExtension.Length] + Thumbnail + fileInfo.Data.fileExtension);
+            return Results.File(file, $"image/{fileInfo.Data.fileExtension[1..]}", id + Thumbnail + fileInfo.Data.fileExtension);
+        });
+
         endpoints.MapGet("/moies/{id:guid}/poster", async (Guid id, IMovieService movieService) =>
         {
-            var path = Path.Combine(postersPath, id.ToString());
-            if (!Directory.Exists(path) || !await movieService.ExistsAsync(id))
-                return Results.NotFound(new ServiceResult().NotFound());
-
-            var fileInfo = Directory.GetFiles(path)
-                .Select(f => new FileInfo(f))
-                .Select(f => new
-                {
-                    fullPath = f.FullName,
-                    fileName = f.Name[..^f.Extension.Length],
-                    fileExtension = f.Extension
-                })
-                .MaxBy(s => DateTime.ParseExact(s.fileName, fileFormat, CultureInfo.InvariantCulture));
-            if (fileInfo is null)
-                return Results.NotFound(new ServiceResult().NotFound());
+            var fileInfo = await GetFileInfoAsync(id, movieService);
+            if (!fileInfo.IsSuccess)
+                return Results.File(Path.Combine(PostersPath, "default.jpg"), "image/jpg", "default.jpg");
             
-            var file = File.OpenRead(fileInfo.fullPath);
-            return Results.File(file, $"image/{fileInfo.fileExtension[1..]}", id + fileInfo.fileExtension);
+            var file = File.OpenRead(fileInfo.Data.fullPath);
+            return Results.File(file, $"image/{fileInfo.Data.fileExtension[1..]}", id + fileInfo.Data.fileExtension);
         });
 
         endpoints.MapGet("/movies/top", async ([FromQuery] PaginationFilter? paginationFilter, HttpRequest request, IMovieService movieService) =>
@@ -106,12 +130,23 @@ public static class MovieGroup
             if (fileInfo.Extension != ".jpg")
                 return Results.BadRequest(new ServiceResult().BadRequest("Invalid file extension. Only .jpg is allowed!"));
             
-            var path = Path.Combine(postersPath, id.ToString());
+            var path = Path.Combine(PostersPath, id.ToString());
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
-            path = Path.Combine(path, DateTime.UtcNow.ToString(fileFormat) + fileInfo.Extension);
-            await using var fileStream = new FileStream(path, FileMode.Create);
-            await file.CopyToAsync(fileStream);
+            path = Path.Combine(path, DateTime.UtcNow.ToString(FileFormat) + fileInfo.Extension);
+            await using (var fileStream = new FileStream(path, FileMode.Create))
+            {
+                await file.CopyToAsync(fileStream);
+            }
+            
+            using (var image = await Image.LoadAsync(path))
+            {
+                if (image.Size is { Width: <= 200, Height: <= 300 }) return Results.Ok();
+                    
+                var ratio = image.Size.Height / (image.Size.Width * 1f);
+                image.Mutate(x => x.Resize(200, (int) (200 * ratio)));
+                await image.SaveAsync(path[..^fileInfo.Extension.Length] + Thumbnail + fileInfo.Extension);
+            }
 
             return Results.Ok();
         })
