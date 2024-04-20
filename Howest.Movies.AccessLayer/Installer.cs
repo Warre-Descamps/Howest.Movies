@@ -16,6 +16,7 @@ public static class Installer
             .AddScoped<IGenreRepository, GenreRepository>()
             .AddScoped<IMovieRepository, MovieRepository>()
             .AddScoped<IReviewRepository, ReviewRepository>()
+            .AddScoped<IGenreService, GenreService>()
             .AddScoped<IMovieService, MovieService>();
     }
 }

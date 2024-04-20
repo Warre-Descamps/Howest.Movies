@@ -1,6 +1,4 @@
-﻿using Howest.Movies.Dtos.Core;
-
-namespace Howest.Movies.Dtos.Filters;
+﻿namespace Howest.Movies.Dtos.Filters;
 
 public class PaginationFilter : IParsable<PaginationFilter>
 {

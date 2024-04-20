@@ -15,5 +15,7 @@ public class DtoProfile : Profile
         CreateMap<Movie, MovieDetailResult>()
             .IncludeBase<Movie, MovieResult>()
             .ForMember(mr => mr.AddedBy, opt => opt.MapFrom(m => m.AddedByUser));
+
+        CreateMap<Genre, GenreResult>();
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Howest.Movies.Data;
 using Howest.Movies.Models;
+using Howest.Movies.Services.Extensions;
 using Howest.Movies.Services.Repositories.Abstractions;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,15 +23,18 @@ public class GenreRepository : IGenreRepository
     public async Task<IList<Genre>> FindAsync(string[] genreNames)
     {
         genreNames = genreNames
-            .Select(s => s.Trim())
-            .Where(s => s.Length > 1)
-            .Select(s => char.ToUpper(s[0]) + s[1..].ToLower())
+            .Select(s => s.RemoveSpecialCharacters())
             .ToArray();
         
         var genres = await _dbContext.Genres
             .Where(g => genreNames.Contains(g.Name)).ToListAsync();
 
         return genres;
+    }
+
+    public async Task<Genre?> FindAsync(string name)
+    {
+        return await _dbContext.Genres.FirstOrDefaultAsync(g => g.Name == name);
     }
 
     public Task<Genre?> GetByIdAsync(Guid id)

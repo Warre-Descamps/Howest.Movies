@@ -31,17 +31,8 @@ public static class Seeder
             new() { Name = "Family" },
             new() { Name = "Action" },
             new() { Name = "Adventure" },
-            new() { Name = "Comedy" },
-            new() { Name = "Crime" },
             new() { Name = "Drama" },
             new() { Name = "Fantasy" },
-            new() { Name = "Historical" },
-            new() { Name = "Horror" },
-            new() { Name = "Mystery" },
-            new() { Name = "Romance" },
-            new() { Name = "Science Fiction" },
-            new() { Name = "Thriller" },
-            new() { Name = "Western" },
             new() { Name = "Musical" },
             new() { Name = "Children" }
         };
