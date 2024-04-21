@@ -10,7 +10,7 @@ public class MovieDbContext : IdentityDbContext<User, Role, Guid>
 {
     public DbSet<Movie> Movies { get; set; } = null!;
     public DbSet<Genre> Genres { get; set; } = null!;
-    public DbSet<MovieReview> Reviews { get; set; } = null!;
+    public DbSet<Review> Reviews { get; set; } = null!;
     
     public MovieDbContext() { }
     public MovieDbContext(DbContextOptions<MovieDbContext> options) : base(options)
@@ -54,12 +54,34 @@ public class MovieDbContext : IdentityDbContext<User, Role, Guid>
         {
             e.HasIndex(g => g.Title)
                 .IsUnique();
+
+            e.Property(m => m.Title)
+                .HasMaxLength(255);
+
+            e.Property(m => m.Description)
+                .HasMaxLength(1000);
+
+            e.Property(m => m.Director)
+                .HasMaxLength(75);
         });
         
         builder.Entity<Genre>(e =>
         {
             e.HasIndex(g => g.Name)
                 .IsUnique();
+            
+            e.Property(g => g.Name)
+                .HasMaxLength(50);
+        });
+
+        builder.Entity<Review>(e =>
+        {
+            e.Property(r => r.Comment)
+                .HasMaxLength(1000);
+
+            e.Property(r => r.Rating)
+                .HasDefaultValue(0)
+                .HasColumnType("decimal(3,1)");
         });
     }
 }

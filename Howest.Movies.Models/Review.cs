@@ -1,10 +1,10 @@
 namespace Howest.Movies.Models;
 
-public class MovieReview
+public class Review
 {
     public Guid Id { get; set; } = Guid.NewGuid();
     public required byte Rating { get; set; }
-    public required string ReviewText { get; set; }
+    public required string Comment { get; set; }
     public DateTime ReviewDate { get; set; } = DateTime.UtcNow;
     
     public required Guid MovieId { get; set; }

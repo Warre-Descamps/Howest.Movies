@@ -12,5 +12,5 @@ public class Movie
     public User? AddedByUser { get; set; }
     
     public ICollection<MovieGenre> Genres { get; set; } = new List<MovieGenre>();
-    public ICollection<MovieReview> Reviews { get; set; } = new List<MovieReview>();
+    public ICollection<Review> Reviews { get; set; } = new List<Review>();
 }

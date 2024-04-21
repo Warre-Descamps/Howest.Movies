@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Howest.Movies.Data;
 
-public static class Seeder
+public static class Initializer
 {
     public static async Task SetupDatabaseAsync(this IServiceProvider serviceProvider)
     {

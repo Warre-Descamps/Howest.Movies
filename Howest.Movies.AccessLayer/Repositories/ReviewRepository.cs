@@ -14,31 +14,36 @@ public class ReviewRepository : IReviewRepository
         _dbContext = dbContext;
     }
 
-    public async Task<IList<MovieReview>> FindAsync()
+    public async Task<IList<Review>> FindAsync()
     {
         return await _dbContext.Reviews.ToListAsync();
     }
 
-    public Task<MovieReview?> GetByIdAsync(Guid id)
+    public Task<Review?> GetByIdAsync(Guid id)
     {
         return _dbContext.Reviews.FirstOrDefaultAsync(r => r.Id == id);
     }
 
-    public async Task<MovieReview> AddAsync(MovieReview review)
+    public Task<Review?> GetByUserAsync(Guid movieId, Guid userId)
+    {
+        return _dbContext.Reviews.FirstOrDefaultAsync(r => r.MovieId == movieId && r.ReviewerId == userId);
+    }
+
+    public async Task<Review> AddAsync(Review review)
     {
         _dbContext.Reviews.Add(review);
         await _dbContext.SaveChangesAsync();
         return review;
     }
 
-    public async Task<MovieReview?> UpdateAsync(Guid id, MovieReview review)
+    public async Task<Review?> UpdateAsync(Guid id, Review review)
     {
         var existingReview = await _dbContext.Reviews.FirstOrDefaultAsync(r => r.Id == id);
         if (existingReview == null)
             return null;
         
         existingReview.Rating = review.Rating;
-        existingReview.ReviewText = review.ReviewText;
+        existingReview.Comment = review.Comment;
         existingReview.ReviewDate = DateTime.UtcNow;
         
         await _dbContext.SaveChangesAsync();
