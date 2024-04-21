@@ -1,5 +1,4 @@
 ﻿using Howest.Movies.Sdk.Abstractions;
-using Howest.Movies.Sdk.Endpoints;
 using Howest.Movies.Sdk.Endpoints.Abstractions;
 
 namespace Howest.Movies.Sdk;

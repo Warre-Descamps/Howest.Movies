@@ -8,4 +8,5 @@ public interface IIdentityEndpoint
 {
     Task<ServiceResult> RegisterAsync(Request registerDto);
     Task<ServiceResult<LoginResult>> LoginAsync(Request request);
+    Task<ServiceResult<LoginResult>> RefreshAsync(string refreshToken);
 }

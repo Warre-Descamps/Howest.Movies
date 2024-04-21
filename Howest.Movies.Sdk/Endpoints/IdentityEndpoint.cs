@@ -16,7 +16,7 @@ public class IdentityEndpoint : IIdentityEndpoint
         _httpClientFactory = httpClientFactory;
     }
     
-    private T ReadErrors<T>(HttpResponseMessage response) where T : ServiceResult, new()
+    private static T ReadErrors<T>(HttpResponseMessage response) where T : ServiceResult, new()
     {
         var result = new T();
         if (response.StatusCode == HttpStatusCode.OK) return result;
