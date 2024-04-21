@@ -57,6 +57,7 @@ public class MovieRepository : IMovieRepository
     public async Task<IList<Movie>> FindTopAsync(int from, int size)
     {
         return await _dbContext.Movies
+            .Where(m => m.Reviews.Count > 0)
             .OrderByDescending(m => m.Reviews.Sum(mr => mr.Rating) / m.Reviews.Count)
             .Skip(from)
             .Take(size)
