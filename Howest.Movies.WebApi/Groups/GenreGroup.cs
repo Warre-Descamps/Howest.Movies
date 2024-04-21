@@ -1,27 +1,26 @@
-﻿using Howest.Movies.Dtos.Core;
-using Howest.Movies.Services.Services.Abstractions;
+﻿using Howest.Movies.AccessLayer.Services.Abstractions;
+using Howest.Movies.Dtos.Core.Abstractions;
 
 namespace Howest.Movies.WebApi.Groups;
 
 public static class GenreGroup
 {
-    public static RouteGroupBuilder AddGenres(this RouteGroupBuilder endpoints)
+    public static RouteGroupBuilder AddGenres(this RouteGroupBuilder endpoints, IReturnResolver resolver)
     {
-        endpoints.MapGet("/genre", async (IGenreService genreService) =>
+        var group = endpoints.MapGroup("/genre");
+        
+        group.MapGet("", async (IGenreService genreService) =>
         {
-            var genres = await genreService.FindAsync();
+            var result = await genreService.FindAsync();
 
-            return Results.Ok(genres);
+            return result.GetReturn(resolver);
         });
         
-        endpoints.MapPost("/genre", async (string name, IGenreService genreService) =>
+        group.MapPost("", async (string name, IGenreService genreService) =>
         {
             var result = await genreService.CreateAsync(name);
-
-            if (result.Data is null || !result.IsSuccess)
-                return Results.BadRequest((ServiceResult) result);
             
-            return Results.Created($"/genre/{result.Data!.Id}", result );
+            return result.GetReturn(resolver);
         })
         .RequireAuthorization();
         

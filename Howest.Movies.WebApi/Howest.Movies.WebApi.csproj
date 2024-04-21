@@ -9,6 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="FluentValidation" Version="11.9.0" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.4">
@@ -29,6 +30,10 @@
       <ProjectReference Include="..\Howest.Movies.AccessLayer\Howest.Movies.AccessLayer.csproj" />
       <ProjectReference Include="..\Howest.Movies.Data\Howest.Movies.Data.csproj" />
       <ProjectReference Include="..\Howest.Movies.Dtos\Howest.Movies.Dtos.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Validators\" />
     </ItemGroup>
 
 </Project>

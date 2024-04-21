@@ -1,7 +1,7 @@
 using System.Globalization;
 using System.Text.RegularExpressions;
 
-namespace Howest.Movies.Services.Extensions;
+namespace Howest.Movies.AccessLayer.Extensions;
 
 public static partial class StringExtensions
 {

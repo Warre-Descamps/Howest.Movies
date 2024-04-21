@@ -1,6 +1,6 @@
 using Howest.Movies.Data;
 using Howest.Movies.Models;
-using Howest.Movies.Services;
+using Howest.Movies.WebApi.Extensions;
 using Howest.Movies.WebApi.Groups;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
@@ -18,7 +18,7 @@ builder.Services
     .AddEntityFrameworkStores<MovieDbContext>();
 
 builder.Services
-    .AddAutoMapper(typeof(Program), typeof(Installer))
+    .AddAutoMapper(typeof(Program), typeof(Howest.Movies.AccessLayer.Installer))
     .InstallServices();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

@@ -1,10 +1,10 @@
-﻿using Howest.Movies.Data;
+﻿using Howest.Movies.AccessLayer.Extensions;
+using Howest.Movies.AccessLayer.Repositories.Abstractions;
+using Howest.Movies.Data;
 using Howest.Movies.Models;
-using Howest.Movies.Services.Extensions;
-using Howest.Movies.Services.Repositories.Abstractions;
 using Microsoft.EntityFrameworkCore;
 
-namespace Howest.Movies.Services.Repositories;
+namespace Howest.Movies.AccessLayer.Repositories;
 
 public class GenreRepository : IGenreRepository
 {

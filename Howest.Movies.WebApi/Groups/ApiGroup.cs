@@ -1,13 +1,19 @@
-﻿namespace Howest.Movies.WebApi.Groups;
+﻿using Howest.Movies.Dtos.Core.Abstractions;
+
+namespace Howest.Movies.WebApi.Groups;
 
 public static class ApiGroup
 {
     public static WebApplication AddApiGroup(this WebApplication app)
     {
-        var api = app.MapGroup("/api");
-        api.AddMovies();
-        api.AddGenres();
-        api.AddIdentity();
+        using var scope = app.Services.CreateScope();
+        var returnResolver = scope.ServiceProvider.GetRequiredService<IReturnResolver>();
+        
+        app.MapGroup("/api")
+            .AddMovies(returnResolver)
+            .AddGenres(returnResolver)
+            .AddReviews(returnResolver)
+            .AddIdentity();
 
         return app;
     }

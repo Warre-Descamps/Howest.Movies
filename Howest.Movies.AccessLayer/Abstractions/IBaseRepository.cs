@@ -1,4 +1,4 @@
-﻿namespace Howest.Movies.Services.Abstractions;
+﻿namespace Howest.Movies.AccessLayer.Abstractions;
 
 public interface IBaseRepository<T, in TKey>
 {

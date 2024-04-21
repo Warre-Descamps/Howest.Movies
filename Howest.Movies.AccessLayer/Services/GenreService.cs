@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
+using Howest.Movies.AccessLayer.Extensions;
+using Howest.Movies.AccessLayer.Repositories.Abstractions;
+using Howest.Movies.AccessLayer.Services.Abstractions;
 using Howest.Movies.Dtos.Core;
 using Howest.Movies.Dtos.Core.Extensions;
 using Howest.Movies.Dtos.Results;
 using Howest.Movies.Models;
-using Howest.Movies.Services.Extensions;
-using Howest.Movies.Services.Repositories.Abstractions;
-using Howest.Movies.Services.Services.Abstractions;
 
-namespace Howest.Movies.Services.Services;
+namespace Howest.Movies.AccessLayer.Services;
 
 public class GenreService : IGenreService
 {
@@ -39,7 +39,7 @@ public class GenreService : IGenreService
         
         var genre = await _genreRepository.AddAsync(new Genre
         {
-            Name = name,
+            Name = name
         });
 
         return _mapper.Map<GenreResult>(genre);

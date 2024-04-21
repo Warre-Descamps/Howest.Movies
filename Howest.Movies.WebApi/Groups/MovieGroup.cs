@@ -1,13 +1,13 @@
 ﻿using System.Globalization;
 using System.Security.Claims;
+using Howest.Movies.AccessLayer.Services.Abstractions;
 using Howest.Movies.Dtos.Core;
+using Howest.Movies.Dtos.Core.Abstractions;
 using Howest.Movies.Dtos.Core.Extensions;
 using Howest.Movies.Dtos.Filters;
 using Howest.Movies.Dtos.Requests;
-using Howest.Movies.Services.Services.Abstractions;
+using Howest.Movies.WebApi.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Design;
-using MySqlX.XDevAPI.Common;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 
@@ -40,36 +40,30 @@ public static class MovieGroup
             : fileInfo;
     }
     
-    public static RouteGroupBuilder AddMovies(this RouteGroupBuilder endpoints)
+    public static RouteGroupBuilder AddMovies(this RouteGroupBuilder endpoints, IReturnResolver resolver)
     {
-        endpoints.MapGet("/movies", async ([FromQuery] MoviesFilter? moviesFilter, [FromQuery] PaginationFilter? paginationFilter, HttpRequest request, IMovieService movieService) =>
+        var group = endpoints.MapGroup("/movie");
+        
+        // ReSharper disable RedundantAssignment
+        group.MapGet("", async ([FromQuery] MoviesFilter? filter, [FromQuery] PaginationFilter? pagination, HttpRequest request, IMovieService movieService) =>
+        // ReSharper restore RedundantAssignment
         {
-            var filter = new MoviesFilter
-            {
-                Query = request.Query["query"],
-                Genres = request.Query["genres"].OfType<string>().ToArray(),
-            };
-            var pagination = new PaginationFilter();
-            if (request.Query.ContainsKey("from") && int.TryParse(request.Query["from"], out var from))
-                pagination.From = from;
-            if (request.Query.ContainsKey("size") && int.TryParse(request.Query["size"], out var size))
-                pagination.Size = size;
+            filter = request.Query.GetMoviesFilter();
+            pagination = request.Query.GetPaginationFilter();
     
-            var movies = await movieService.FindAsync(filter, pagination);
-    
-            return Results.Ok(movies);
+            var result = await movieService.FindAsync(filter, pagination);
+
+            return result.GetReturn(resolver);
         });
 
-        endpoints.MapGet("/movies/{id:guid}", async (Guid id, IMovieService movieService) =>
+        group.MapGet("/{id:guid}", async ([FromRoute] Guid id, IMovieService movieService) =>
         {
-            var movie = await movieService.FindByIdAsync(id);
+            var result = await movieService.FindByIdAsync(id);
     
-            return movie.IsSuccess
-                ? Results.Ok(movie)
-                : Results.BadRequest(movie);
+            return result.GetReturn(resolver);
         });
 
-        endpoints.MapGet("/moies/{id:guid}/poster-thumbnail", async (Guid id, IMovieService movieService) =>
+        group.MapGet("/{id:guid}/poster-thumbnail", async ([FromRoute] Guid id, IMovieService movieService) =>
         {
             var fileInfo = await GetFileInfoAsync(id, movieService);
             if (!fileInfo.IsSuccess)
@@ -79,7 +73,7 @@ public static class MovieGroup
             return Results.File(file, $"image/{fileInfo.Data.fileExtension[1..]}", id + Thumbnail + fileInfo.Data.fileExtension);
         });
 
-        endpoints.MapGet("/moies/{id:guid}/poster", async (Guid id, IMovieService movieService) =>
+        group.MapGet("/{id:guid}/poster", async ([FromRoute] Guid id, IMovieService movieService) =>
         {
             var fileInfo = await GetFileInfoAsync(id, movieService);
             if (!fileInfo.IsSuccess)
@@ -89,7 +83,7 @@ public static class MovieGroup
             return Results.File(file, $"image/{fileInfo.Data.fileExtension[1..]}", id + fileInfo.Data.fileExtension);
         });
 
-        endpoints.MapGet("/movies/top", async ([FromQuery] PaginationFilter? paginationFilter, HttpRequest request, IMovieService movieService) =>
+        group.MapGet("/top", async ([FromQuery] PaginationFilter? paginationFilter, HttpRequest request, IMovieService movieService) =>
         {
             var pagination = new PaginationFilter();
             if (request.Query.ContainsKey("from") && int.TryParse(request.Query["from"], out var from))
@@ -98,27 +92,26 @@ public static class MovieGroup
                 pagination.Size = size;
             
             var result = await movieService.FindTopAsync(pagination);
-            return result.IsSuccess
-                ? Results.Ok(result)
-                : Results.BadRequest(result);
+            
+            return result.GetReturn(resolver);
         });
 
-        endpoints.MapPost("/movies", async ([FromBody] MovieRequest request, ClaimsPrincipal user, IMovieService movieService) =>
+        group.MapPost("", async ([FromBody] MovieRequest request, ClaimsPrincipal user, IMovieService movieService) =>
         {
-            if (user.FindFirst(ClaimTypes.NameIdentifier) is null ||
-                !Guid.TryParse(user.FindFirst(ClaimTypes.NameIdentifier)!.Value, out var userId))
+            if (!user.TryGetUserId(out var userId))
                 return Results.Unauthorized();
 
             var result = await movieService.CreateAsync(request, userId);
+            
             return result.IsSuccess
-                ? Results.Ok(result)
+                ? Results.Created($"/movies/{result.Data!.Id}", result)
                 : Results.BadRequest(result);
         })
         .RequireAuthorization();
 
-        endpoints.MapPost("/movies/{id:guid}/poster", async (Guid id, IFormFile file, ClaimsPrincipal user, IMovieService movieService) =>
+        group.MapPost("/{id:guid}/poster", async ([FromRoute] Guid id, IFormFile file, ClaimsPrincipal user, IMovieService movieService) =>
         {
-            if (user.FindFirst(ClaimTypes.NameIdentifier) is null || !Guid.TryParse(user.FindFirst(ClaimTypes.NameIdentifier)!.Value, out _))
+            if (!user.TryGetUserId(out _))
                 return Results.Unauthorized();
             
             if (!await movieService.ExistsAsync(id))
@@ -148,14 +141,19 @@ public static class MovieGroup
                 await image.SaveAsync(path[..^fileInfo.Extension.Length] + Thumbnail + fileInfo.Extension);
             }
 
-            return Results.Ok();
+            return Results.Created();
         })
         .RequireAuthorization()
         .DisableAntiforgery();
 
-        endpoints.MapPost("/movies/{id:guid}/review", async (Guid id, ClaimsPrincipal user) =>
+        group.MapPost("/{id:guid}/review", async ([FromRoute] Guid id, [FromBody] ReviewRequest request, ClaimsPrincipal user, IMovieService movieService) =>
         {
-
+            if (!user.TryGetUserId(out var userId))
+                return Results.Unauthorized();
+            
+            var result = await movieService.AddReviewAsync(id, request, userId);
+            
+            return result.GetReturn(resolver);
         })
         .RequireAuthorization();
 

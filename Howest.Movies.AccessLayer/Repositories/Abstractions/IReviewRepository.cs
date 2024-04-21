@@ -1,7 +1,7 @@
-﻿using Howest.Movies.Models;
-using Howest.Movies.Services.Abstractions;
+﻿using Howest.Movies.AccessLayer.Abstractions;
+using Howest.Movies.Models;
 
-namespace Howest.Movies.Services.Repositories.Abstractions;
+namespace Howest.Movies.AccessLayer.Repositories.Abstractions;
 
 public interface IReviewRepository : IBaseRepository<Review, Guid>
 {

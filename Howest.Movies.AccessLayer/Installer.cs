@@ -1,11 +1,11 @@
-﻿using Howest.Movies.Data;
-using Howest.Movies.Services.Repositories;
-using Howest.Movies.Services.Repositories.Abstractions;
-using Howest.Movies.Services.Services;
-using Howest.Movies.Services.Services.Abstractions;
+﻿using Howest.Movies.AccessLayer.Repositories;
+using Howest.Movies.AccessLayer.Repositories.Abstractions;
+using Howest.Movies.AccessLayer.Services;
+using Howest.Movies.AccessLayer.Services.Abstractions;
+using Howest.Movies.Data;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Howest.Movies.Services;
+namespace Howest.Movies.AccessLayer;
 
 public static class Installer
 {
@@ -17,6 +17,7 @@ public static class Installer
             .AddScoped<IMovieRepository, MovieRepository>()
             .AddScoped<IReviewRepository, ReviewRepository>()
             .AddScoped<IGenreService, GenreService>()
-            .AddScoped<IMovieService, MovieService>();
+            .AddScoped<IMovieService, MovieService>()
+            .AddScoped<IReviewService, ReviewService>();
     }
 }

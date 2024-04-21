@@ -7,8 +7,8 @@ public class Review
     public required string Comment { get; set; }
     public DateTime ReviewDate { get; set; } = DateTime.UtcNow;
     
-    public required Guid MovieId { get; set; }
+    public Guid MovieId { get; set; }
     public Movie? Movie { get; set; }
-    public required Guid ReviewerId { get; set; }
+    public Guid ReviewerId { get; set; }
     public User? Reviewer { get; set; }
 }

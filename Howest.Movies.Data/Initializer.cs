@@ -1,7 +1,6 @@
 ﻿using Howest.Movies.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Howest.Movies.Data;
@@ -27,7 +26,7 @@ public static class Initializer
         }
         catch
         {
-            throw new Exception("Could not connect to the server, please check your connection string in appsettings.json");
+            throw new Exception("Could not connect to the database server, please check your connection string in appsettings.json");
         }
 
         await serviceProvider.SeedDbAsync();

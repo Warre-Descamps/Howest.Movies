@@ -4,7 +4,7 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <RootNamespace>Howest.Movies.Services</RootNamespace>
+        <RootNamespace>Howest.Movies.AccessLayer</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>

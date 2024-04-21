@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
+using Howest.Movies.AccessLayer.Profiles.Converters;
 using Howest.Movies.Dtos.Results;
 using Howest.Movies.Models;
-using Howest.Movies.Services.Profiles.Converters;
 
-namespace Howest.Movies.Services.Profiles;
+namespace Howest.Movies.AccessLayer.Profiles;
 
 public class DtoProfile : Profile
 {
@@ -19,5 +19,8 @@ public class DtoProfile : Profile
         CreateMap<User, UserResult>();
 
         CreateMap<Genre, GenreResult>();
+
+        CreateMap<Review, ReviewResult>();
+
     }
 }

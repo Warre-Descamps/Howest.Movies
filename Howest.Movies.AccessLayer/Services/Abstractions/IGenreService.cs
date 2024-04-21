@@ -1,7 +1,7 @@
 ﻿using Howest.Movies.Dtos.Core;
 using Howest.Movies.Dtos.Results;
 
-namespace Howest.Movies.Services.Services.Abstractions;
+namespace Howest.Movies.AccessLayer.Services.Abstractions;
 
 public interface IGenreService
 {

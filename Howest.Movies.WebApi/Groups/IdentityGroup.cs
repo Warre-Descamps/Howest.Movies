@@ -6,7 +6,8 @@ public static class IdentityGroup
 {
     public static RouteGroupBuilder AddIdentity(this RouteGroupBuilder endpoints)
     {
-        endpoints.MapGroup("/identity").MapIdentityApi<User>();
+        endpoints.MapGroup("/identity")
+            .MapIdentityApi<User>();
         return endpoints;
     }
 }

@@ -1,9 +1,11 @@
-﻿namespace Howest.Movies.Dtos.Core;
+﻿using Howest.Movies.Dtos.Core.Abstractions;
+
+namespace Howest.Movies.Dtos.Core;
 
 public class ServiceResult
 {
     public List<ServiceMessage> Messages { get; set; }
-    public bool IsSuccess => Messages.All(m => m.Type != MessageType.Error);
+    public virtual bool IsSuccess => Messages.All(m => m.Type != MessageType.Error);
 
     public ServiceResult()
     {
@@ -14,11 +16,17 @@ public class ServiceResult
     {
         Messages = [..messages];
     }
+
+    public object GetReturn(IReturnResolver resolver)
+    {
+        return resolver.Resolve(this);
+    }
 }
      
 public class ServiceResult<T> : ServiceResult
 {
     public T? Data { get; init; }
+    public override bool IsSuccess => base.IsSuccess && Data is not null;
 
     public ServiceResult() : base()
     {

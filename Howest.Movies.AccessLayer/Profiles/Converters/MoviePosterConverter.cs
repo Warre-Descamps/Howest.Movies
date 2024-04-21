@@ -1,6 +1,6 @@
 using AutoMapper;
 
-namespace Howest.Movies.Services.Profiles.Converters;
+namespace Howest.Movies.AccessLayer.Profiles.Converters;
 
 public class MoviePosterConverter : IValueConverter<Guid, string>
 {
