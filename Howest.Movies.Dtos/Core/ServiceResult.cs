@@ -25,7 +25,7 @@ public class ServiceResult
      
 public class ServiceResult<T> : ServiceResult
 {
-    public T? Data { get; init; }
+    public T? Data { get; set; }
     public override bool IsSuccess => base.IsSuccess && Data is not null;
 
     public ServiceResult() : base()

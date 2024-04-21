@@ -1,14 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Security.Claims;
-using System.Text;
-using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Authentication.BearerToken;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Http.Metadata;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
-using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
 
 namespace Howest.Movies.WebApi.Extensions;
@@ -39,9 +36,6 @@ public static class CustomIdentityApiEndpointRouteBuilderExtensions
         var bearerTokenOptions = endpoints.ServiceProvider.GetRequiredService<IOptionsMonitor<BearerTokenOptions>>();
         var emailSender = endpoints.ServiceProvider.GetRequiredService<IEmailSender<TUser>>();
         var linkGenerator = endpoints.ServiceProvider.GetRequiredService<LinkGenerator>();
-
-        // We'll figure out a unique endpoint name based on the final route pattern during endpoint generation.
-        string? confirmEmailEndpointName = null;
 
         var routeGroup = endpoints.MapGroup("");
 
@@ -76,7 +70,6 @@ public static class CustomIdentityApiEndpointRouteBuilderExtensions
                 return CreateValidationProblem(result);
             }
 
-            await SendConfirmationEmailAsync(user, userManager, context, email);
             return TypedResults.Ok();
         });
 
@@ -122,7 +115,7 @@ public static class CustomIdentityApiEndpointRouteBuilderExtensions
             // Reject the /refresh attempt with a 401 if the token expired or the security stamp validation fails
             if (refreshTicket?.Properties?.ExpiresUtc is not { } expiresUtc ||
                 timeProvider.GetUtcNow() >= expiresUtc ||
-                await signInManager.ValidateSecurityStampAsync(refreshTicket.Principal) is not TUser user)
+                await signInManager.ValidateSecurityStampAsync(refreshTicket.Principal) is not { } user)
 
             {
                 return TypedResults.Challenge();
@@ -130,25 +123,6 @@ public static class CustomIdentityApiEndpointRouteBuilderExtensions
 
             var newPrincipal = await signInManager.CreateUserPrincipalAsync(user);
             return TypedResults.SignIn(newPrincipal, authenticationScheme: IdentityConstants.BearerScheme);
-        });
-
-        routeGroup.MapPost("/forgotPassword", async Task<Results<Ok, ValidationProblem>>
-            ([FromBody] ForgotPasswordRequest resetRequest, [FromServices] IServiceProvider sp) =>
-        {
-            var userManager = sp.GetRequiredService<UserManager<TUser>>();
-            var user = await userManager.FindByEmailAsync(resetRequest.Email);
-
-            if (user is not null && await userManager.IsEmailConfirmedAsync(user))
-            {
-                var code = await userManager.GeneratePasswordResetTokenAsync(user);
-                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-
-                await emailSender.SendPasswordResetCodeAsync(user, resetRequest.Email, HtmlEncoder.Default.Encode(code));
-            }
-
-            // Don't reveal that the user does not exist or is not confirmed, so don't return a 200 if we would have
-            // returned a 400 for an invalid code given a valid user email.
-            return TypedResults.Ok();
         });
 
         var accountGroup = routeGroup.MapGroup("/manage").RequireAuthorization();
@@ -184,7 +158,7 @@ public static class CustomIdentityApiEndpointRouteBuilderExtensions
                 if (string.IsNullOrEmpty(infoRequest.OldPassword))
                 {
                     return CreateValidationProblem("OldPasswordRequired",
-                        "The old password is required to set a new password. If the old password is forgotten, use /resetPassword.");
+                        "The old password is required to set a new password.");
                 }
 
                 var changePasswordResult = await userManager.ChangePasswordAsync(user, infoRequest.OldPassword, infoRequest.NewPassword);
@@ -194,49 +168,8 @@ public static class CustomIdentityApiEndpointRouteBuilderExtensions
                 }
             }
 
-            if (!string.IsNullOrEmpty(infoRequest.NewEmail))
-            {
-                var email = await userManager.GetEmailAsync(user);
-
-                if (email != infoRequest.NewEmail)
-                {
-                    await SendConfirmationEmailAsync(user, userManager, context, infoRequest.NewEmail, isChange: true);
-                }
-            }
-
             return TypedResults.Ok(await CreateInfoResponseAsync(user, userManager));
         });
-
-        async Task SendConfirmationEmailAsync(TUser user, UserManager<TUser> userManager, HttpContext context, string email, bool isChange = false)
-        {
-            if (confirmEmailEndpointName is null)
-            {
-                throw new NotSupportedException("No email confirmation endpoint was registered!");
-            }
-
-            var code = isChange
-                ? await userManager.GenerateChangeEmailTokenAsync(user, email)
-                : await userManager.GenerateEmailConfirmationTokenAsync(user);
-            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-
-            var userId = await userManager.GetUserIdAsync(user);
-            var routeValues = new RouteValueDictionary()
-            {
-                ["userId"] = userId,
-                ["code"] = code,
-            };
-
-            if (isChange)
-            {
-                // This is validated by the /confirmEmail endpoint on change.
-                routeValues.Add("changedEmail", email);
-            }
-
-            var confirmEmailUrl = linkGenerator.GetUriByName(context, confirmEmailEndpointName, routeValues)
-                ?? throw new NotSupportedException($"Could not find endpoint named '{confirmEmailEndpointName}'.");
-
-            await emailSender.SendConfirmationLinkAsync(user, email, HtmlEncoder.Default.Encode(confirmEmailUrl));
-        }
 
         return new IdentityEndpointsConventionBuilder(routeGroup);
     }

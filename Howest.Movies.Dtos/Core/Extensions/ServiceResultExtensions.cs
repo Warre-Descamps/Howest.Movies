@@ -25,4 +25,10 @@ public static class ServiceResultExtensions
         serviceResult.Messages.Add(new ServiceMessage("Forbidden", "You are not allowed to perform this action.", MessageType.Error));
         return serviceResult;
     }
+    
+    public static T Unauthorized<T>(this T serviceResult) where T : ServiceResult
+    {
+        serviceResult.Messages.Add(new ServiceMessage("Unauthorized", "You are not authorized to perform this action.", MessageType.Error));
+        return serviceResult;
+    }
 }
