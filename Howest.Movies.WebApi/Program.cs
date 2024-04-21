@@ -2,6 +2,7 @@ using Howest.Movies.Data;
 using Howest.Movies.Models;
 using Howest.Movies.WebApi.Extensions;
 using Howest.Movies.WebApi.Groups;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 
@@ -11,11 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services
     .AddAuthorization()
     .AddAuthentication()
-    .AddJwtBearer();
-
-builder.Services
-    .AddIdentityApiEndpoints<User>()
-    .AddEntityFrameworkStores<MovieDbContext>();
+    .AddBearerToken();
 
 builder.Services
     .AddAutoMapper(typeof(Program), typeof(Howest.Movies.AccessLayer.Installer))
@@ -26,11 +23,12 @@ builder.Services
     .AddEndpointsApiExplorer()
     .AddSwaggerGen(options =>
     {
-        options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+        options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
         {
             In = ParameterLocation.Header,
             Name = "Authorization",
-            Type = SecuritySchemeType.ApiKey
+            Type = SecuritySchemeType.ApiKey,
+            BearerFormat = "Bearer {token}"
         });
         
         options.OperationFilter<SecurityRequirementsOperationFilter>();
