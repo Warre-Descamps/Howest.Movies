@@ -11,8 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services
     .AddAuthorization()
-    .AddAuthentication()
-    .AddBearerToken();
+    .AddAuthentication();
 
 builder.Services
     .AddAutoMapper(typeof(Program), typeof(Howest.Movies.AccessLayer.Installer))
@@ -23,12 +22,13 @@ builder.Services
     .AddEndpointsApiExplorer()
     .AddSwaggerGen(options =>
     {
-        options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+        options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
         {
             In = ParameterLocation.Header,
             Name = "Authorization",
             Type = SecuritySchemeType.ApiKey,
-            BearerFormat = "Bearer {token}"
+            BearerFormat = "Bearer {token}",
+            Scheme = "Bearer",
         });
         
         options.OperationFilter<SecurityRequirementsOperationFilter>();
