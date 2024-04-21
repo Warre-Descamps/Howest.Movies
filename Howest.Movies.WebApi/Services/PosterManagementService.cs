@@ -62,7 +62,7 @@ public class PosterManagementService : IPosterManagementService
         return false;
     }
 
-    public async Task<IResult> GetPoster(Guid id)
+    public async Task<IResult> GetPosterThumbnail(Guid id)
     {
         var fileInfo = await GetFileInfoAsync(id);
         if (!fileInfo.IsSuccess)
@@ -72,7 +72,7 @@ public class PosterManagementService : IPosterManagementService
         return Results.File(file, $"image/{fileInfo.Data.fileExtension[1..]}", id + Thumbnail + fileInfo.Data.fileExtension);
     }
 
-    public async Task<IResult> GetPosterThumbnail(Guid id)
+    public async Task<IResult> GetPoster(Guid id)
     {
         var fileInfo = await GetFileInfoAsync(id);
         if (!fileInfo.IsSuccess)

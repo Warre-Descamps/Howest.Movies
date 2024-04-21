@@ -23,6 +23,10 @@ public static class MovieGroup
             pagination = request.Query.GetPaginationFilter();
     
             var result = await movieService.FindAsync(filter, pagination);
+            if (result.IsSuccess)
+            {
+                result.Data!.Items.UpdatePosterInfo(request);
+            }
 
             return result.GetReturn(resolver);
         });
@@ -47,6 +51,10 @@ public static class MovieGroup
             pagination = request.Query.GetPaginationFilter();
             
             var result = await movieService.FindTopAsync(pagination);
+            if (result.IsSuccess)
+            {
+                result.Data!.Items.UpdatePosterInfo(request);
+            }
             
             return result.GetReturn(resolver);
         });
