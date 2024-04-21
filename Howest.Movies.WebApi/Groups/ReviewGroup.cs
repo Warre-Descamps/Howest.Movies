@@ -13,7 +13,7 @@ public static class ReviewGroup
     {
         var group = endpoints.MapGroup("/review");
         
-        group.MapPut("/{id:guid}", async (Guid id, [FromBody] ReviewRequest reviewRequest, ClaimsPrincipal user, IReviewService reviewService) =>
+        group.MapPut("/{id:guid}", async ([FromRoute] Guid id, [FromBody] ReviewRequest reviewRequest, ClaimsPrincipal user, IReviewService reviewService) =>
         {
             if (!user.TryGetUserId(out var userId))
                 return Results.Unauthorized();
@@ -24,7 +24,7 @@ public static class ReviewGroup
         })
         .RequireAuthorization();
 
-        group.MapDelete("/{id:guid}", async (Guid id, ClaimsPrincipal user, IReviewService reviewService) =>
+        group.MapDelete("/{id:guid}", async ([FromRoute] Guid id, ClaimsPrincipal user, IReviewService reviewService) =>
         {
             if (!user.TryGetUserId(out var userId))
                 return Results.Unauthorized();
@@ -32,7 +32,8 @@ public static class ReviewGroup
             var result = await reviewService.DeleteAsync(id, userId);
 
             return result.GetReturn(resolver);
-        });
+        })
+        .RequireAuthorization();
 
         return endpoints;
     }
