@@ -1,7 +1,5 @@
 ﻿@using Howest.Movies.Sdk.Abstractions
 @using Howest.Movies.Dtos.Filters
-@inject IMoviesSdk MoviesSdk
-@inject IJSRuntime JsRuntime
 @page "/"
 
 <PageTitle>Home</PageTitle>
@@ -18,7 +16,7 @@
             <MudPaper Class="d-flex flex-row flex-grow-1 gap-4" Elevation="0">
                 @foreach (var movie in _topRatedMovies.Items)
                 {
-                    <MovieCard @Movie=movie/>
+                    <MovieCard Movie=movie/>
                 }
             </MudPaper>
         }
@@ -26,7 +24,7 @@
         <MudPaper Class="d-flex flex-row flex-grow-1 gap-4" Elevation="0">
             @foreach (var movie in _movies.Items)
             {
-                <MovieCard @Movie=movie/>
+                <MovieCard Movie=movie/>
             }
         </MudPaper>
     }
@@ -36,6 +34,9 @@
     private ElementReference _scrollContainer;
     private PaginationResult<IList<MovieResult>>? _topRatedMovies;
     private PaginationResult<IList<MovieResult>>? _movies;
+
+    [Inject] private IMoviesSdk MoviesSdk { get; init; } = null!;
+    [Inject] private IJSRuntime JsRuntime { get; init; } = null!;
 
     protected override async Task OnInitializedAsync()
     {

@@ -1,42 +1,36 @@
-﻿@inject NavigationManager NavigationManager
-@inject IMovieEndpoint MovieEndpoint
-@page "/movie/{MovieId:guid}"
+﻿@page "/movie/{MovieId:guid}"
 @using Howest.Movies.Sdk.Endpoints.Abstractions
 
-@*<div class="container">
-    @if (_movieDetails == null)
-    {
-    <p><em>Loading...</em></p>
-    }
-    else
-    {
-        <div class="row">
-            <div class="col-4">
-                <div class="card" style="max-width: 300px;max-height: 450px;">
-                    <img class="card-img-top" src="@_movieDetails.Poster" alt="@_movieDetails.Title">
-                </div></div>
-            <div class="col-8 m-5">
-                <h3>@_movieDetails.Title</h3>
-                <p>Director(s): @_movieDetails.Director</p>
-                <p>@_movieDetails.ReleaseDate.Date.Year</p>
-                <p>
-                    @foreach (var genre in _movieDetails.Genres)
-                    {
-                        <span class="me-2">@genre</span>
-                    }
-                </p>
-                <p>@_movieDetails.Description</p>
-            </div>
-        </div>
-    }
-</div>*@
+<MudOverlay Visible="@(_movieDetails == null)" DarkBackground="true" Absolute="true">
+    <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
+</MudOverlay>
+@if (_movieDetails != null)
+{
+    <MudStack Row="true" Spacing="10" Wrap="Wrap.NoWrap" AlignItems="AlignItems.Center" Class="mt-5">
+        <MudImage ObjectFit="ObjectFit.Contain" ObjectPosition="ObjectPosition.Left" Width="300" Src="@_movieDetails.Poster" Alt="@_movieDetails.Title" Style="border-radius: .5em;"></MudImage>
+        <MudStack>
+            <MudText Typo="Typo.h4">@_movieDetails.Title</MudText>
+            <MudText Typo="Typo.caption">Directed by @_movieDetails.Director</MudText>
+            <MudText Typo="Typo.subtitle2">@_movieDetails.ReleaseDate.Date.Year</MudText>
+            <MudText Typo="Typo.subtitle2">
+                @foreach (var genre in _movieDetails.Genres)
+                {
+                    <span class="me-2">@genre</span>
+                }
+            </MudText>
+            <MudText Typo="Typo.body1" Style="max-width: 900px;">@_movieDetails.Description</MudText>
+        </MudStack>
+    </MudStack>
+}
 
 @code
 {
     private MovieDetailResult? _movieDetails;
-    
-    [Parameter]
-    public Guid MovieId { get; set; }
+
+    [Inject] private IMovieEndpoint MovieEndpoint { get; init; } = null!;
+    [Inject] private NavigationManager NavigationManager { get; init; } = null!;
+
+    [Parameter] public Guid MovieId { get; set; }
     
     protected override async Task OnInitializedAsync()
     {
@@ -55,5 +49,4 @@
             NavigationManager.NavigateTo("/");
         }
     }
-
 }
