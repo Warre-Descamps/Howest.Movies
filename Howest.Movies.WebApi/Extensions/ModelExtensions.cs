@@ -4,12 +4,16 @@ namespace Howest.Movies.WebApi.Extensions;
 
 public static class ModelExtensions
 {
+    public static void UpdatePosterInfo(this MovieResult movie, HttpRequest request)
+    {
+        movie.Poster = $"{request.Scheme}://{request.Host}/api/movie{movie.Poster}";
+    }
+    
     public static void UpdatePosterInfo(this IEnumerable<MovieResult> movies, HttpRequest request)
     {
-        var baseUrl = $"{request.Scheme}://{request.Host}";
         foreach (var movie in movies)
         {
-            movie.Poster = $"{baseUrl}/api/movie{movie.Poster}";
+            movie.UpdatePosterInfo(request);
         }
     }
 }

@@ -14,7 +14,8 @@ public class DtoProfile : Profile
         
         CreateMap<Movie, MovieDetailResult>()
             .ForMember(mr => mr.Poster, opt => opt.ConvertUsing(new MoviePosterConverter(), m => m.Id))
-            .ForMember(mr => mr.AddedBy, opt => opt.MapFrom(m => m.AddedByUser));
+            .ForMember(mr => mr.AddedBy, opt => opt.MapFrom(m => m.AddedByUser))
+            .ForMember(mr => mr.Genres, opt => opt.MapFrom(m => m.Genres.Where(mg => mg.Genre != null).Select(g => g.Genre!.Name).ToList()));
 
         CreateMap<User, UserResult>();
 

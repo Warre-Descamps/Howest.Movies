@@ -1,0 +1,17 @@
+﻿@inject NavigationManager NavigationManager
+
+<MudStack Style="display: block;width: 200px" @onclick="NavigateToMovieDetails">
+    <MudImage Src="@Movie.Poster" Alt="@Movie.Title" ></MudImage>
+    <MudTooltip Text="@Movie.Title" Placement="Placement.Top">
+        <MudText Typo="Typo.body1" Align="Align.Left" Class="text-truncate"><b>@Movie.Title</b></MudText>
+    </MudTooltip>
+</MudStack>
+
+@code {
+    [Parameter] public MovieResult Movie { get; set; } = null!;
+    
+    private void NavigateToMovieDetails()
+    {
+        NavigationManager.NavigateTo($"/movie/{Movie.Id}");
+    }
+}

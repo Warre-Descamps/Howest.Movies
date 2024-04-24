@@ -31,9 +31,13 @@ public static class MovieGroup
             return result.GetReturn(resolver);
         });
 
-        group.MapGet("/{id:guid}", async ([FromRoute] Guid id, IMovieService movieService) =>
+        group.MapGet("/{id:guid}", async ([FromRoute] Guid id, HttpRequest request, IMovieService movieService) =>
         {
             var result = await movieService.FindByIdAsync(id);
+            if (result.IsSuccess)
+            {
+                result.Data!.UpdatePosterInfo(request);
+            }
     
             return result.GetReturn(resolver);
         });

@@ -1,0 +1,59 @@
+﻿@inject NavigationManager NavigationManager
+@inject IMovieEndpoint MovieEndpoint
+@page "/movie/{MovieId:guid}"
+@using Howest.Movies.Sdk.Endpoints.Abstractions
+
+@*<div class="container">
+    @if (_movieDetails == null)
+    {
+    <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-4">
+                <div class="card" style="max-width: 300px;max-height: 450px;">
+                    <img class="card-img-top" src="@_movieDetails.Poster" alt="@_movieDetails.Title">
+                </div></div>
+            <div class="col-8 m-5">
+                <h3>@_movieDetails.Title</h3>
+                <p>Director(s): @_movieDetails.Director</p>
+                <p>@_movieDetails.ReleaseDate.Date.Year</p>
+                <p>
+                    @foreach (var genre in _movieDetails.Genres)
+                    {
+                        <span class="me-2">@genre</span>
+                    }
+                </p>
+                <p>@_movieDetails.Description</p>
+            </div>
+        </div>
+    }
+</div>*@
+
+@code
+{
+    private MovieDetailResult? _movieDetails;
+    
+    [Parameter]
+    public Guid MovieId { get; set; }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        if (MovieId == Guid.Empty)
+        {
+            NavigationManager.NavigateTo("/");
+        }
+
+        var result = await MovieEndpoint.GetAsync(MovieId);
+        if (result.IsSuccess)
+        {
+            _movieDetails = result.Data;
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/");
+        }
+    }
+
+}

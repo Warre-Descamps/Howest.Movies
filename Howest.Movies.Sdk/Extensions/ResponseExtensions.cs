@@ -1,5 +1,5 @@
-﻿using System.Text.Json;
-using Howest.Movies.Dtos.Core;
+﻿using Howest.Movies.Dtos.Core;
+using Newtonsoft.Json;
 
 namespace Howest.Movies.Sdk.Extensions;
 
@@ -8,7 +8,7 @@ internal static class ResponseExtensions
     internal static async Task<T> ReadAsync<T>(this HttpResponseMessage response) where T : ServiceResult, new()
     {
         var content = await response.Content.ReadAsStringAsync();
-        var result = JsonSerializer.Deserialize<T>(content);
+        var result = JsonConvert.DeserializeObject<T>(content);
         if (result is null)
         {
             result = new T();

@@ -84,7 +84,7 @@ public class MovieService : IMovieService
         Guid[] genreIds = [];
         if (request.Genres.Length > 0)
         {
-            var genres = await _genreRepository.FindAsync(request.Genres);
+            var genres = await _genreRepository.FindAsync(request.Genres); // TODO create genres if they don't exist
             genreIds = genres.Select(g => g.Id).ToArray();
         }
 

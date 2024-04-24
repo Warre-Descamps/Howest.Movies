@@ -6,4 +6,5 @@ public class MovieDetailResult : MovieResult
     public required DateTime ReleaseDate { get; set; }
     public required string Director { get; set; } = null!;
     public UserResult? AddedBy { get; set; }
+    public IList<string> Genres { get; set; } = new List<string>();
 }

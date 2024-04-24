@@ -5,6 +5,8 @@ namespace Howest.Movies.Sdk;
 
 public class MoviesSdk : IMoviesSdk
 {
+    public const string HttpClientName = "MoviesSdkHttpClient";
+
     public IMovieEndpoint Movies { get; }
     public IGenreEndpoint Genres { get; }
     public IReviewEndpoint Reviews { get; }

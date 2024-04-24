@@ -7,13 +7,10 @@ using Howest.Movies.Sdk.IdentityDtos.Results;
 
 namespace Howest.Movies.Sdk.Endpoints;
 
-public class IdentityEndpoint : IIdentityEndpoint
+public class IdentityEndpoint : BaseEndpoint, IIdentityEndpoint
 {
-    private readonly IHttpClientFactory _httpClientFactory;
-
-    public IdentityEndpoint(IHttpClientFactory httpClientFactory)
+    public IdentityEndpoint(IHttpClientFactory httpClientFactory) : base(httpClientFactory)
     {
-        _httpClientFactory = httpClientFactory;
     }
     
     private static T ReadErrors<T>(HttpResponseMessage response) where T : ServiceResult, new()
@@ -31,21 +28,17 @@ public class IdentityEndpoint : IIdentityEndpoint
 
     public async Task<ServiceResult> RegisterAsync(Request request)
     {
-        var client = _httpClientFactory.CreateClient();
-        var response = await client.PostAsJsonAsync("/api/identity/register", request);
+        var response = await HttpClient.PostAsJsonAsync("/api/identity/register", request);
         
         var result = ReadErrors<ServiceResult>(response);
-
         return result;
     }
 
     public async Task<ServiceResult<LoginResult>> LoginAsync(Request request)
     {
-        var client = _httpClientFactory.CreateClient();
-        var response = await client.PostAsJsonAsync("/api/identity/login", request);
+        var response = await HttpClient.PostAsJsonAsync("/api/identity/login", request);
         
         var result = ReadErrors<ServiceResult<LoginResult>>(response);
-        
         if (response.StatusCode == HttpStatusCode.OK)
         {
             var loginResult = await response.Content.ReadFromJsonAsync<LoginResult>();
@@ -55,17 +48,15 @@ public class IdentityEndpoint : IIdentityEndpoint
         {
             result.Messages.Add(new ServiceMessage("login", "Invalid credentials", MessageType.Error));
         }
-
+        
         return result;
     }
     
     public async Task<ServiceResult<LoginResult>> RefreshAsync(string refreshToken)
     {
-        var client = _httpClientFactory.CreateClient();
-        var response = await client.PostAsJsonAsync("/api/identity/refresh", new { refreshToken });
+        var response = await HttpClient.PostAsJsonAsync("/api/identity/refresh", new { refreshToken });
         
         var result = ReadErrors<ServiceResult<LoginResult>>(response);
-        
         if (response.StatusCode == HttpStatusCode.OK)
         {
             var loginResult = await response.Content.ReadFromJsonAsync<LoginResult>();

@@ -1,8 +1,6 @@
 using Howest.Movies.Data;
-using Howest.Movies.Models;
 using Howest.Movies.WebApi.Extensions;
 using Howest.Movies.WebApi.Groups;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 
@@ -34,7 +32,10 @@ builder.Services
         options.OperationFilter<SecurityRequirementsOperationFilter>();
     });
 
-builder.Services.AddCors();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", cors => cors.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+});
 
 var app = builder.Build();
 
@@ -51,7 +52,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseCors();
+app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
 

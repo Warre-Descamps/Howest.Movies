@@ -9,3 +9,14 @@
 @using Microsoft.JSInterop
 @using Howest.Movies.WebApp
 @using Howest.Movies.WebApp.Layout
+@using Howest.Movies.WebApp.Components
+@using Howest.Movies.Dtos.Results
+@using Howest.Movies.Dtos.Requests
+@using Howest.Movies.Dtos.Core
+@using MudBlazor
+
+<script>
+    window.isScrollAtBottom = function (container) {
+        return container.scrollHeight - container.scrollTop === container.clientHeight;
+    };
+</script>

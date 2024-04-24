@@ -71,7 +71,10 @@ public class MovieRepository : IMovieRepository
 
     public Task<Movie?> GetByIdAsync(Guid id)
     {
-        return _dbContext.Movies.FirstOrDefaultAsync(m => m.Id == id);
+        return _dbContext.Movies
+            .Include(m => m.Genres)
+            .ThenInclude(mg => mg.Genre)
+            .FirstOrDefaultAsync(m => m.Id == id);
     }
     
     public async Task<Movie> AddAsync(Movie movie)
