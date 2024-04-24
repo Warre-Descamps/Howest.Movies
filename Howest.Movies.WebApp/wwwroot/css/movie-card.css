@@ -1,0 +1,13 @@
+﻿.movie-card {
+    transition: border 0.3s, filter 0.3s;
+    cursor: pointer;
+}
+
+.movie-card img {
+    border-radius: .5em;
+}
+
+.movie-card:hover img {
+    filter: brightness(80%);
+    border: 2px solid var(--mud-palette-primary);
+}

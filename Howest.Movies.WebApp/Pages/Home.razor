@@ -7,7 +7,7 @@
 <MudOverlay Visible="@(_topRatedMovies == null || _movies == null)" DarkBackground="true" Absolute="true">
     <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
 </MudOverlay>
-<div @ref="_scrollContainer" @onscroll="HandleScrollAsync">
+<div @ref="_scrollContainer" @onwheel="HandleScrollAsync">
     @if (_topRatedMovies != null && _movies != null)
     {
         if (_topRatedMovies.Items.Count > 0)
@@ -75,9 +75,9 @@
         }
     }
 
-    private async Task HandleScrollAsync()
+    private async Task HandleScrollAsync(WheelEventArgs e)
     {
-        var isAtBottom = await JsRuntime.InvokeAsync<bool>("isScrollAtBottom", _scrollContainer);
+        var isAtBottom = await JsRuntime.InvokeAsync<bool>("isAtBottom");
         if (isAtBottom)
         {
             await LoadMoreContentAsync();
