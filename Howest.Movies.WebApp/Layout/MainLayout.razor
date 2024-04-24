@@ -9,8 +9,8 @@
 <MudLayout>
     <MudAppBar>
         <MudAutocomplete
-            T="MovieResult"
-            SearchFuncWithCancel="@Search" Immediate="true" ToStringFunc="ToStringFunc" MinCharacters="2" Clearable="true" 
+            T="MovieResult" @bind-Value="_movieResult" ResetValueOnEmptyText="true" OnInternalInputChanged="Callback"
+            SearchFuncWithCancel="@Search" Immediate="true" ToStringFunc="ToStringFunc" MinCharacters="2" Clearable="true"
             AdornmentIcon="@Icons.Material.Filled.Search" Adornment="Adornment.Start" Placeholder="Search"
             Margin="Margin.Dense" Variant="Variant.Outlined" Dense="true" Style="background: #edfff2; color: black; border-radius: .3em;">
             <ItemTemplate>
@@ -26,14 +26,17 @@
         </MudTooltip>
     </MudAppBar>
     <MudMainContent>
-        <MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
+        <MudContainer MaxWidth="MaxWidth.ExtraExtraLarge" Class="my-5">
             @Body
         </MudContainer>
     </MudMainContent>
 </MudLayout>
 
 @code {
+    private MovieResult? _movieResult;
+    
     [Inject] private IMovieEndpoint MovieEndpoint { get; init; } = null!;
+    [Inject] private NavigationManager NavigationManager { get; init; } = null!;
     
     private async Task<IEnumerable<MovieResult>> Search(string value, CancellationToken token)
     {
@@ -50,5 +53,15 @@
     private string ToStringFunc(MovieResult arg)
     {
         return arg.Title;
+    }
+
+    private void Callback(ChangeEventArgs e)
+    {
+        Console.WriteLine("Callback");
+        
+        if (_movieResult is null)
+            return;
+        
+        NavigationManager.NavigateTo($"/movie/{_movieResult.Id}");
     }
 }
