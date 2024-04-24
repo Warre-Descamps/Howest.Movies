@@ -23,7 +23,7 @@ internal class QueryBuilder
                 continue;
             }
             
-            if (property.PropertyType.IsAssignableFrom(typeof(IEnumerable<>)))
+            if (typeof(IEnumerable).IsAssignableFrom(property.PropertyType) && property.PropertyType != typeof(string))
             {
                 foreach (var item in (IEnumerable)value)
                 {
