@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Reflection;
 using Howest.Movies.AccessLayer.Services.Abstractions;
 using Howest.Movies.Dtos.Core;
 using Howest.Movies.Dtos.Core.Extensions;
@@ -10,7 +11,7 @@ namespace Howest.Movies.WebApi.Services;
 
 public class PosterManagementService : IPosterManagementService
 {
-    private static readonly string PostersPath = Path.Combine(Directory.GetCurrentDirectory(), "posters");
+    private static readonly string PostersPath = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly()!.Location)!, "posters");
     private const string FileFormat = "yyyy-MM-ddTHHmmss.fffffff";
     private const string Thumbnail = "-thumbnail";
     
