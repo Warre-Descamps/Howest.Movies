@@ -1,7 +1,10 @@
-﻿using Howest.Movies.Models;
+﻿using System.Reflection;
+using Howest.Movies.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Howest.Movies.Data;
 
@@ -61,44 +64,37 @@ public static class Initializer
             new() { Name = "Drama" },
             new() { Name = "Fantasy" },
             new() { Name = "Musical" },
-            new() { Name = "Children" }
+            new() { Name = "Children" },
+            new() { Name = "Crime" },
+            new() { Name = "Comedy" },
+            new() { Name = "Romance" },
+            new() { Name = "Thriller" },
+            new() { Name = "Horror" },
+            new() { Name = "Mystery" },
+            new() { Name = "Science Fiction" }
         };
         dbContext.Genres.AddRange(genres);
         await dbContext.SaveChangesAsync();
 
+        var seedData = await File.ReadAllTextAsync(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly()!.Location)!, "seed-data.json"));
+        var movies = JsonConvert.DeserializeObject<JArray>(seedData);
+        if (movies is null)
+            throw new Exception("Could not read seed-data.json");
+
         dbContext.Movies.AddRange
         (
-            new Movie
+            from movie in movies
+            select new Movie
             {
-                AddedByUser = admin,
-                Title = "How to Train Your Dragon",
-                Description = "As the son of a Viking leader on the cusp of manhood, shy Hiccup Horrendous Haddock III faces a rite of passage: he must kill a dragon to prove his warrior mettle. But after downing a feared dragon, he realizes that he no longer wants to destroy it, and instead befriends the beast – which he names Toothless – much to the chagrin of his warrior father.",
-                ReleaseDate = new DateTime(2010, 3, 26),
-                Director = "Chris Sanders",
-                Genres = new List<MovieGenre>
-                {
-                    new() { GenreId = genres.Single(g => g.Name == "Fantasy").Id },
-                    new() { GenreId = genres.Single(g => g.Name == "Animation").Id },
-                    new() { GenreId = genres.Single(g => g.Name == "Family").Id },
-                    new() { GenreId = genres.Single(g => g.Name == "Action").Id }
-                }
-            },
-            new Movie
-            {
-                AddedByUser = admin,
-                Title = "The Lion King",
-                Description = "A young lion prince is cast out of his pride by his cruel uncle, who claims he killed his father. While the uncle rules with an iron paw, the prince grows up beyond the Savannah, living by a philosophy: No worries for the rest of your days. But when his past comes to haunt him, the young prince must decide his fate: will he remain an outcast or face his demons and become what he needs to be?",
-                ReleaseDate = new DateTime(1994, 6, 24),
-                Director = "Roger Allers",
-                Genres = new List<MovieGenre>
-                {
-                    new() { GenreId = genres.Single(g => g.Name == "Family").Id },
-                    new() { GenreId = genres.Single(g => g.Name == "Animation").Id },
-                    new() { GenreId = genres.Single(g => g.Name == "Drama").Id },
-                    new() { GenreId = genres.Single(g => g.Name == "Musical").Id },
-                    new() { GenreId = genres.Single(g => g.Name == "Adventure").Id },
-                    new() { GenreId = genres.Single(g => g.Name == "Children").Id }
-                }
+                AddedById = admin.Id,
+                Title = movie["Title"]?.ToString(),
+                Description = movie["Description"]?.ToString(),
+                Director = movie["Director"]?.ToString(),
+                ReleaseDate = DateTime.Parse(movie["ReleaseDate"]?.ToString()),
+                Genres = genres
+                    .Where(g => movie["Genres"].ToObject<List<string>>().Any(gs => gs == g.Name))
+                    .Select(g => new MovieGenre { Genre = g })
+                    .ToList(),
             }
         );
         await dbContext.SaveChangesAsync();

@@ -11,10 +11,18 @@
       <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.0" />
       <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
       <PackageReference Include="MySql.EntityFrameworkCore" Version="8.0.0" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\Howest.Movies.Models\Howest.Movies.Models.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="seed-data.json" />
+      <Content Include="seed-data.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
     </ItemGroup>
 
 </Project>

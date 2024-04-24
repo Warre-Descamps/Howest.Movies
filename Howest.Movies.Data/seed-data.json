@@ -1,0 +1,107 @@
+﻿[
+  {
+    "Title": "How to Train Your Dragon",
+    "Description": "As the son of a Viking leader on the cusp of manhood, shy Hiccup Horrendous Haddock III faces a rite of passage: he must kill a dragon to prove his warrior mettle. But after downing a feared dragon, he realizes that he no longer wants to destroy it, and instead befriends the beast – which he names Toothless – much to the chagrin of his warrior father.",
+    "ReleaseDate": "2010-03-26T00:00:00",
+    "Director": "Chris Sanders",
+    "Genres": ["Fantasy", "Animation", "Family", "Action"]
+  },
+  {
+    "Title": "The Lion King",
+    "Description": "A young lion prince is cast out of his pride by his cruel uncle, who claims he killed his father. While the uncle rules with an iron paw, the prince grows up beyond the Savannah, living by a philosophy: No worries for the rest of your days. But when his past comes to haunt him, the young prince must decide his fate: will he remain an outcast or face his demons and become what he needs to be?",
+    "ReleaseDate": "1994-06-24T00:00:00",
+    "Director": "Roger Allers",
+    "Genres": ["Family", "Animation", "Drama", "Musical", "Adventure", "Children"]
+  },
+  {
+    "Title": "Inception",
+    "Description": "A thief who enters the dreams of others to steal their secrets from their subconscious is given the inverse task of planting an idea into the mind of a CEO.",
+    "ReleaseDate": "2010-07-16T00:00:00",
+    "Director": "Christopher Nolan",
+    "Genres": ["Science Fiction", "Action", "Adventure"]
+  },
+  {
+    "Title": "Forrest Gump",
+    "Description": "A man with a low IQ has accomplished great things in his life and been present during significant historic events—in each case, far exceeding what anyone imagined he could do. Yet, despite all the things he has attained, his one true love eludes him.",
+    "ReleaseDate": "1994-07-06T00:00:00",
+    "Director": "Robert Zemeckis",
+    "Genres": ["Drama", "Romance", "Comedy"]
+  },
+  {
+    "Title": "The Dark Knight",
+    "Description": "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.",
+    "ReleaseDate": "2008-07-18T00:00:00",
+    "Director": "Christopher Nolan",
+    "Genres": ["Action", "Crime", "Drama"]
+  },
+  {
+    "Title": "The Shawshank Redemption",
+    "Description": "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.",
+    "ReleaseDate": "1994-09-23T00:00:00",
+    "Director": "Frank Darabont",
+    "Genres": ["Drama", "Crime"]
+  },
+  {
+    "Title": "The Godfather",
+    "Description": "The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son.",
+    "ReleaseDate": "1972-03-24T00:00:00",
+    "Director": "Francis Ford Coppola",
+    "Genres": ["Crime", "Drama"]
+  },
+  {
+    "Title": "The Matrix",
+    "Description": "A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers.",
+    "ReleaseDate": "1999-03-31T00:00:00",
+    "Director": "The Wachowskis",
+    "Genres": ["Science Fiction", "Action"]
+  },
+  {
+    "Title": "The Lord of the Rings: The Fellowship of the Ring",
+    "Description": "A meek Hobbit from the Shire and eight companions set out on a journey to destroy the powerful One Ring and save Middle-earth from the Dark Lord Sauron.",
+    "ReleaseDate": "2001-12-19T00:00:00",
+    "Director": "Peter Jackson",
+    "Genres": ["Fantasy", "Adventure", "Drama"]
+  },
+  {
+    "Title": "Titanic",
+    "Description": "A seventeen-year-old aristocrat falls in love with a kind but poor artist aboard the luxurious, ill-fated R.M.S. Titanic.",
+    "ReleaseDate": "1997-12-19T00:00:00",
+    "Director": "James Cameron",
+    "Genres": ["Romance", "Drama"]
+  },
+  {
+    "Title": "Pulp Fiction",
+    "Description": "The lives of two mob hitmen, a boxer, a gangster and his wife, and a pair of diner bandits intertwine in four tales of violence and redemption.",
+    "ReleaseDate": "1994-10-14T00:00:00",
+    "Director": "Quentin Tarantino",
+    "Genres": ["Crime", "Drama"]
+  },
+  {
+    "Title": "Interstellar",
+    "Description": "A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.",
+    "ReleaseDate": "2014-11-07T00:00:00",
+    "Director": "Christopher Nolan",
+    "Genres": ["Science Fiction", "Drama"]
+  },
+  {
+    "Title": "Gladiator",
+    "Description": "A former Roman General sets out to exact vengeance against the corrupt emperor who murdered his family and sent him into slavery.",
+    "ReleaseDate": "2000-05-05T00:00:00",
+    "Director": "Ridley Scott",
+    "Genres": ["Action", "Drama"]
+  },
+  {
+    "Title": "The Green Mile",
+    "Description": "The lives of guards on Death Row are affected by one of their charges: a black man accused of child murder and rape, yet who has a mysterious gift.",
+    "ReleaseDate": "1999-12-10T00:00:00",
+    "Director": "Frank Darabont",
+    "Genres": ["Drama", "Crime", "Fantasy"]
+  },
+  {
+    "Title": "Avatar",
+    "Description": "A paraplegic Marine dispatched to the moon Pandora on a unique mission becomes torn between following his orders and protecting the world he feels is his home.",
+    "ReleaseDate": "2009-12-18T00:00:00",
+    "Director": "James Cameron",
+    "Genres": ["Science Fiction", "Action", "Adventure"]
+  }
+]
