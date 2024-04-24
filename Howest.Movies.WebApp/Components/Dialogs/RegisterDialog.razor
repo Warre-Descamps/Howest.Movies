@@ -1,0 +1,50 @@
+﻿@using Howest.Movies.Sdk.Endpoints.Abstractions
+<MudDialog Class="p-3">
+    <DialogContent>
+        <MudTextField Label="Email" HelperText="Enter your email address"
+                      @bind-Value="_model.Email" For="@(() => _model.Email)"/>
+        <MudTextField Label="Password" HelperText="Choose a strong password" Class="mt-1"
+                      @bind-Value="_model.Password" For="@(() => _model.Password)" InputType="InputType.Password"
+                      />
+        <MudTextField Label="Confirm Password" HelperText="Repeat password" Class="mt-1"
+                      @bind-Value="_model.Password" For="@(() => _passwordConfirm)" InputType="InputType.Password"
+                      Validation="@(new Func<string, string?>(CheckConfirmPassword))"/>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Register</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code
+{
+    private readonly Sdk.IdentityDtos.Request _model = new();
+    private string _passwordConfirm = string.Empty;
+    
+    [Inject] private IIdentityEndpoint IdentityEndpoint { get; init; } = null!;
+    
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
+
+    private void Cancel() => MudDialog.Cancel();
+
+    private async Task Submit()
+    {
+        var result = await IdentityEndpoint.RegisterAsync(_model);
+        if (!result.IsSuccess)
+        {
+            return;
+        }
+        
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+    
+    private string? CheckConfirmPassword(string value)
+    {
+        if (_model.Password != value)
+        {
+            return "Password and Confirm Password do not match.";
+        }
+
+        return null;
+    }
+}

@@ -1,5 +1,6 @@
 ﻿@using Howest.Movies.Dtos.Filters
 @using Howest.Movies.Sdk.Endpoints.Abstractions
+@using Howest.Movies.WebApp.Components.Dialogs
 @inherits LayoutComponentBase
 
 <MudThemeProvider/>
@@ -21,9 +22,17 @@
             </NoItemsTemplate>
         </MudAutocomplete>
         <MudSpacer/>
-        <MudTooltip Text="Login">
-            <MudIconButton Icon="@Icons.Material.Filled.Login" Color="Color.Inherit"/>
-        </MudTooltip>
+        <MudMenu>
+            <ActivatorContent>
+                <MudAvatar>
+                    <MudIconButton Icon="@Icons.Material.Filled.Login" Color="Color.Inherit"/>
+                </MudAvatar>
+            </ActivatorContent>
+            <ChildContent>
+                <MudMenuItem OnClick="OpenLoginDialogAsync">Login</MudMenuItem>
+                <MudMenuItem OnClick="OpenRegisterDialogAsync">Register</MudMenuItem>
+            </ChildContent>
+        </MudMenu>
     </MudAppBar>
     <MudMainContent>
         <MudContainer MaxWidth="MaxWidth.ExtraExtraLarge" Class="my-5">
@@ -37,6 +46,7 @@
     
     [Inject] private IMovieEndpoint MovieEndpoint { get; init; } = null!;
     [Inject] private NavigationManager NavigationManager { get; init; } = null!;
+    [Inject] private IDialogService DialogService { get; init; } = null!;
     
     private async Task<IEnumerable<MovieResult>> Search(string value, CancellationToken token)
     {
@@ -60,5 +70,19 @@
             return;
         
         NavigationManager.NavigateTo($"/movie/{_movieResult.Id}");
+    }
+
+    private async Task OpenLoginDialogAsync()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Medium };
+        var dialog = await DialogService.ShowAsync<LoginDialog>("Login", options);
+        var result = await dialog.Result;
+    }
+    
+    private async Task OpenRegisterDialogAsync()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Medium };
+        var dialog = await DialogService.ShowAsync<RegisterDialog>("Register", options);
+        var result = await dialog.Result;
     }
 }

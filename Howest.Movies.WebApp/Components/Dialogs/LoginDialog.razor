@@ -1,0 +1,34 @@
+﻿@using Howest.Movies.Sdk.Endpoints.Abstractions
+<MudDialog Class="p-3">
+    <DialogContent>
+        <MudTextField Label="Email" 
+                      @bind-Value="_model.Email" For="@(() => _model.Email)"/>
+        <MudTextField Label="Password" Class="mt-1"
+                      @bind-Value="_model.Password" For="@(() => _model.Password)" InputType="InputType.Password"/>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Login</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code
+{
+    private readonly Sdk.IdentityDtos.Request _model = new();
+    
+    [Inject] private IIdentityEndpoint IdentityEndpoint { get; init; } = null!;
+    
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
+
+    private async Task Submit()
+    {
+        var result = await IdentityEndpoint.LoginAsync(_model);
+        if (!result.IsSuccess)
+        {
+            return;
+        }
+        
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+    void Cancel() => MudDialog.Cancel();
+}
