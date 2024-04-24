@@ -14,7 +14,7 @@
             AdornmentIcon="@Icons.Material.Filled.Search" Adornment="Adornment.Start" Placeholder="Search"
             Margin="Margin.Dense" Variant="Variant.Outlined" Dense="true" Style="background: #edfff2; color: black; border-radius: .3em;">
             <ItemTemplate>
-                <MovieListItem Movie="context" />
+                <MovieListItem Movie="context"/>
             </ItemTemplate>
             <NoItemsTemplate>
                 <MudText Typo="Typo.h5">No items found.</MudText>
@@ -44,10 +44,7 @@
         {
             Query = value
         }, new PaginationFilter(), token);
-        if (!result.IsSuccess)
-            return new List<MovieResult>();
-        
-        return result.Data!.Items;
+        return !result.IsSuccess ? new List<MovieResult>() : result.Data!.Items;
     }
 
     private string ToStringFunc(MovieResult arg)

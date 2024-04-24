@@ -7,7 +7,7 @@
 <MudOverlay Visible="@(_topRatedMovies == null || _movies == null)" DarkBackground="true" Absolute="true">
     <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
 </MudOverlay>
-<div @ref="_scrollContainer" @onwheel="HandleScrollAsync">
+<div @onwheel="HandleScrollAsync">
     @if (_topRatedMovies != null && _movies != null)
     {
         if (_topRatedMovies.Items.Count > 0)
@@ -21,17 +21,17 @@
             </MudPaper>
         }
         <MudText Typo="Typo.h4" Class="my-4">Movies</MudText>
-        <MudPaper Class="d-flex flex-row flex-grow-1 gap-4" Elevation="0">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.FlexStart" Spacing="4" Wrap="Wrap.Wrap">
             @foreach (var movie in _movies.Items)
             {
                 <MovieCard Movie=movie/>
             }
-        </MudPaper>
+        </MudStack>
     }
 </div>
 @code
 {
-    private ElementReference _scrollContainer;
+    private bool _isLoadingMore;
     private PaginationResult<IList<MovieResult>>? _topRatedMovies;
     private PaginationResult<IList<MovieResult>>? _movies;
 
@@ -46,7 +46,10 @@
             _topRatedMovies = topResult.Data;
         }
         
-        var result = await MoviesSdk.Movies.GetAsync();
+        var result = await MoviesSdk.Movies.GetAsync(new MoviesFilter(), new PaginationFilter
+        {
+            Size = 30
+        });
         if (result.IsSuccess)
         {
             _movies = result.Data;
@@ -57,26 +60,36 @@
     {
         if (_movies is null || _movies.Items.Count < _movies.From + _movies.Size)
             return;
-        
-        var result = await MoviesSdk.Movies.GetAsync(new MoviesFilter(), new PaginationFilter
+
+        try
         {
-            From = _movies.From + _movies.Size,
-            Size = _movies.Size
-        });
-        if (result.IsSuccess)
-        {
-            _movies.From = result.Data!.From;
-            _movies.Size = result.Data.Size;
-            foreach (var movie in result.Data.Items)
+            var result = await MoviesSdk.Movies.GetAsync(new MoviesFilter(), new PaginationFilter
             {
-                _movies.Items.Add(movie);
+                From = _movies.From + _movies.Size,
+                Size = _movies.Size
+            });
+            if (result.IsSuccess)
+            {
+                _movies.From = result.Data!.From;
+                _movies.Size = result.Data.Size;
+                foreach (var movie in result.Data.Items)
+                {
+                    _movies.Items.Add(movie);
+                }
+                StateHasChanged();
             }
-            StateHasChanged();
+        }
+        finally
+        {
+            _isLoadingMore = false;
         }
     }
 
     private async Task HandleScrollAsync(WheelEventArgs e)
     {
+        if (_isLoadingMore)
+            return;
+        _isLoadingMore = true;
         var isAtBottom = await JsRuntime.InvokeAsync<bool>("isAtBottom");
         if (isAtBottom)
         {
