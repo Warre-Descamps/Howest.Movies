@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Howest.Movies.AccessLayer.Extensions;
 using Howest.Movies.AccessLayer.Repositories.Abstractions;
 using Howest.Movies.AccessLayer.Services.Abstractions;
 using Howest.Movies.Dtos.Core;
@@ -84,7 +85,16 @@ public class MovieService : IMovieService
         Guid[] genreIds = [];
         if (request.Genres.Length > 0)
         {
-            var genres = await _genreRepository.FindAsync(request.Genres); // TODO create genres if they don't exist
+            request.Genres = request.Genres
+                .Select(s => s.RemoveSpecialCharacters())
+                .ToArray();
+            var genres = await _genreRepository.FindAsync(request.Genres);
+            var missingGenres = request.Genres.Except(genres.Select(g => g.Name)).ToArray();
+            foreach (var missingGenre in missingGenres)
+            {
+                var genre = await _genreRepository.AddAsync(new Genre { Name = missingGenre });
+                genres.Add(genre);
+            }
             genreIds = genres.Select(g => g.Id).ToArray();
         }
 
