@@ -37,6 +37,17 @@ public class GenreRepository : IGenreRepository
         return await _dbContext.Genres.FirstOrDefaultAsync(g => g.Name == name);
     }
 
+    public async Task<IList<Genre>> AddAsync(string[] names)
+    {
+        var genres = names
+            .Select(n => new Genre { Name = n.RemoveSpecialCharacters() })
+            .ToList();
+        
+        _dbContext.Genres.AddRange(genres);
+        await _dbContext.SaveChangesAsync();
+        return genres;
+    }
+
     public Task<Genre?> GetByIdAsync(Guid id)
     {
         return _dbContext.Genres.FirstOrDefaultAsync(g => g.Id == id);

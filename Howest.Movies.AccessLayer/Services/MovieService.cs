@@ -89,11 +89,14 @@ public class MovieService : IMovieService
                 .Select(s => s.RemoveSpecialCharacters())
                 .ToArray();
             var genres = await _genreRepository.FindAsync(request.Genres);
-            var missingGenres = request.Genres.Except(genres.Select(g => g.Name)).ToArray();
-            foreach (var missingGenre in missingGenres)
+            var missing = request.Genres.Except(genres.Select(g => g.Name)).ToArray();
+            if (missing.Length > 0)
             {
-                var genre = await _genreRepository.AddAsync(new Genre { Name = missingGenre });
-                genres.Add(genre);
+                var missingGenres = await _genreRepository.AddAsync(missing);
+                foreach (var genre in missingGenres)
+                {
+                    genres.Add(genre);
+                }
             }
             genreIds = genres.Select(g => g.Id).ToArray();
         }
