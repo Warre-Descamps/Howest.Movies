@@ -6,7 +6,7 @@
 </MudOverlay>
 @if (_movieDetails != null)
 {
-    <MudStack Row="true" Spacing="10" Wrap="Wrap.NoWrap" AlignItems="AlignItems.Center" Class="mt-5">
+    <MudStack Class="movie-details mt-5" Row="true" Spacing="10" Wrap="Wrap.NoWrap" AlignItems="AlignItems.Center">
         <MudImage ObjectFit="ObjectFit.Contain" ObjectPosition="ObjectPosition.Left" Width="300" Src="@_movieDetails.Poster" Alt="@_movieDetails.Title" Style="border-radius: .5em;"></MudImage>
         <MudStack>
             <MudText Typo="Typo.h4">@_movieDetails.Title</MudText>

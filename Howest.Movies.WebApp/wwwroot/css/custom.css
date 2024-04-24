@@ -5,9 +5,15 @@
 
 .movie-card img {
     border-radius: .5em;
+    border: 1px solid var(--mud-palette-primary);
 }
 
 .movie-card:hover img {
     filter: brightness(80%);
     border: 2px solid var(--mud-palette-primary);
+}
+
+.movie-details img {
+    border-radius: .5em;
+    border: 1px solid var(--mud-palette-primary);
 }

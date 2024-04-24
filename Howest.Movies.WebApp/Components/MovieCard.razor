@@ -1,7 +1,7 @@
 ﻿<MudStack Style="display: block;width: 200px" Class="movie-card" @onclick="NavigateToMovieDetails">
     <MudImage Src="@Movie.Poster" Alt="@Movie.Title"></MudImage>
     <MudTooltip Text="@Movie.Title" Placement="Placement.Top">
-        <MudText Typo="Typo.body1" Align="Align.Left" Class="text-truncate"><b>@Movie.Title</b></MudText>
+        <MudText Typo="Typo.body1" Align="Align.Left" Class="d-inline-block text-truncate" Style="max-width: 200px;"><b>@Movie.Title</b></MudText>
     </MudTooltip>
 </MudStack>
 
