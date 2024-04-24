@@ -10,18 +10,12 @@
         <MudImage ObjectFit="ObjectFit.Contain" ObjectPosition="ObjectPosition.Left" Width="300" Src="@_movieDetails.Poster" Alt="@_movieDetails.Title" Style="border-radius: .5em;"></MudImage>
         <MudStack>
             <MudText Typo="Typo.h4">@_movieDetails.Title</MudText>
-            <MudText Typo="Typo.caption">Directed by @_movieDetails.Director</MudText>
-            <MudText Typo="Typo.subtitle2">@_movieDetails.ReleaseDate.Date.Year</MudText>
+            <MudText Class="pl-2" Typo="Typo.caption">Directed by @_movieDetails.Director</MudText>
+            <MudText Class="pl-2" Typo="Typo.subtitle2">@_movieDetails.ReleaseDate.Date.Year</MudText>
             <MudText Typo="Typo.subtitle2">
                 @foreach (var genre in _movieDetails.Genres)
                 {
-                    <span class="me-2">
-                        @genre
-                        @if (genre != _movieDetails.Genres.Last())
-                        {
-                            <span>,</span>
-                        }
-                    </span>
+                    <MudChip class="me-2">@genre</MudChip>
                 }
             </MudText>
             <MudText Typo="Typo.body1" Style="max-width: 900px;">@_movieDetails.Description</MudText>
