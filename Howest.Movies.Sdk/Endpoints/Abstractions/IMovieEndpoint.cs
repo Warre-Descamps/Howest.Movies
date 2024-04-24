@@ -6,10 +6,8 @@ namespace Howest.Movies.Sdk.Endpoints.Abstractions;
 
 public interface IMovieEndpoint
 {
-    Task<ServiceResult<PaginationResult<IList<MovieResult>>>> GetAsync();
-    Task<ServiceResult<PaginationResult<IList<MovieResult>>>> GetAsync(MoviesFilter filter, PaginationFilter pagination);
-    Task<ServiceResult<MovieDetailResult>> GetAsync(Guid id);
-    Task<Stream> GetPosterAsync(Guid id);
-    Task<Stream> GetPosterThumbnailAsync(Guid id);
-    Task<ServiceResult<PaginationResult<IList<MovieResult>>>> GetTopAsync();
+    Task<ServiceResult<PaginationResult<IList<MovieResult>>>> GetAsync(CancellationToken cancellationToken = default);
+    Task<ServiceResult<PaginationResult<IList<MovieResult>>>> GetAsync(MoviesFilter filter, PaginationFilter pagination, CancellationToken cancellationToken = default);
+    Task<ServiceResult<MovieDetailResult>> GetAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<ServiceResult<PaginationResult<IList<MovieResult>>>> GetTopAsync(CancellationToken cancellationToken = default);
 }

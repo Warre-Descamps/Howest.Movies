@@ -1,4 +1,6 @@
-﻿@inherits LayoutComponentBase
+﻿@using Howest.Movies.Dtos.Filters
+@using Howest.Movies.Sdk.Endpoints.Abstractions
+@inherits LayoutComponentBase
 
 <MudThemeProvider/>
 <MudDialogProvider/>
@@ -6,21 +8,47 @@
 
 <MudLayout>
     <MudAppBar>
-        <MudInputControl>
-            <MudInput T="string" AdornmentIcon="@Icons.Material.Filled.Search" Adornment="Adornment.Start" @bind-Value="Query" Margin="Margin.Dense" Variant="Variant.Outlined" Placeholder="Search" Style="background: #edfff2; color: black; border-radius: .3em;"></MudInput>
-        </MudInputControl>
+        <MudAutocomplete
+            T="MovieResult"
+            SearchFuncWithCancel="@Search" Immediate="true" ToStringFunc="ToStringFunc" MinCharacters="2" Clearable="true" 
+            AdornmentIcon="@Icons.Material.Filled.Search" Adornment="Adornment.Start" Placeholder="Search"
+            Margin="Margin.Dense" Variant="Variant.Outlined" Dense="true" Style="background: #edfff2; color: black; border-radius: .3em;">
+            <ItemTemplate>
+                <MovieListItem Movie="context" />
+            </ItemTemplate>
+            <NoItemsTemplate>
+                <MudText Typo="Typo.h5">No items found.</MudText>
+            </NoItemsTemplate>
+        </MudAutocomplete>
         <MudSpacer/>
-        <MudIconButton Icon="@Icons.Material.Filled.Login" Color="Color.Inherit"/>
+        <MudTooltip Text="Login">
+            <MudIconButton Icon="@Icons.Material.Filled.Login" Color="Color.Inherit"/>
+        </MudTooltip>
     </MudAppBar>
     <MudMainContent>
         <MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
-            <CascadingValue Value="@Query">
-                @Body
-            </CascadingValue>
+            @Body
         </MudContainer>
     </MudMainContent>
 </MudLayout>
 
 @code {
-    public string Query { get; set; } = string.Empty;
+    [Inject] private IMovieEndpoint MovieEndpoint { get; init; } = null!;
+    
+    private async Task<IEnumerable<MovieResult>> Search(string value, CancellationToken token)
+    {
+        var result = await MovieEndpoint.GetAsync(new MoviesFilter
+        {
+            Query = value
+        }, new PaginationFilter(), token);
+        if (!result.IsSuccess)
+            return new List<MovieResult>();
+        
+        return result.Data!.Items;
+    }
+
+    private string ToStringFunc(MovieResult arg)
+    {
+        return arg.Title;
+    }
 }

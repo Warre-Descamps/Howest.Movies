@@ -15,7 +15,13 @@
             <MudText Typo="Typo.subtitle2">
                 @foreach (var genre in _movieDetails.Genres)
                 {
-                    <span class="me-2">@genre</span>
+                    <span class="me-2">
+                        @genre
+                        @if (genre != _movieDetails.Genres.Last())
+                        {
+                            <span>,</span>
+                        }
+                    </span>
                 }
             </MudText>
             <MudText Typo="Typo.body1" Style="max-width: 900px;">@_movieDetails.Description</MudText>

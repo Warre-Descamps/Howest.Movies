@@ -1,0 +1,22 @@
+﻿
+<MudStack Row="true" @onclick="OnClick">
+    <MudImage Src="@Movie.Poster" Width="64" ObjectFit="ObjectFit.Contain"></MudImage>
+    <MudText Typo="Typo.h6">@Movie.Title</MudText>
+</MudStack>
+@*<MudCard Class="mb-2" Style="width: 200px">
+    <MudCardContent>
+        <img src="@Movie.Poster" alt="@Movie.Title" style="width: 100%">
+        <p>@Movie.Title</p>
+    </MudCardContent>
+</MudCard>*@
+
+@code {
+    [Inject] private NavigationManager NavigationManager { get; set; } = null!;
+    
+    [Parameter] public MovieResult Movie { get; set; } = null!;
+    
+    private void OnClick()
+    {
+        NavigationManager.NavigateTo($"/movie/{Movie.Id}");
+    }
+}

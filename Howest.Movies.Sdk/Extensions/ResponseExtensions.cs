@@ -5,9 +5,9 @@ namespace Howest.Movies.Sdk.Extensions;
 
 internal static class ResponseExtensions
 {
-    internal static async Task<T> ReadAsync<T>(this HttpResponseMessage response) where T : ServiceResult, new()
+    internal static async Task<T> ReadAsync<T>(this HttpResponseMessage response, CancellationToken cancellationToken = default) where T : ServiceResult, new()
     {
-        var content = await response.Content.ReadAsStringAsync();
+        var content = await response.Content.ReadAsStringAsync(cancellationToken);
         var result = JsonConvert.DeserializeObject<T>(content);
         if (result is null)
         {
