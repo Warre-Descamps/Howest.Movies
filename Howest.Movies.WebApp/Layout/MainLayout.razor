@@ -1,6 +1,7 @@
 ﻿@using Howest.Movies.Dtos.Filters
 @using Howest.Movies.Sdk.Endpoints.Abstractions
 @using Howest.Movies.WebApp.Components.Dialogs
+@using Howest.Movies.WebApp.Models
 @inherits LayoutComponentBase
 
 <MudThemeProvider/>
@@ -25,12 +26,26 @@
         <MudMenu>
             <ActivatorContent>
                 <MudAvatar>
-                    <MudIconButton Icon="@Icons.Material.Filled.Login" Color="Color.Inherit"/>
+                    @if (_login is not null)
+                    {
+                        @_login.Email.First()
+                    }
+                    else
+                    {
+                        <MudIconButton Icon="@Icons.Material.Filled.Login" Color="Color.Inherit"/>
+                    }
                 </MudAvatar>
             </ActivatorContent>
             <ChildContent>
-                <MudMenuItem OnClick="OpenLoginDialogAsync">Login</MudMenuItem>
-                <MudMenuItem OnClick="OpenRegisterDialogAsync">Register</MudMenuItem>
+                @if (_login is not null)
+                {
+                    <MudMenuItem OnClick="Logout">Logout</MudMenuItem>
+                }
+                else
+                {
+                    <MudMenuItem OnClick="OpenLoginDialogAsync">Login</MudMenuItem>
+                    <MudMenuItem OnClick="OpenRegisterDialogAsync">Register</MudMenuItem>
+                }
             </ChildContent>
         </MudMenu>
     </MudAppBar>
@@ -43,10 +58,12 @@
 
 @code {
     private MovieResult? _movieResult;
+    private User? _login;
     
     [Inject] private IMovieEndpoint MovieEndpoint { get; init; } = null!;
     [Inject] private NavigationManager NavigationManager { get; init; } = null!;
     [Inject] private IDialogService DialogService { get; init; } = null!;
+    [Inject] private ISnackbar Snackbar { get; init; } = null!;
     
     private async Task<IEnumerable<MovieResult>> Search(string value, CancellationToken token)
     {
@@ -77,6 +94,12 @@
         var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Medium };
         var dialog = await DialogService.ShowAsync<LoginDialog>("Login", options);
         var result = await dialog.Result;
+        if (result.Canceled)
+            return;
+        
+        _login = result.Data as User;
+        StateHasChanged();
+        Snackbar.Add("Login successful", Severity.Success);
     }
     
     private async Task OpenRegisterDialogAsync()
@@ -84,5 +107,18 @@
         var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Medium };
         var dialog = await DialogService.ShowAsync<RegisterDialog>("Register", options);
         var result = await dialog.Result;
+        if (result.Canceled)
+            return;
+        
+        Snackbar.Add("Registration successful", Severity.Success);
+        await OpenLoginDialogAsync();
     }
+
+    private void Logout()
+    {
+        _login = null;
+        StateHasChanged();
+        Snackbar.Add("Logout successful", Severity.Success);
+    }
+
 }

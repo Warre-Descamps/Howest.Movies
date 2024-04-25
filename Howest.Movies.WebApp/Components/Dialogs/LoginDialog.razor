@@ -1,4 +1,6 @@
 ﻿@using Howest.Movies.Sdk.Endpoints.Abstractions
+@using Howest.Movies.Sdk.IdentityDtos.Results
+@using Howest.Movies.WebApp.Models
 <MudDialog Class="p-3">
     <DialogContent>
         <MudTextField Label="Email" 
@@ -8,7 +10,7 @@
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>
-        <MudButton Color="Color.Primary" OnClick="Submit">Login</MudButton>
+        <MudButton Color="Color.Primary" OnClick="SubmitAsync">Login</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -18,17 +20,21 @@
     
     [Inject] private IIdentityEndpoint IdentityEndpoint { get; init; } = null!;
     
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
-
-    private async Task Submit()
+    [CascadingParameter] public MudDialogInstance MudDialog { get; set; } = null!;
+    
+    private async Task SubmitAsync()
     {
         var result = await IdentityEndpoint.LoginAsync(_model);
         if (!result.IsSuccess)
         {
             return;
         }
-        
-        MudDialog.Close(DialogResult.Ok(true));
+
+        MudDialog.Close(DialogResult.Ok(new User
+        {
+            Email = _model.Email,
+            LoginResult = result.Data
+        }));
     }
     void Cancel() => MudDialog.Cancel();
 }

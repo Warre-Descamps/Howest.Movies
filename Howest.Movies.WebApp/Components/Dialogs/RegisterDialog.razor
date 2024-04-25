@@ -8,11 +8,11 @@
                       />
         <MudTextField Label="Confirm Password" HelperText="Repeat password" Class="mt-1"
                       @bind-Value="_model.Password" For="@(() => _passwordConfirm)" InputType="InputType.Password"
-                      Validation="@(new Func<string, string?>(CheckConfirmPassword))"/>
+                      Validation="@(new Func<string, string?>(CheckConfirmPassword))" Immediate="true"/>
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>
-        <MudButton Color="Color.Primary" OnClick="Submit">Register</MudButton>
+        <MudButton Color="Color.Primary" OnClick="SubmitAsync">Register</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -27,7 +27,7 @@
 
     private void Cancel() => MudDialog.Cancel();
 
-    private async Task Submit()
+    private async Task SubmitAsync()
     {
         var result = await IdentityEndpoint.RegisterAsync(_model);
         if (!result.IsSuccess)
