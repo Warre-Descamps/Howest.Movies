@@ -33,6 +33,7 @@ public class ReviewRepository : IReviewRepository
     {
         return await _dbContext.Reviews
             .Where(r => r.MovieId == movieId)
+            .Include(r => r.Reviewer)
             .OrderByDescending(r => r.ReviewDate)
             .Skip(paginationFrom)
             .Take(paginationSize)

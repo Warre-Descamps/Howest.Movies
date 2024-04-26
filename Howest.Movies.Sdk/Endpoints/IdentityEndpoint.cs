@@ -15,7 +15,7 @@ internal class IdentityEndpoint : BaseEndpoint, IIdentityEndpoint
     public event Func<Task>? OnLogin;
     public event Func<Task>? OnLogout;
 
-    public IdentityEndpoint(IHttpClientFactory httpClientFactory, ITokenStore tokenStore) : base(httpClientFactory)
+    public IdentityEndpoint(IHttpClientFactory httpClientFactory, ITokenStore tokenStore) : base(httpClientFactory, tokenStore)
     {
         _tokenStore = tokenStore;
     }

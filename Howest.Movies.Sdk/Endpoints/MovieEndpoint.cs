@@ -6,12 +6,13 @@ using Howest.Movies.Dtos.Results;
 using Howest.Movies.Sdk.Endpoints.Abstractions;
 using Howest.Movies.Sdk.Extensions;
 using Howest.Movies.Sdk.Helpers;
+using Howest.Movies.Sdk.Stores;
 
 namespace Howest.Movies.Sdk.Endpoints;
 
 internal class MovieEndpoint : BaseEndpoint, IMovieEndpoint
 {
-    public MovieEndpoint(IHttpClientFactory httpClientFactory) : base(httpClientFactory)
+    public MovieEndpoint(IHttpClientFactory httpClientFactory, ITokenStore tokenStore) : base(httpClientFactory, tokenStore)
     {
     }
 
@@ -46,13 +47,15 @@ internal class MovieEndpoint : BaseEndpoint, IMovieEndpoint
 
     public async Task<ServiceResult<MovieDetailResult>> CreateAsync(MovieRequest request, CancellationToken cancellationToken = default)
     {
-        var response = await HttpClient.PostAsJsonAsync("/api/movie", request, cancellationToken);
+        var client = await GetAuthorizedClientAsync();
+        var response = await client.PostAsJsonAsync("/api/movie", request, cancellationToken);
         return await response.ReadAsync<ServiceResult<MovieDetailResult>>(cancellationToken);
     }
 
     public async Task<ServiceResult> AddPosterAsync(Guid id, Stream stream, CancellationToken cancellationToken = default)
     {
-        var response = await HttpClient.PostAsync($"/api/movie/{id}/poster", new StreamContent(stream), cancellationToken);
+        var client = await GetAuthorizedClientAsync();
+        var response = await client.PostAsync($"/api/movie/{id}/poster", new StreamContent(stream), cancellationToken);
         return await response.ReadAsync<ServiceResult>(cancellationToken);
     }
 
@@ -68,7 +71,8 @@ internal class MovieEndpoint : BaseEndpoint, IMovieEndpoint
 
     public async Task<ServiceResult<ReviewResult>> AddReviewAsync(Guid id, ReviewRequest request, CancellationToken cancellationToken = default)
     {
-        var response = await HttpClient.PostAsJsonAsync($"/api/movie/{id}/review", request, cancellationToken);
+        var client = await GetAuthorizedClientAsync();
+        var response = await client.PostAsJsonAsync($"/api/movie/{id}/review", request, cancellationToken);
         return await response.ReadAsync<ServiceResult<ReviewResult>>(cancellationToken);
     }
 }

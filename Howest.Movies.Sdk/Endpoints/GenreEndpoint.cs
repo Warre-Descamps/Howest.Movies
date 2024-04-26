@@ -3,12 +3,13 @@ using Howest.Movies.Dtos.Core;
 using Howest.Movies.Dtos.Results;
 using Howest.Movies.Sdk.Endpoints.Abstractions;
 using Howest.Movies.Sdk.Extensions;
+using Howest.Movies.Sdk.Stores;
 
 namespace Howest.Movies.Sdk.Endpoints;
 
 internal class GenreEndpoint : BaseEndpoint, IGenreEndpoint
 {
-    public GenreEndpoint(IHttpClientFactory httpClientFactory) : base(httpClientFactory)
+    public GenreEndpoint(IHttpClientFactory httpClientFactory, ITokenStore tokenStore) : base(httpClientFactory, tokenStore)
     {
     }
     
@@ -20,7 +21,8 @@ internal class GenreEndpoint : BaseEndpoint, IGenreEndpoint
     
     public async Task<ServiceResult<GenreResult>> PostAsync(string name)
     {
-        var response = await HttpClient.PostAsJsonAsync("/api/genre", name);
+        var client = await GetAuthorizedClientAsync();
+        var response = await client.PostAsJsonAsync("/api/genre", name);
         return await response.ReadAsync<ServiceResult<GenreResult>>();
     }
 }
