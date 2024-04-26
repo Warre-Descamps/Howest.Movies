@@ -14,11 +14,6 @@ public class ReviewRepository : IReviewRepository
         _dbContext = dbContext;
     }
 
-    public async Task<IList<Review>> FindAsync()
-    {
-        return await _dbContext.Reviews.ToListAsync();
-    }
-
     public Task<Review?> GetByIdAsync(Guid id)
     {
         return _dbContext.Reviews.FirstOrDefaultAsync(r => r.Id == id);
@@ -27,6 +22,21 @@ public class ReviewRepository : IReviewRepository
     public Task<Review?> GetByUserAsync(Guid movieId, Guid userId)
     {
         return _dbContext.Reviews.FirstOrDefaultAsync(r => r.MovieId == movieId && r.ReviewerId == userId);
+    }
+
+    public async Task<IList<Review>> FindAsync()
+    {
+        return await _dbContext.Reviews.ToListAsync();
+    }
+
+    public async Task<IList<Review>> FindAsync(Guid movieId, int paginationFrom, int paginationSize)
+    {
+        return await _dbContext.Reviews
+            .Where(r => r.MovieId == movieId)
+            .OrderByDescending(r => r.ReviewDate)
+            .Skip(paginationFrom)
+            .Take(paginationSize)
+            .ToListAsync();
     }
 
     public async Task<Review> AddAsync(Review review)

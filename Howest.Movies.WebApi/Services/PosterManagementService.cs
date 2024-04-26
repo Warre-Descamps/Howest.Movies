@@ -112,7 +112,7 @@ public class PosterManagementService : IPosterManagementService
             await image.SaveAsync(path[..^fileInfo.Extension.Length] + Thumbnail + fileInfo.Extension);
         }
         
-        return Results.Created();
+        return Results.Created($"/poster/{id}", new ServiceResult());
     }
 
     public void CleanPosters()

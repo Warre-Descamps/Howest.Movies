@@ -39,7 +39,7 @@
             NavigationManager.NavigateTo("/");
         }
 
-        var result = await MovieEndpoint.GetAsync(MovieId);
+        var result = await MovieEndpoint.GetByIdAsync(MovieId);
         if (result.IsSuccess)
         {
             _movieDetails = result.Data;

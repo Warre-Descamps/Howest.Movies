@@ -55,27 +55,6 @@ public class MovieService : IMovieService
         return new PaginationResult<IList<MovieResult>>(_mapper.Map<List<MovieResult>>(movies), pagination.From, pagination.Size);
     }
 
-    public async Task<ServiceResult<ReviewResult>> AddReviewAsync(Guid id, ReviewRequest request, Guid userId)
-    {
-        var movie = await _movieRepository.GetByIdAsync(id);
-        if (movie is null)
-            return new ServiceResult<ReviewResult>().NotFound();
-
-        var existingReview = await _reviewRepository.GetByUserAsync(id, userId);
-        if (existingReview is not null)
-            return new ServiceResult<ReviewResult>().AlreadyExists();
-        
-        var review = await _reviewRepository.AddAsync(new Review
-        {
-            MovieId = id,
-            Rating = request.Rating,
-            Comment = request.Comment,
-            ReviewerId = userId
-        });
-        
-        return _mapper.Map<ReviewResult>(review);
-    }
-
     public async Task<ServiceResult<MovieDetailResult>> CreateAsync(MovieRequest request, Guid userId)
     {
         var existingMovie = await _movieRepository.FindAsync(request.Title);
@@ -117,5 +96,33 @@ public class MovieService : IMovieService
     public Task<bool> ExistsAsync(Guid id)
     {
         return _movieRepository.ExistsAsync(id);
+    }
+
+    public async Task<ServiceResult<PaginationResult<IList<ReviewResult>>>> GetReviewsAsync(Guid id, PaginationFilter pagination)
+    {
+        var reviews = await _reviewRepository.FindAsync(id, pagination.From, pagination.Size);
+
+        return new PaginationResult<IList<ReviewResult>>(_mapper.Map<List<ReviewResult>>(reviews), pagination.From, pagination.Size);
+    }
+
+    public async Task<ServiceResult<ReviewResult>> AddReviewAsync(Guid id, ReviewRequest request, Guid userId)
+    {
+        var movie = await _movieRepository.GetByIdAsync(id);
+        if (movie is null)
+            return new ServiceResult<ReviewResult>().NotFound();
+
+        var existingReview = await _reviewRepository.GetByUserAsync(id, userId);
+        if (existingReview is not null)
+            return new ServiceResult<ReviewResult>().AlreadyExists();
+        
+        var review = await _reviewRepository.AddAsync(new Review
+        {
+            MovieId = id,
+            Rating = request.Rating,
+            Comment = request.Comment,
+            ReviewerId = userId
+        });
+        
+        return _mapper.Map<ReviewResult>(review);
     }
 }
