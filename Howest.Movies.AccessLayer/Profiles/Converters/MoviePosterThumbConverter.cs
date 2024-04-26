@@ -6,6 +6,6 @@ public class MoviePosterThumbConverter : IValueConverter<Guid, string>
 {
     public string Convert(Guid sourceMember, ResolutionContext context)
     {
-        return $"/{sourceMember}/poster-thumbnail";
+        return $"/poster-thumbnail/{sourceMember}";
     }
 }

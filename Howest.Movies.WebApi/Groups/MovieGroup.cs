@@ -42,10 +42,10 @@ public static class MovieGroup
             return result.GetReturn(resolver);
         });
 
-        group.MapGet("/{id:guid}/poster-thumbnail", async ([FromRoute] Guid id, IPosterManagementService posterManagementService)
+        group.MapGet("/poster-thumbnail/{id:guid}", async ([FromRoute] Guid id, IPosterManagementService posterManagementService)
             => await posterManagementService.GetPosterThumbnail(id));
 
-        group.MapGet("/{id:guid}/poster", async ([FromRoute] Guid id, IPosterManagementService posterManagementService)
+        group.MapGet("/poster/{id:guid}", async ([FromRoute] Guid id, IPosterManagementService posterManagementService)
             => await posterManagementService.GetPoster(id));
 
         // ReSharper disable RedundantAssignment
