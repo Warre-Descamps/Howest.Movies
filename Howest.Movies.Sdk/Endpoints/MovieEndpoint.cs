@@ -62,7 +62,7 @@ internal class MovieEndpoint : BaseEndpoint, IMovieEndpoint
             .AddPagination(pagination)
             .Build();
         
-        var response = await HttpClient.GetAsync($"/api/movie{id}/review{query}", cancellationToken);
+        var response = await HttpClient.GetAsync($"/api/movie/{id}/review{query}", cancellationToken);
         return await response.ReadAsync<ServiceResult<PaginationResult<IList<ReviewResult>>>>(cancellationToken);
     }
 
