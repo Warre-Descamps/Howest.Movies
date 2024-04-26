@@ -25,19 +25,23 @@
         <MudSpacer/>
         <MudMenu>
             <ActivatorContent>
-                <MudAvatar>
-                    @if (_login is not null)
+                    @if (User is not null)
                     {
-                        @_login.Email.First()
+                        <MudTooltip Text="@User.Email" Placement="Placement.Left">
+                            <MudAvatar>
+                                @User.Email.First()
+                            </MudAvatar>
+                        </MudTooltip>
                     }
                     else
                     {
-                        <MudIconButton Icon="@Icons.Material.Filled.Login" Color="Color.Inherit"/>
+                        <MudAvatar>
+                            <MudIconButton Icon="@Icons.Material.Filled.Login" Color="Color.Inherit"/>
+                        </MudAvatar>
                     }
-                </MudAvatar>
             </ActivatorContent>
             <ChildContent>
-                @if (_login is not null)
+                @if (User is not null)
                 {
                     <MudMenuItem OnClick="Logout">Logout</MudMenuItem>
                 }
@@ -50,20 +54,23 @@
         </MudMenu>
     </MudAppBar>
     <MudMainContent>
-        <MudContainer MaxWidth="MaxWidth.ExtraExtraLarge" Class="my-5">
-            @Body
+        <MudContainer Style="min-width: 430px" MaxWidth="MaxWidth.ExtraExtraLarge" Class="my-5">
+            <CascadingValue Value="User">
+                @Body
+            </CascadingValue>
         </MudContainer>
     </MudMainContent>
 </MudLayout>
 
 @code {
     private MovieResult? _movieResult;
-    private User? _login;
     
     [Inject] private IMovieEndpoint MovieEndpoint { get; init; } = null!;
     [Inject] private NavigationManager NavigationManager { get; init; } = null!;
     [Inject] private IDialogService DialogService { get; init; } = null!;
     [Inject] private ISnackbar Snackbar { get; init; } = null!;
+    
+    internal User? User { get; set; }
     
     private async Task<IEnumerable<MovieResult>> Search(string value, CancellationToken token)
     {
@@ -97,7 +104,7 @@
         if (result.Canceled)
             return;
         
-        _login = result.Data as User;
+        User = result.Data as User;
         StateHasChanged();
         Snackbar.Add("Login successful", Severity.Success);
     }
@@ -116,7 +123,7 @@
 
     private void Logout()
     {
-        _login = null;
+        User = null;
         StateHasChanged();
         Snackbar.Add("Logout successful", Severity.Success);
     }

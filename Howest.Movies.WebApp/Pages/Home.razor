@@ -68,16 +68,16 @@
                 From = _movies.From + _movies.Size,
                 Size = _movies.Size
             });
-            if (result.IsSuccess)
+            if (!result.IsSuccess)
+                return;
+            
+            _movies.From = result.Data!.From;
+            _movies.Size = result.Data.Size;
+            foreach (var movie in result.Data.Items)
             {
-                _movies.From = result.Data!.From;
-                _movies.Size = result.Data.Size;
-                foreach (var movie in result.Data.Items)
-                {
-                    _movies.Items.Add(movie);
-                }
-                StateHasChanged();
+                _movies.Items.Add(movie);
             }
+            StateHasChanged();
         }
         finally
         {
