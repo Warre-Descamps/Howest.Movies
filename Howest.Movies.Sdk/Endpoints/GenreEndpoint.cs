@@ -6,7 +6,7 @@ using Howest.Movies.Sdk.Extensions;
 
 namespace Howest.Movies.Sdk.Endpoints;
 
-public class GenreEndpoint : BaseEndpoint, IGenreEndpoint
+internal class GenreEndpoint : BaseEndpoint, IGenreEndpoint
 {
     public GenreEndpoint(IHttpClientFactory httpClientFactory) : base(httpClientFactory)
     {

@@ -7,7 +7,7 @@ using Howest.Movies.Sdk.Helpers;
 
 namespace Howest.Movies.Sdk.Endpoints;
 
-public class MovieEndpoint : BaseEndpoint, IMovieEndpoint
+internal class MovieEndpoint : BaseEndpoint, IMovieEndpoint
 {
     public MovieEndpoint(IHttpClientFactory httpClientFactory) : base(httpClientFactory)
     {

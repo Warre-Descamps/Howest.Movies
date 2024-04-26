@@ -4,13 +4,20 @@ using Howest.Movies.Dtos.Core;
 using Howest.Movies.Sdk.Endpoints.Abstractions;
 using Howest.Movies.Sdk.IdentityDtos;
 using Howest.Movies.Sdk.IdentityDtos.Results;
+using Howest.Movies.Sdk.Stores;
 
 namespace Howest.Movies.Sdk.Endpoints;
 
-public class IdentityEndpoint : BaseEndpoint, IIdentityEndpoint
+internal class IdentityEndpoint : BaseEndpoint, IIdentityEndpoint
 {
-    public IdentityEndpoint(IHttpClientFactory httpClientFactory) : base(httpClientFactory)
+    private readonly ITokenStore _tokenStore;
+
+    public event Func<Task>? OnLogin;
+    public event Func<Task>? OnLogout;
+
+    public IdentityEndpoint(IHttpClientFactory httpClientFactory, ITokenStore tokenStore) : base(httpClientFactory)
     {
+        _tokenStore = tokenStore;
     }
     
     private static T ReadErrors<T>(HttpResponseMessage response) where T : ServiceResult, new()
@@ -43,6 +50,10 @@ public class IdentityEndpoint : BaseEndpoint, IIdentityEndpoint
         {
             var loginResult = await response.Content.ReadFromJsonAsync<LoginResult>();
             result.Data = loginResult;
+            
+            await _tokenStore.SetTokenAsync(loginResult!);
+            if (OnLogin is not null)
+                await OnLogin.Invoke();
         }
         else
         {
@@ -51,7 +62,15 @@ public class IdentityEndpoint : BaseEndpoint, IIdentityEndpoint
         
         return result;
     }
-    
+
+    public async Task<ServiceResult> LogoutAsync()
+    {
+        await _tokenStore.RemoveTokenAsync();
+        if (OnLogout is not null)
+            await OnLogout.Invoke();
+        return new ServiceResult();
+    }
+
     public async Task<ServiceResult<LoginResult>> RefreshAsync(string refreshToken)
     {
         var response = await HttpClient.PostAsJsonAsync("/api/identity/refresh", new { refreshToken });

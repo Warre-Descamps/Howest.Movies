@@ -2,6 +2,6 @@
 
 namespace Howest.Movies.Sdk.Endpoints;
 
-public class ReviewEndpoint : IReviewEndpoint
+internal class ReviewEndpoint : IReviewEndpoint
 {
 }

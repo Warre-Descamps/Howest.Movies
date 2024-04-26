@@ -1,7 +1,9 @@
+using Blazored.LocalStorage;
 using Howest.Movies.Sdk;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Howest.Movies.WebApp;
+using Howest.Movies.WebApp.Models;
 using MudBlazor;
 using MudBlazor.Services;
 
@@ -14,6 +16,7 @@ builder.Services
     {
         config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomRight;
     })
-    .InstallMoviesSdk(builder.Configuration);
+    .AddBlazoredLocalStorage()
+    .InstallMoviesSdk<TokenStore>(builder.Configuration);
 
 await builder.Build().RunAsync();

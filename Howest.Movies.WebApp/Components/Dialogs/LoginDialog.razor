@@ -32,8 +32,7 @@
 
         MudDialog.Close(DialogResult.Ok(new User
         {
-            Email = _model.Email,
-            LoginResult = result.Data
+            Email = _model.Email
         }));
     }
     void Cancel() => MudDialog.Cancel();

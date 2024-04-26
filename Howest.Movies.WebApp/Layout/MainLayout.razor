@@ -1,4 +1,6 @@
-﻿@using Howest.Movies.Dtos.Filters
+﻿@using Blazored.LocalStorage
+@using Howest.Movies.Dtos.Filters
+@using Howest.Movies.Sdk.Abstractions
 @using Howest.Movies.Sdk.Endpoints.Abstractions
 @using Howest.Movies.WebApp.Components.Dialogs
 @using Howest.Movies.WebApp.Models
@@ -28,7 +30,7 @@
                     @if (User is not null)
                     {
                         <MudTooltip Text="@User.Email" Placement="Placement.Left">
-                            <MudAvatar>
+                            <MudAvatar Color="Color.Tertiary">
                                 @User.Email.First()
                             </MudAvatar>
                         </MudTooltip>
@@ -65,16 +67,25 @@
 @code {
     private MovieResult? _movieResult;
     
-    [Inject] private IMovieEndpoint MovieEndpoint { get; init; } = null!;
+    [Inject] private IMoviesSdk MoviesSdk { get; init; } = null!;
     [Inject] private NavigationManager NavigationManager { get; init; } = null!;
     [Inject] private IDialogService DialogService { get; init; } = null!;
     [Inject] private ISnackbar Snackbar { get; init; } = null!;
+    [Inject] private ILocalStorageService LocalStorageService { get; init; } = null!;
     
     internal User? User { get; set; }
-    
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (await LocalStorageService.ContainKeyAsync("user"));
+        {
+            User = await LocalStorageService.GetItemAsync<User>("user");
+        }
+    }
+
     private async Task<IEnumerable<MovieResult>> Search(string value, CancellationToken token)
     {
-        var result = await MovieEndpoint.GetAsync(new MoviesFilter
+        var result = await MoviesSdk.Movies.GetAsync(new MoviesFilter
         {
             Query = value
         }, new PaginationFilter(), token);
@@ -105,6 +116,7 @@
             return;
         
         User = result.Data as User;
+        await LocalStorageService.SetItemAsync("user", User);
         StateHasChanged();
         Snackbar.Add("Login successful", Severity.Success);
     }
@@ -121,9 +133,11 @@
         await OpenLoginDialogAsync();
     }
 
-    private void Logout()
+    private async Task Logout()
     {
         User = null;
+        await LocalStorageService.RemoveItemAsync("user");
+        await MoviesSdk.Identity.LogoutAsync();
         StateHasChanged();
         Snackbar.Add("Logout successful", Severity.Success);
     }
