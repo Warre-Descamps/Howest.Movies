@@ -30,7 +30,7 @@ internal abstract class BaseEndpoint
             throw new InvalidOperationException("Token is not available or expired");
         }
         
-        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(token.TokenType, token.AccessToken);
         return client;
     }
     
