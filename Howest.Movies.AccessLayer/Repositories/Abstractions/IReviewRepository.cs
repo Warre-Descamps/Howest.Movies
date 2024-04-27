@@ -1,5 +1,4 @@
 ﻿using Howest.Movies.AccessLayer.Abstractions;
-using Howest.Movies.Dtos.Results;
 using Howest.Movies.Models;
 
 namespace Howest.Movies.AccessLayer.Repositories.Abstractions;

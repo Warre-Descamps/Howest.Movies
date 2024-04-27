@@ -1,5 +1,4 @@
-﻿using System.Net.Http.Json;
-using Howest.Movies.Dtos.Core;
+﻿using Howest.Movies.Dtos.Core;
 using Howest.Movies.Dtos.Filters;
 using Howest.Movies.Dtos.Requests;
 using Howest.Movies.Dtos.Results;
@@ -10,69 +9,66 @@ using Howest.Movies.Sdk.Stores;
 
 namespace Howest.Movies.Sdk.Endpoints;
 
-internal class MovieEndpoint : BaseEndpoint, IMovieEndpoint
+internal class MovieEndpoint : BaseAuthorizedEndpoint, IMovieEndpoint
 {
-    public MovieEndpoint(IHttpClientFactory httpClientFactory, ITokenStore tokenStore) : base(httpClientFactory, tokenStore)
+    public MovieEndpoint(IHttpClientFactory httpClientFactory, ITokenStore tokenStore, IIdentityEndpoint identityEndpoint) : base(httpClientFactory, tokenStore, identityEndpoint)
     {
     }
 
-    public async Task<ServiceResult<MovieDetailResult>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    public Task<ServiceResult<MovieDetailResult>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var response = await HttpClient.GetAsync($"/api/movie/{id}", cancellationToken);
-        return await response.ReadAsync<ServiceResult<MovieDetailResult>>(cancellationToken);
+        var result = GetAsync<ServiceResult<MovieDetailResult>>($"/api/movie/{id}", true);
+        return result.ReadAsync(cancellationToken);
     }
     
-    public async Task<ServiceResult<PaginationResult<IList<MovieResult>>>> GetAsync(CancellationToken cancellationToken = default)
+    public Task<ServiceResult<PaginationResult<IList<MovieResult>>>> GetAsync(CancellationToken cancellationToken = default)
     {
-        var response = await HttpClient.GetAsync("/api/movie", cancellationToken);
-        return await response.ReadAsync<ServiceResult<PaginationResult<IList<MovieResult>>>>(cancellationToken);
+        var result = GetAsync<ServiceResult<PaginationResult<IList<MovieResult>>>>("/api/movie", true);
+        return result.ReadAsync(cancellationToken);
     }
 
-    public async Task<ServiceResult<PaginationResult<IList<MovieResult>>>> GetAsync(MoviesFilter filter, PaginationFilter pagination, CancellationToken cancellationToken = default)
+    public Task<ServiceResult<PaginationResult<IList<MovieResult>>>> GetAsync(MoviesFilter filter, PaginationFilter pagination, CancellationToken cancellationToken = default)
     {
         var query = new QueryBuilder()
             .AddFilter(filter)
             .AddPagination(pagination)
             .Build();
         
-        var response = await HttpClient.GetAsync($"/api/movie{query}", cancellationToken);
-        return await response.ReadAsync<ServiceResult<PaginationResult<IList<MovieResult>>>>(cancellationToken);
+        var result = GetAsync<ServiceResult<PaginationResult<IList<MovieResult>>>>($"/api/movie{query}", true);
+        return result.ReadAsync(cancellationToken);
     }
     
-    public async Task<ServiceResult<PaginationResult<IList<MovieResult>>>> GetTopAsync(CancellationToken cancellationToken = default)
+    public Task<ServiceResult<PaginationResult<IList<MovieResult>>>> GetTopAsync(CancellationToken cancellationToken = default)
     {
-        var response = await HttpClient.GetAsync("/api/movie/top", cancellationToken);
-        return await response.ReadAsync<ServiceResult<PaginationResult<IList<MovieResult>>>>(cancellationToken);
+        var result = GetAsync<ServiceResult<PaginationResult<IList<MovieResult>>>>("/api/movie/top", true);
+        return result.ReadAsync(cancellationToken);
     }
 
-    public async Task<ServiceResult<MovieDetailResult>> CreateAsync(MovieRequest request, CancellationToken cancellationToken = default)
+    public Task<ServiceResult<MovieDetailResult>> CreateAsync(MovieRequest request, CancellationToken cancellationToken = default)
     {
-        var client = await GetAuthorizedClientAsync();
-        var response = await client.PostAsJsonAsync("/api/movie", request, cancellationToken);
-        return await response.ReadAsync<ServiceResult<MovieDetailResult>>(cancellationToken);
+        var result = PostAsJsonAsync<MovieRequest, ServiceResult<MovieDetailResult>>("/api/movie", request, true);
+        return result.ReadAsync(cancellationToken);
     }
 
-    public async Task<ServiceResult> AddPosterAsync(Guid id, Stream stream, CancellationToken cancellationToken = default)
+    public Task<ServiceResult> AddPosterAsync(Guid id, Stream stream, CancellationToken cancellationToken = default)
     {
-        var client = await GetAuthorizedClientAsync();
-        var response = await client.PostAsync($"/api/movie/{id}/poster", new StreamContent(stream), cancellationToken);
-        return await response.ReadAsync<ServiceResult>(cancellationToken);
+        var result = PostAsync<ServiceResult>($"/api/movie/{id}/poster", new StreamContent(stream));
+        return result.ReadAsync(cancellationToken);
     }
 
-    public async Task<ServiceResult<PaginationResult<IList<ReviewResult>>>> GetReviewsAsync(Guid id, PaginationFilter pagination, CancellationToken cancellationToken = default)
+    public Task<ServiceResult<PaginationResult<IList<ReviewResult>>>> GetReviewsAsync(Guid id, PaginationFilter pagination, CancellationToken cancellationToken = default)
     {
         var query = new QueryBuilder()
             .AddPagination(pagination)
             .Build();
-        
-        var response = await HttpClient.GetAsync($"/api/movie/{id}/review{query}", cancellationToken);
-        return await response.ReadAsync<ServiceResult<PaginationResult<IList<ReviewResult>>>>(cancellationToken);
+
+        var result = GetAsync<ServiceResult<PaginationResult<IList<ReviewResult>>>>($"/api/movie/{id}/review{query}");
+        return result.ReadAsync(cancellationToken);
     }
 
-    public async Task<ServiceResult<ReviewResult>> AddReviewAsync(Guid id, ReviewRequest request, CancellationToken cancellationToken = default)
+    public Task<ServiceResult<ReviewResult>> AddReviewAsync(Guid id, ReviewRequest request, CancellationToken cancellationToken = default)
     {
-        var client = await GetAuthorizedClientAsync();
-        var response = await client.PostAsJsonAsync($"/api/movie/{id}/review", request, cancellationToken);
-        return await response.ReadAsync<ServiceResult<ReviewResult>>(cancellationToken);
+        var result = PostAsJsonAsync<ReviewRequest, ServiceResult<ReviewResult>>($"/api/movie/{id}/review", request, true);
+        return result.ReadAsync(cancellationToken);
     }
 }

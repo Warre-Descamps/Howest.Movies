@@ -1,5 +1,4 @@
-﻿using System.Net.Http.Json;
-using Howest.Movies.Dtos.Core;
+﻿using Howest.Movies.Dtos.Core;
 using Howest.Movies.Dtos.Results;
 using Howest.Movies.Sdk.Endpoints.Abstractions;
 using Howest.Movies.Sdk.Extensions;
@@ -7,22 +6,21 @@ using Howest.Movies.Sdk.Stores;
 
 namespace Howest.Movies.Sdk.Endpoints;
 
-internal class GenreEndpoint : BaseEndpoint, IGenreEndpoint
+internal class GenreEndpoint : BaseAuthorizedEndpoint, IGenreEndpoint
 {
-    public GenreEndpoint(IHttpClientFactory httpClientFactory, ITokenStore tokenStore) : base(httpClientFactory, tokenStore)
+    public GenreEndpoint(IHttpClientFactory httpClientFactory, ITokenStore tokenStore, IIdentityEndpoint identityEndpoint) : base(httpClientFactory, tokenStore, identityEndpoint)
     {
     }
     
-    public async Task<ServiceResult<IList<GenreResult>>> GetAsync()
+    public Task<ServiceResult<IList<GenreResult>>> GetAsync()
     {
-        var response = await HttpClient.GetAsync("/api/genre");
-        return await response.ReadAsync<ServiceResult<IList<GenreResult>>>();
+        var result = GetAsync<ServiceResult<IList<GenreResult>>>("/api/genre");
+        return result.ReadAsync();
     }
     
-    public async Task<ServiceResult<GenreResult>> PostAsync(string name)
+    public Task<ServiceResult<GenreResult>> CreateAsync(string name)
     {
-        var client = await GetAuthorizedClientAsync();
-        var response = await client.PostAsJsonAsync("/api/genre", name);
-        return await response.ReadAsync<ServiceResult<GenreResult>>();
+        var result = PostAsJsonAsync<string, ServiceResult<GenreResult>>("/api/genre", name, true);
+        return result.ReadAsync();
     }
 }

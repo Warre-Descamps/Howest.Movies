@@ -6,5 +6,5 @@ namespace Howest.Movies.Sdk.Endpoints.Abstractions;
 public interface IGenreEndpoint
 {
     Task<ServiceResult<IList<GenreResult>>> GetAsync();
-    Task<ServiceResult<GenreResult>> PostAsync(string name);
+    Task<ServiceResult<GenreResult>> CreateAsync(string name);
 }

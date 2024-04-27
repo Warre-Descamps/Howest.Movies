@@ -32,6 +32,30 @@ internal class IdentityEndpoint : BaseEndpoint, IIdentityEndpoint
 
         return result;
     }
+    
+    public async Task<ServiceResult> RefreshAsync(bool fromBackground)
+    {
+        var token = await _tokenStore.GetTokenAsync();
+        if (token is null)
+            return new ServiceResult<LoginResult>(new ServiceMessage("Refresh", "No refresh token found", MessageType.Error));
+        
+        var response = await HttpClient.PostAsJsonAsync("/api/identity/refresh", new { token.RefreshToken });
+        
+        var result = ReadErrors<ServiceResult<LoginResult>>(response);
+        if (response.StatusCode == HttpStatusCode.OK)
+        {
+            var loginResult = await response.Content.ReadFromJsonAsync<LoginResult>();
+            result.Data = loginResult;
+            if (!fromBackground && OnLogin is not null)
+                await OnLogin.Invoke();
+        }
+        else
+        {
+            result.Messages.Add(new ServiceMessage("Refresh", "Invalid refresh token", MessageType.Error));
+        }
+
+        return result;
+    }
 
     public async Task<ServiceResult> RegisterAsync(Request request)
     {
@@ -71,21 +95,8 @@ internal class IdentityEndpoint : BaseEndpoint, IIdentityEndpoint
         return new ServiceResult();
     }
 
-    public async Task<ServiceResult<LoginResult>> RefreshAsync(string refreshToken)
+    public Task<ServiceResult> RefreshAsync()
     {
-        var response = await HttpClient.PostAsJsonAsync("/api/identity/refresh", new { refreshToken });
-        
-        var result = ReadErrors<ServiceResult<LoginResult>>(response);
-        if (response.StatusCode == HttpStatusCode.OK)
-        {
-            var loginResult = await response.Content.ReadFromJsonAsync<LoginResult>();
-            result.Data = loginResult;
-        }
-        else
-        {
-            result.Messages.Add(new ServiceMessage("refresh", "Invalid refresh token", MessageType.Error));
-        }
-
-        return result;
+        return RefreshAsync(false);
     }
 }

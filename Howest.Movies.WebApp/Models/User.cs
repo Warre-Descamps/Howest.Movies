@@ -1,6 +1,4 @@
-﻿using Howest.Movies.Sdk.IdentityDtos.Results;
-
-namespace Howest.Movies.WebApp.Models;
+﻿namespace Howest.Movies.WebApp.Models;
 
 internal class User
 {

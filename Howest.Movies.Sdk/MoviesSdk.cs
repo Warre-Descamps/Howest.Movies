@@ -56,18 +56,11 @@ public class MoviesSdk : IMoviesSdk
     {
         while (await _tokenRefreshTimer.WaitForNextTickAsync(_cancellationTokenSource.Token))
         {
-            var token = await _tokenStore.GetTokenAsync();
-            if (token is null)
-                return;
-            var result = await Identity.RefreshAsync(token.RefreshToken);
-            if (result.IsSuccess)
-            {
-                await _tokenStore.SetTokenAsync(result.Data!);
-            }
-            else
-            {
-                await Identity.LogoutAsync();
-            }
+            var result = await Identity.RefreshAsync(true);
+            if (result.IsSuccess) continue;
+            
+            await Identity.LogoutAsync();
+            await StopRefreshTokenTimer();
         }
     }
 }
