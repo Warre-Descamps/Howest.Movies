@@ -32,10 +32,18 @@ builder.Services
         options.OperationFilter<SecurityRequirementsOperationFilter>();
     });
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAll", cors => cors.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
-});
+builder.Services
+    .AddCors(options =>
+    {
+        options.AddPolicy("AllowAll", cors => cors.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+    })
+    .AddOutputCache(options =>
+    {
+        options.AddBasePolicy(ocpb =>
+        {
+            ocpb.Expire(TimeSpan.FromSeconds(10));
+        });
+    });
 
 var app = builder.Build();
 
