@@ -17,13 +17,13 @@ internal class MovieEndpoint : BaseAuthorizedEndpoint, IMovieEndpoint
 
     public Task<ServiceResult<MovieDetailResult>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var result = GetAsync<ServiceResult<MovieDetailResult>>($"/api/movie/{id}", true);
+        var result = GetAsync<ServiceResult<MovieDetailResult>>($"/api/movie/{id}");
         return result.ReadAsync(cancellationToken);
     }
     
     public Task<ServiceResult<PaginationResult<IList<MovieResult>>>> GetAsync(CancellationToken cancellationToken = default)
     {
-        var result = GetAsync<ServiceResult<PaginationResult<IList<MovieResult>>>>("/api/movie", true);
+        var result = GetAsync<ServiceResult<PaginationResult<IList<MovieResult>>>>("/api/movie");
         return result.ReadAsync(cancellationToken);
     }
 
@@ -34,13 +34,13 @@ internal class MovieEndpoint : BaseAuthorizedEndpoint, IMovieEndpoint
             .AddPagination(pagination)
             .Build();
         
-        var result = GetAsync<ServiceResult<PaginationResult<IList<MovieResult>>>>($"/api/movie{query}", true);
+        var result = GetAsync<ServiceResult<PaginationResult<IList<MovieResult>>>>($"/api/movie{query}");
         return result.ReadAsync(cancellationToken);
     }
     
     public Task<ServiceResult<PaginationResult<IList<MovieResult>>>> GetTopAsync(CancellationToken cancellationToken = default)
     {
-        var result = GetAsync<ServiceResult<PaginationResult<IList<MovieResult>>>>("/api/movie/top", true);
+        var result = GetAsync<ServiceResult<PaginationResult<IList<MovieResult>>>>("/api/movie/top");
         return result.ReadAsync(cancellationToken);
     }
 
@@ -52,7 +52,7 @@ internal class MovieEndpoint : BaseAuthorizedEndpoint, IMovieEndpoint
 
     public Task<ServiceResult> AddPosterAsync(Guid id, Stream stream, CancellationToken cancellationToken = default)
     {
-        var result = PostAsync<ServiceResult>($"/api/movie/{id}/poster", new StreamContent(stream));
+        var result = PostAsync<ServiceResult>($"/api/movie/{id}/poster", new StreamContent(stream), true);
         return result.ReadAsync(cancellationToken);
     }
 

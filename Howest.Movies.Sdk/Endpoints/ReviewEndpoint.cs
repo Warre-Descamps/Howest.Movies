@@ -21,7 +21,7 @@ internal class ReviewEndpoint : BaseAuthorizedEndpoint, IReviewEndpoint
 
     public Task<ServiceResult> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var result = DeleteAsync<ServiceResult>($"/api/review/{id}");
+        var result = DeleteAsync<ServiceResult>($"/api/review/{id}", true);
         return result.ReadAsync(cancellationToken);
     }
 }
