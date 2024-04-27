@@ -8,7 +8,7 @@ public class ReturnResolver : IReturnResolver
 {
     public object Resolve<T>(T serviceResult) where T : ServiceResult
     {
-        if (serviceResult.IsSuccess)
+        if (serviceResult.Messages.All(m => m.Type != MessageType.Error))
         {
             return Results.Ok(serviceResult);
         }
@@ -18,7 +18,7 @@ public class ReturnResolver : IReturnResolver
             return Results.BadRequest(serviceResult);
         }
 
-        return serviceResult.Messages.First(m => m.Type == MessageType.Error).Code switch
+        return serviceResult.Messages.First(m => m.Type == MessageType.Error)?.Code switch
         {
             nameof(ServiceResultExtensions.NotFound) => Results.NotFound(serviceResult),
             nameof(ServiceResultExtensions.Forbidden) => Results.Forbid(),
