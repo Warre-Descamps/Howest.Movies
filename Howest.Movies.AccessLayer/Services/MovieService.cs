@@ -8,6 +8,8 @@ using Howest.Movies.Dtos.Filters;
 using Howest.Movies.Dtos.Requests;
 using Howest.Movies.Dtos.Results;
 using Howest.Movies.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Howest.Movies.AccessLayer.Services;
 
@@ -17,13 +19,15 @@ public class MovieService : IMovieService
     private readonly IMovieRepository _movieRepository;
     private readonly IGenreRepository _genreRepository;
     private readonly IReviewRepository _reviewRepository;
+    private readonly UserManager<User> _userManager;
 
-    public MovieService(IMapper mapper, IMovieRepository movieRepository, IGenreRepository genreRepository, IReviewRepository reviewRepository)
+    public MovieService(IMapper mapper, IMovieRepository movieRepository, IGenreRepository genreRepository, IReviewRepository reviewRepository, UserManager<User> userManager)
     {
         _mapper = mapper;
         _movieRepository = movieRepository;
         _genreRepository = genreRepository;
         _reviewRepository = reviewRepository;
+        _userManager = userManager;
     }
     
     public async Task<ServiceResult<MovieDetailResult>> FindByIdAsync(Guid id)
@@ -122,6 +126,8 @@ public class MovieService : IMovieService
             Comment = request.Comment,
             ReviewerId = userId
         });
+        var reviewer = await _userManager.Users.FirstAsync(u => u.Id == userId);
+        review.Reviewer = reviewer;
         
         return _mapper.Map<ReviewResult>(review);
     }
