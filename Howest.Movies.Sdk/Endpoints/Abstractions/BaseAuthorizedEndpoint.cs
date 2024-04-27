@@ -26,6 +26,7 @@ internal abstract class BaseAuthorizedEndpoint : BaseEndpoint
             if (response.StatusCode == HttpStatusCode.Unauthorized)
             {
                 await _tokenRefresh.RefreshAsync();
+                client = await ApplyAuthentication(client);
                 response = await request(client);
             }
 

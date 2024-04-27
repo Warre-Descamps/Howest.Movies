@@ -45,7 +45,7 @@ internal class IdentityEndpoint : BaseEndpoint, IIdentityEndpoint
         if (response.StatusCode == HttpStatusCode.OK)
         {
             var loginResult = await response.Content.ReadFromJsonAsync<LoginResult>();
-            result.Data = loginResult;
+            await _tokenStore.SetTokenAsync(loginResult!);
             if (!fromBackground && OnLogin is not null)
                 await OnLogin.Invoke();
         }
