@@ -1,5 +1,7 @@
 ﻿@page "/movie/{MovieId:guid}"
+@using Howest.Movies.Dtos.Filters
 @using Howest.Movies.Sdk.Endpoints.Abstractions
+@using Howest.Movies.WebApp.Models
 
 <MudOverlay Visible="@(_movieDetails == null)" DarkBackground="true" Absolute="true">
     <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
@@ -9,7 +11,7 @@
     <MudStack Class="movie-details mt-5" Row="true" Spacing="10" Wrap="Wrap.NoWrap" AlignItems="AlignItems.Center">
         <MudImage ObjectFit="ObjectFit.Contain" ObjectPosition="ObjectPosition.Left" Width="300" Src="@_movieDetails.Poster" Alt="@_movieDetails.Title" Style="border-radius: .5em;"></MudImage>
         <MudStack>
-            <MudText Typo="Typo.h4">@_movieDetails.Title</MudText>
+            <MudText Typo="Typo.h3">@_movieDetails.Title</MudText>
             <MudText Class="pl-2" Typo="Typo.caption">Directed by @_movieDetails.Director</MudText>
             <MudText Class="pl-2" Typo="Typo.subtitle2">@_movieDetails.ReleaseDate.Date.Year</MudText>
             <MudText Typo="Typo.subtitle2">
@@ -21,15 +23,34 @@
             <MudText Typo="Typo.body1" Style="max-width: 900px;">@_movieDetails.Description</MudText>
         </MudStack>
     </MudStack>
+    @if (User is not null || _reviews.Items.Count > 0)
+    {
+        <MudText Typo="Typo.h4" Class="my-5">Reviews</MudText>
+        <MudStack Row="true" Spacing="10" Wrap="Wrap.NoWrap">
+            @if (User is not null)
+            {
+                <ReviewCard OnReviewAdded="@OnReviewAdded" MovieId="@MovieId"/>
+            }
+            @if (_reviews.Items.Count > 0)
+            {
+                @foreach (var review in _reviews.Items)
+                {
+                    <ReviewCard Review="review"/>
+                }
+            }
+        </MudStack>
+    }
 }
 
 @code
 {
     private MovieDetailResult? _movieDetails;
+    private PaginationResult<IList<ReviewResult>> _reviews = null!;
 
     [Inject] private IMovieEndpoint MovieEndpoint { get; init; } = null!;
     [Inject] private NavigationManager NavigationManager { get; init; } = null!;
 
+    [CascadingParameter] internal User? User { get; set; }
     [Parameter] public Guid MovieId { get; set; }
     
     protected override async Task OnInitializedAsync()
@@ -39,14 +60,48 @@
             NavigationManager.NavigateTo("/");
         }
 
-        var result = await MovieEndpoint.GetByIdAsync(MovieId);
-        if (result.IsSuccess)
+        var movieResult = await MovieEndpoint.GetByIdAsync(MovieId);
+        if (movieResult.IsSuccess)
         {
-            _movieDetails = result.Data;
+            _movieDetails = movieResult.Data;
         }
         else
         {
             NavigationManager.NavigateTo("/");
+        }
+        
+        var reviewResult = await MovieEndpoint.GetReviewsAsync(MovieId, new PaginationFilter());
+        if (reviewResult.IsSuccess)
+        {
+            _reviews = reviewResult.Data!;
+        }
+        else
+        {
+            _reviews = new PaginationResult<IList<ReviewResult>>
+            {
+                Items = new List<ReviewResult>()
+            };
+        }
+    }
+
+    private async Task OnReviewAdded()
+    {
+        int amount = _reviews.From + _reviews.Size;
+        var maxReached = _reviews.Items.Count == _reviews.From + _reviews.Size;
+        if (maxReached) amount += _reviews.Size;
+        var result = await MovieEndpoint.GetReviewsAsync(MovieId, new PaginationFilter
+        {
+            From = 0,
+            Size = amount
+        });
+        if (result.IsSuccess)
+        {
+            if (maxReached)
+            {
+                _reviews.From += _reviews.Size;
+            }
+            _reviews.Items = result.Data!.Items;
+            StateHasChanged();
         }
     }
 }
