@@ -5,6 +5,10 @@ public class ServiceMessage
     public string Code { get; set; }
     public string Message { get; set; }
     public MessageType Type { get; set; }
+    
+    public ServiceMessage()
+    {
+    }
 
     public ServiceMessage(string message, MessageType type)
     {

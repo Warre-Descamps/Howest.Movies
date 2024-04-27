@@ -22,7 +22,7 @@ public class ServiceResult
         return resolver.Resolve(this);
     }
 }
-     
+
 public class ServiceResult<T> : ServiceResult
 {
     public T? Data { get; set; }

@@ -6,6 +6,10 @@ public class PaginationResult<T>
     public int From { get; set; }
     public int Size { get; set; }
     
+    public PaginationResult()
+    {
+    }
+    
     public PaginationResult(T data, int from, int size)
     {
         Items = data;
