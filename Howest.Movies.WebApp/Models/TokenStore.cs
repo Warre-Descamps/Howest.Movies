@@ -15,7 +15,9 @@ public class TokenStore: ITokenStore
 
     public async Task<LoginResult?> GetTokenAsync()
     {
-        return await _localStorageService.GetItemAsync<LoginResult>("login");
+        if (await _localStorageService.ContainKeyAsync("login"))
+            return await _localStorageService.GetItemAsync<LoginResult>("login");
+        return null;
     }
 
     public async Task SetTokenAsync(LoginResult token)

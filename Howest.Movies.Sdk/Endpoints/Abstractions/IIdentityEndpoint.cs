@@ -11,5 +11,6 @@ public interface IIdentityEndpoint : ITokenRefresh<ServiceResult>
     internal Task<ServiceResult> RefreshAsync(bool fromBackground);
     Task<ServiceResult> RegisterAsync(Request registerDto);
     Task<ServiceResult<LoginResult>> LoginAsync(Request request);
+    Task<ServiceResult<UserInfoResult>> TryGetUserAsync();
     Task<ServiceResult> LogoutAsync();
 }

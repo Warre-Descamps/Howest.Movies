@@ -17,8 +17,6 @@ internal abstract class BaseAuthorizedEndpoint : BaseEndpoint
         Func<HttpResponseMessage, Task<T?>>? handleResponse,
         bool authenticate = false) where T : default
     {
-        
-        
         return base.InvokeAsync(request, RefreshingHanldeResponse, authenticate);
 
         async Task<T?> RefreshingHanldeResponse(HttpResponseMessage response, HttpClient client)

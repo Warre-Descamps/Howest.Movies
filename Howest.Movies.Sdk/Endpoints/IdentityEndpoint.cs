@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
 using Howest.Movies.Dtos.Core;
+using Howest.Movies.Dtos.Core.Extensions;
 using Howest.Movies.Sdk.Endpoints.Abstractions;
 using Howest.Movies.Sdk.IdentityDtos;
 using Howest.Movies.Sdk.IdentityDtos.Results;
@@ -61,8 +62,7 @@ internal class IdentityEndpoint : BaseEndpoint, IIdentityEndpoint
     {
         var response = await HttpClient.PostAsJsonAsync("/api/identity/register", request);
         
-        var result = ReadErrors<ServiceResult>(response);
-        return result;
+        return ReadErrors<ServiceResult>(response);
     }
 
     public async Task<ServiceResult<LoginResult>> LoginAsync(Request request)
@@ -85,6 +85,39 @@ internal class IdentityEndpoint : BaseEndpoint, IIdentityEndpoint
         }
         
         return result;
+    }
+
+    public async Task<ServiceResult<UserInfoResult>> TryGetUserAsync()
+    {
+        try
+        {
+            var client = await ApplyAuthentication(HttpClient);
+            
+            var response = await client.GetAsync("/api/identity/manage/info");;
+            switch (response.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    return new ServiceResult<UserInfoResult>
+                    {
+                        Data = await response.Content.ReadFromJsonAsync<UserInfoResult>()
+                    };
+                case HttpStatusCode.Unauthorized:
+                    await RefreshAsync(true);
+                    client = await ApplyAuthentication(HttpClient);
+                    response = await client.GetAsync("/api/identity/manage/info");
+                    if (response.StatusCode == HttpStatusCode.OK)
+                        return new ServiceResult<UserInfoResult>
+                        {
+                            Data = await response.Content.ReadFromJsonAsync<UserInfoResult>()
+                        };
+                    break;
+            }
+            return ReadErrors<ServiceResult<UserInfoResult>>(response);
+        }
+        catch
+        {
+            return new ServiceResult<UserInfoResult>().Unauthorized();
+        }
     }
 
     public async Task<ServiceResult> LogoutAsync()

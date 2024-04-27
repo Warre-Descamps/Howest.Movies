@@ -2,7 +2,6 @@
 @using Howest.Movies.Dtos.Filters
 @using Howest.Movies.Sdk.Abstractions
 @using Howest.Movies.WebApp.Components.Dialogs
-@using Howest.Movies.WebApp.Models
 @inherits LayoutComponentBase
 
 <MudThemeProvider/>
@@ -72,14 +71,13 @@
     [Inject] private ISnackbar Snackbar { get; init; } = null!;
     [Inject] private ILocalStorageService LocalStorageService { get; init; } = null!;
     
-    internal User? User { get; set; }
+    internal UserInfoResult? User { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        if (await LocalStorageService.ContainKeyAsync("user"));
-        {
-            User = await LocalStorageService.GetItemAsync<User>("user");
-        }
+        var userInfo = await MoviesSdk.Identity.TryGetUserAsync();
+        if (userInfo.IsSuccess)
+            User = userInfo.Data;
     }
 
     private async Task<IEnumerable<MovieResult>> Search(string value, CancellationToken token)
@@ -113,8 +111,7 @@
         if (result.Canceled)
             return;
         
-        User = result.Data as User;
-        await LocalStorageService.SetItemAsync("user", User);
+        User = result.Data as UserInfoResult;
         StateHasChanged();
         Snackbar.Add("Login successful", Severity.Success);
     }

@@ -1,7 +1,6 @@
 ﻿@page "/movie/{MovieId:guid}"
 @using Howest.Movies.Dtos.Filters
 @using Howest.Movies.Sdk.Endpoints.Abstractions
-@using Howest.Movies.WebApp.Models
 
 <MudOverlay Visible="@(_movieDetails == null)" DarkBackground="true" Absolute="true">
     <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
@@ -50,7 +49,7 @@
     [Inject] private IMovieEndpoint MovieEndpoint { get; init; } = null!;
     [Inject] private NavigationManager NavigationManager { get; init; } = null!;
 
-    [CascadingParameter] internal User? User { get; set; }
+    [CascadingParameter] internal UserInfoResult? User { get; set; }
     [Parameter] public Guid MovieId { get; set; }
     
     protected override async Task OnInitializedAsync()
