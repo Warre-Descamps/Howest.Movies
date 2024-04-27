@@ -26,7 +26,7 @@
     @if (User is not null || _reviews.Items.Count > 0)
     {
         <MudText Typo="Typo.h4" Class="my-5">Reviews</MudText>
-        <MudStack Row="true" Spacing="10" Wrap="Wrap.NoWrap">
+        <MudStack Row="true" Spacing="10" Wrap="Wrap.NoWrap" AlignItems="AlignItems.Start" Style="overflow-x: auto">
             @if (User is not null)
             {
                 <ReviewCard OnReviewAdded="@OnReviewAdded" MovieId="@MovieId"/>
@@ -86,7 +86,7 @@
 
     private async Task OnReviewAdded()
     {
-        int amount = _reviews.From + _reviews.Size;
+        var amount = _reviews.From + _reviews.Size;
         var maxReached = _reviews.Items.Count == _reviews.From + _reviews.Size;
         if (maxReached) amount += _reviews.Size;
         var result = await MovieEndpoint.GetReviewsAsync(MovieId, new PaginationFilter

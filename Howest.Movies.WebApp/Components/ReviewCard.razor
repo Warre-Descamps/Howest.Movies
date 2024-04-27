@@ -1,14 +1,14 @@
 ﻿@using Howest.Movies.Sdk.Endpoints.Abstractions
 @using Howest.Movies.WebApp.Helpers
-<MudCard Style="width: 320px">
+<MudCard Style="display: block;min-width: 320px;max-width: 320px; min-height: 210px">
     @if(Review is null)
     {
         <MudCardContent>
             <MudText Typo="Typo.h6">Write a review</MudText>
             <MudRating MaxValue="5" @bind-SelectedValue="@_rating"/>
-            <MudTextField T="string" Label="Review" Variant="Variant.Filled" @bind-Value="_comment"/>
+            <MudTextField T="string" Label="Review" Variant="Variant.Filled" @bind-Value="_comment" AutoGrow="true"/>
         </MudCardContent>
-        <MudCardActions>
+        <MudCardActions Class="justify-end">
             <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SubmitAsync">Submit</MudButton>
         </MudCardActions>
     }
@@ -17,11 +17,11 @@
         <MudCardHeader>
             <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Stretch">
                 <MudRating ReadOnly="true" MaxValue="5" SelectedValue="@(Review.Rating / 2)"/>
-                <MudText>@Review.Reviewer</MudText>
+                <MudText Class="d-inline-block text-truncate" Style="max-width: 154px">@Review.Reviewer</MudText>
             </MudStack>
         </MudCardHeader>
         <MudCardContent>
-            <MudText>@Review.Comment</MudText>
+            <MudText Style="text-wrap: normal">@Review.Comment</MudText>
         </MudCardContent>
     }
 </MudCard>
@@ -54,7 +54,7 @@
             Rating = (byte)(_rating * 2)
         });
 
-        if (result.Messages.Any())
+        if (result.Messages.Any(m => m.Type != MessageType.Info))
         {
             foreach (var message in result.Messages)
             {
@@ -66,6 +66,8 @@
         if (result.IsSuccess)
         {
             Snackbar.Add("Review added", Severity.Success);
+            _rating = 0;
+            _comment = string.Empty;
             await OnReviewAdded.InvokeAsync();
         }
         else

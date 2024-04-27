@@ -12,7 +12,7 @@
 <MudLayout>
     <MudAppBar>
         <MudAutocomplete
-            T="MovieResult" @bind-Value="_movieResult" ResetValueOnEmptyText="true" OnInternalInputChanged="Callback"
+            T="MovieResult" @bind-Value="_movieResult" ResetValueOnEmptyText="true" OnInternalInputChanged="Navigate"
             SearchFuncWithCancel="@Search" Immediate="true" ToStringFunc="ToStringFunc" MinCharacters="2" Clearable="true"
             AdornmentIcon="@Icons.Material.Filled.Search" Adornment="Adornment.Start" Placeholder="Search"
             Margin="Margin.Dense" Variant="Variant.Outlined" Dense="true" Style="background: #edfff2; color: black; border-radius: .3em;">
@@ -96,12 +96,13 @@
         return arg.Title;
     }
 
-    private void Callback(ChangeEventArgs e)
+    private void Navigate()
     {
         if (_movieResult is null)
             return;
         
         NavigationManager.NavigateTo($"/movie/{_movieResult.Id}");
+        
     }
 
     private async Task OpenLoginDialogAsync()

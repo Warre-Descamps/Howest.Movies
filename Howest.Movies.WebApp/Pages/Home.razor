@@ -13,12 +13,12 @@
         if (_topRatedMovies.Items.Count > 0)
         {
             <MudText Typo="Typo.h4" Class="my-4">Top Rated Movies</MudText>
-            <div class="movie-container">
+            <MudStack Row="true" Spacing="8" Wrap="Wrap.NoWrap" Style="overflow-x: auto">
                 @foreach (var movie in _topRatedMovies.Items)
                 {
-                    <MovieCard Movie=movie/>
-                }
-            </div>
+                <MovieCard Movie=movie/>
+                    }
+            </MudStack>
         }
         <MudText Typo="Typo.h4" Class="my-4">Movies</MudText>
         <div class="movie-container">
