@@ -27,20 +27,20 @@
         <MudSpacer/>
         <MudMenu>
             <ActivatorContent>
-                    @if (User is not null)
-                    {
-                        <MudTooltip Text="@User.Email" Placement="Placement.Left">
-                            <MudAvatar Color="Color.Tertiary">
-                                @User.Email.First()
-                            </MudAvatar>
-                        </MudTooltip>
-                    }
-                    else
-                    {
-                        <MudAvatar>
-                            <MudIconButton Icon="@Icons.Material.Filled.Login" Color="Color.Inherit"/>
+                @if (User is not null)
+                {
+                    <MudTooltip Text="@User.Email" Placement="Placement.Left">
+                        <MudAvatar Color="Color.Tertiary">
+                            @User.Email.First()
                         </MudAvatar>
-                    }
+                    </MudTooltip>
+                }
+                else
+                {
+                    <MudAvatar>
+                        <MudIconButton Icon="@Icons.Material.Filled.Login" Color="Color.Inherit"/>
+                    </MudAvatar>
+                }
             </ActivatorContent>
             <ChildContent>
                 @if (User is not null)
@@ -99,8 +99,6 @@
 
     private void Callback(ChangeEventArgs e)
     {
-        Console.WriteLine("Callback");
-        
         if (_movieResult is null)
             return;
         
