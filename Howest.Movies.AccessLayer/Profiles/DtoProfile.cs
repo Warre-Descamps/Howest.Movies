@@ -21,7 +21,8 @@ public class DtoProfile : Profile
 
         CreateMap<Genre, GenreResult>();
 
-        CreateMap<Review, ReviewResult>();
+        CreateMap<Review, ReviewResult>()
+            .ForMember(rr => rr.Reviewer, opt => opt.MapFrom(r => r.Reviewer!.UserName));
 
     }
 }
