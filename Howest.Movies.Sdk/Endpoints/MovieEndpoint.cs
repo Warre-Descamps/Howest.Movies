@@ -1,4 +1,5 @@
-﻿using Howest.Movies.Dtos.Core;
+﻿using System.Net.Http.Headers;
+using Howest.Movies.Dtos.Core;
 using Howest.Movies.Dtos.Filters;
 using Howest.Movies.Dtos.Requests;
 using Howest.Movies.Dtos.Results;
@@ -50,9 +51,16 @@ internal class MovieEndpoint : BaseAuthorizedEndpoint, IMovieEndpoint
         return result.ReadAsync(cancellationToken);
     }
 
-    public Task<ServiceResult> AddPosterAsync(Guid id, Stream stream, CancellationToken cancellationToken = default)
+    public Task<ServiceResult> AddPosterAsync(Guid id, string fileName, Stream stream, CancellationToken cancellationToken = default)
     {
-        var result = PostAsync<ServiceResult>($"/api/movie/{id}/poster", new StreamContent(stream), true);
+        var content = new MultipartFormDataContent();
+        
+        content.Add(new StreamContent(stream)
+        {
+            Headers = { ContentType = MediaTypeHeaderValue.Parse("multipart/form-data") }
+        }, "file", fileName);
+        
+        var result = PostAsync<ServiceResult>($"/api/movie/{id}/poster", content, true);
         return result.ReadAsync(cancellationToken);
     }
 

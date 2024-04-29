@@ -10,6 +10,7 @@
 
 <MudLayout>
     <MudAppBar>
+        <MudImage Src="favicon.png" @onclick="@(() => NavigationManager.NavigateTo("/"))"/>
         <MudAutocomplete
             T="MovieResult" @bind-Value="_movieResult" ResetValueOnEmptyText="true" OnInternalInputChanged="Navigate"
             SearchFuncWithCancel="@Search" Immediate="true" ToStringFunc="ToStringFunc" MinCharacters="2" Clearable="true"
@@ -100,7 +101,7 @@
             return;
         
         NavigationManager.NavigateTo($"/movie/{_movieResult.Id}");
-        
+        StateHasChanged();
     }
 
     private async Task OpenLoginDialogAsync()

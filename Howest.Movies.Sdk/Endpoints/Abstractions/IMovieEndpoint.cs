@@ -12,7 +12,7 @@ public interface IMovieEndpoint
     Task<ServiceResult<PaginationResult<IList<MovieResult>>>> GetAsync(MoviesFilter filter, PaginationFilter pagination, CancellationToken cancellationToken = default);
     Task<ServiceResult<PaginationResult<IList<MovieResult>>>> GetTopAsync(CancellationToken cancellationToken = default);
     Task<ServiceResult<MovieDetailResult>> CreateAsync(MovieRequest request, CancellationToken cancellationToken = default);
-    Task<ServiceResult> AddPosterAsync(Guid id, Stream stream, CancellationToken cancellationToken = default);
+    Task<ServiceResult> AddPosterAsync(Guid id, string fileName, Stream stream, CancellationToken cancellationToken = default);
     Task<ServiceResult<PaginationResult<IList<ReviewResult>>>> GetReviewsAsync(Guid id, PaginationFilter pagination, CancellationToken cancellationToken = default);
     Task<ServiceResult<ReviewResult>> AddReviewAsync(Guid id, ReviewRequest request, CancellationToken cancellationToken = default);
 }

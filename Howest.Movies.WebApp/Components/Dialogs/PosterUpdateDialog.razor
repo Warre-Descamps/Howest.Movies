@@ -1,0 +1,56 @@
+﻿@using Howest.Movies.Sdk.Endpoints.Abstractions
+<MudDialog Class="p-3">
+    <DialogContent>
+        <MudText>You are about to update the poster of <b>@Model.Title</b>.</MudText><br/>
+        <MudStack Row="true" Justify="Justify.SpaceBetween">
+            <MudText>Selected image:</MudText>
+            <MudText>@File.Name</MudText>
+        </MudStack>
+        @if(File.Size > 512000)
+        {
+            <MudText Color="Color.Error">The selected image is too large. Please select an image smaller than 500KB.</MudText>
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudFileUpload T="IBrowserFile" FilesChanged="FileChanged" Accept=".jpg" MaximumFileCount="1">
+            <ButtonTemplate>
+                <MudFab HtmlTag="label"
+                        Color="Color.Primary"
+                        StartIcon="@Icons.Material.Filled.CloudUpload"
+                        Label="Select different image"
+                        for="@context.Id"/>
+            </ButtonTemplate>
+        </MudFileUpload>
+        <MudSpacer/>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="SubmitAsync" 
+                   Disabled="@(File.Size > 512000)">Save</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code
+{
+    [Inject] private IMovieEndpoint MovieEndpoint { get; init; } = null!;
+    
+    [CascadingParameter] public MudDialogInstance MudDialog { get; set; } = null!;
+    [Parameter] public MovieDetailResult Model { get; set; } = null!;
+    [Parameter] public IBrowserFile File { get; set; } = null!;
+    
+    private async Task SubmitAsync()
+    {
+        var result = await MovieEndpoint.AddPosterAsync(Model.Id, File.Name, File.OpenReadStream());
+        if (!result.IsSuccess)
+        {
+            return;
+        }
+
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+    void Cancel() => MudDialog.Cancel();
+
+    private void FileChanged(IBrowserFile? file)
+    {
+        if (file is null) return;
+        File = file;
+    }
+}

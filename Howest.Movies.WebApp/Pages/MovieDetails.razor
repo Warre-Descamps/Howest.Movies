@@ -1,14 +1,35 @@
 ﻿@page "/movie/{MovieId:guid}"
 @using Howest.Movies.Dtos.Filters
 @using Howest.Movies.Sdk.Endpoints.Abstractions
+@using Howest.Movies.WebApp.Components.Dialogs
+
+
+<PageTitle>Movies</PageTitle>
 
 <MudOverlay Visible="@(_movieDetails == null)" DarkBackground="true" Absolute="true">
     <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
 </MudOverlay>
 @if (_movieDetails != null)
 {
+    <PageTitle>Movies - @_movieDetails.Title</PageTitle>
     <MudStack Class="movie-details mt-5" Row="true" Spacing="10" Wrap="Wrap.NoWrap" AlignItems="AlignItems.Center">
-        <MudImage ObjectFit="ObjectFit.Contain" ObjectPosition="ObjectPosition.Left" Width="300" Src="@_movieDetails.Poster" Alt="@_movieDetails.Title" Style="border-radius: .5em;"></MudImage>
+        <div style="position: relative;display: inline-block">
+            <MudImage ObjectFit="ObjectFit.Contain" ObjectPosition="ObjectPosition.Left" Width="300" Src="@_movieDetails.Poster" Alt="@_movieDetails.Title" Style="border-radius: .5em;"/>
+                @if (User is not null)
+                {
+                    <MudFileUpload T="IBrowserFile" FilesChanged="SelectPictureAsync" Style="position: absolute; bottom: 10px; right: 10px" Accept=".jpg" MaximumFileCount="1">
+                        <ButtonTemplate>
+                            <MudFab HtmlTag="label"
+                                    Color="Color.Primary"
+                                    StartIcon="@Icons.Material.Filled.CloudUpload"
+                                    Label="@_buttonText"
+                                    @onmouseenter="UpdateText"
+                                    @onmouseleave="UpdateText"
+                                    for="@context.Id"/>
+                        </ButtonTemplate>
+                    </MudFileUpload>
+                }
+            </div>
         <MudStack>
             <MudText Typo="Typo.h3">@_movieDetails.Title</MudText>
             <MudText Class="pl-2" Typo="Typo.caption">Directed by @_movieDetails.Director</MudText>
@@ -28,7 +49,7 @@
         <MudStack Row="true" Spacing="10" Wrap="Wrap.NoWrap" AlignItems="AlignItems.Start" Style="overflow-x: auto">
             @if (User is not null)
             {
-                <ReviewCard OnReviewAdded="@OnReviewAdded" MovieId="@MovieId"/>
+                <ReviewCard OnReviewAdded="@OnReviewAddedAsync" MovieId="@MovieId"/>
             }
             @if (_reviews.Items.Count > 0)
             {
@@ -43,11 +64,16 @@
 
 @code
 {
-    private MovieDetailResult? _movieDetails;
-    private PaginationResult<IList<ReviewResult>> _reviews = null!;
+    private string _buttonText = "";
+    private MovieDetailResult _movieDetails = null!;
+    private PaginationResult<IList<ReviewResult>> _reviews = new()
+    {
+        Items = new List<ReviewResult>()
+    };
 
     [Inject] private IMovieEndpoint MovieEndpoint { get; init; } = null!;
     [Inject] private NavigationManager NavigationManager { get; init; } = null!;
+    [Inject] private IDialogService DialogService { get; init; } = null!;
 
     [CascadingParameter] internal UserInfoResult? User { get; set; }
     [Parameter] public Guid MovieId { get; set; }
@@ -62,7 +88,7 @@
         var movieResult = await MovieEndpoint.GetByIdAsync(MovieId);
         if (movieResult.IsSuccess)
         {
-            _movieDetails = movieResult.Data;
+            _movieDetails = movieResult.Data!;
         }
         else
         {
@@ -74,16 +100,15 @@
         {
             _reviews = reviewResult.Data!;
         }
-        else
-        {
-            _reviews = new PaginationResult<IList<ReviewResult>>
-            {
-                Items = new List<ReviewResult>()
-            };
-        }
     }
 
-    private async Task OnReviewAdded()
+    private void UpdateText()
+    {
+        _buttonText = _buttonText == "" ? "Update picture" : "";
+        StateHasChanged();
+    }
+
+    private async Task OnReviewAddedAsync()
     {
         var amount = _reviews.From + _reviews.Size;
         var maxReached = _reviews.Items.Count == _reviews.From + _reviews.Size;
@@ -102,5 +127,21 @@
             _reviews.Items = result.Data!.Items;
             StateHasChanged();
         }
+    }
+
+    private async Task SelectPictureAsync(IBrowserFile? file)
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Medium };
+        var dialog = await DialogService.ShowAsync<PosterUpdateDialog>("Update Poster", new DialogParameters
+        {
+            { nameof(PosterUpdateDialog.Model), _movieDetails },
+            { nameof(PosterUpdateDialog.File), file }
+        }, options);
+        var result = await dialog.Result;
+        if (result.Canceled)
+            return;
+        
+        _movieDetails!.Poster = _movieDetails.Poster;
+        StateHasChanged();
     }
 }
