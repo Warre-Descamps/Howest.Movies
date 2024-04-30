@@ -16,8 +16,8 @@
             <MudStack Row="true" Spacing="8" Wrap="Wrap.NoWrap" Style="overflow-x: auto">
                 @foreach (var movie in _topRatedMovies.Items)
                 {
-                <MovieCard Movie=movie/>
-                    }
+                    <MovieCard Movie=movie/>
+                }
             </MudStack>
         }
         <MudText Typo="Typo.h4" Class="my-4">Movies</MudText>
@@ -89,11 +89,16 @@
     {
         if (_isLoadingMore)
             return;
+        
         _isLoadingMore = true;
-        var isAtBottom = await JsRuntime.InvokeAsync<bool>("isAtBottom");
+        var isAtBottom = await JsRuntime.InvokeAsync<bool>("isAtBottom", 150);
         if (isAtBottom)
         {
             await LoadMoreContentAsync();
+        }
+        else
+        {
+            _isLoadingMore = false;
         }
     }
 }

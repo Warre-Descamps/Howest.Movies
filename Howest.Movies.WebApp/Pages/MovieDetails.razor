@@ -3,10 +3,11 @@
 @using Howest.Movies.Sdk.Endpoints.Abstractions
 @using Howest.Movies.WebApp.Components.Dialogs
 
-
 <PageTitle>Movies</PageTitle>
 
+@* ReSharper disable ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract *@
 <MudOverlay Visible="@(_movieDetails == null)" DarkBackground="true" Absolute="true">
+    @* ReSharper restore ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract *@
     <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
 </MudOverlay>
 @if (_movieDetails != null)

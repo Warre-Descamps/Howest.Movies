@@ -1,3 +1,3 @@
-﻿window.isAtBottom = function () {
-    return window.innerHeight + window.scrollY >= document.body.offsetHeight;
+﻿window.isAtBottom = function (offset = 100) {
+    return window.innerHeight + window.scrollY >= document.body.offsetHeight - offset;
 }
