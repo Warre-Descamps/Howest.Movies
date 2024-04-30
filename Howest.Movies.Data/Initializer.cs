@@ -45,57 +45,41 @@ public static class Initializer
 
         if (dbContext.Movies.Any() || userManager.Users.Any())
             return;
-
-        var admin = new User
-        {
-            Email = "admin@example.com",
-            UserName = "admin",
-            EmailConfirmed = true
-        };
-        await userManager.CreateAsync(admin);
-        await userManager.AddPasswordAsync(admin, "Test123!");
-
-        var genres = new List<Genre>
-        {
-            new() { Name = "Animation" },
-            new() { Name = "Family" },
-            new() { Name = "Action" },
-            new() { Name = "Adventure" },
-            new() { Name = "Drama" },
-            new() { Name = "Fantasy" },
-            new() { Name = "Musical" },
-            new() { Name = "Children" },
-            new() { Name = "Crime" },
-            new() { Name = "Comedy" },
-            new() { Name = "Romance" },
-            new() { Name = "Thriller" },
-            new() { Name = "Horror" },
-            new() { Name = "Mystery" },
-            new() { Name = "Science Fiction" }
-        };
-        dbContext.Genres.AddRange(genres);
-        await dbContext.SaveChangesAsync();
-
+        
         var seedData = await File.ReadAllTextAsync(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly()!.Location)!, "seed-data.json"));
         var movies = JsonConvert.DeserializeObject<JArray>(seedData);
         if (movies is null)
             throw new Exception("Could not read seed-data.json");
-
+        
+        var existingGenres = dbContext.Genres.Select(g => g.Name).ToList();
+        
+        var genres = movies
+            .SelectMany(t => t["Genres"]?.ToObject<List<string>>() ?? [])
+            .Distinct()
+            .Select(g => new Genre { Name = g })
+            .ExceptBy(existingGenres, g => g.Name)
+            .ToList();
+        dbContext.Genres.AddRange(genres);
+        await dbContext.SaveChangesAsync();
+        
+        var existingMovies = dbContext.Movies.Select(m => m.Title).ToList();
+        
+        var exeption = new Exception("Property missing.");
         dbContext.Movies.AddRange
         (
-            from movie in movies
-            select new Movie
+            movies
+            .Select(json => new Movie
             {
-                AddedById = admin.Id,
-                Title = movie["Title"]?.ToString(),
-                Description = movie["Description"]?.ToString(),
-                Director = movie["Director"]?.ToString(),
-                ReleaseDate = DateTime.Parse(movie["ReleaseDate"]?.ToString()),
-                Genres = genres
-                    .Where(g => movie["Genres"].ToObject<List<string>>().Any(gs => gs == g.Name))
+                Title = json["Title"]?.ToString() ?? throw exeption,
+                Description = json["Description"]?.ToString() ?? throw exeption,
+                Director = json["Director"]?.ToString() ?? throw exeption,
+                ReleaseDate = DateTime.Parse(json["ReleaseDate"]?.ToString() ?? throw exeption),
+                Genres = genres.Where(g => (json["Genres"] ?? throw exeption).ToObject<List<string>>()!.Any(gs => gs == g.Name))
                     .Select(g => new MovieGenre { Genre = g })
                     .ToList(),
-            }
+            })
+            .ExceptBy(existingMovies, m => m.Title)
+            .DistinctBy(m => m.Title)
         );
         await dbContext.SaveChangesAsync();
     }

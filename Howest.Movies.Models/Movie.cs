@@ -9,7 +9,7 @@ public class Movie
     public required string Director { get; set; } = null!;
     
     public Guid AddedById { get; set; }
-    public User? AddedByUser { get; set; }
+    public User? AddedBy { get; set; }
     
     public ICollection<MovieGenre> Genres { get; set; } = new List<MovieGenre>();
     public ICollection<Review> Reviews { get; set; } = new List<Review>();
