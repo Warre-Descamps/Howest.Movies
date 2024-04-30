@@ -10,7 +10,9 @@
 
 <MudLayout>
     <MudAppBar>
-        <MudImage Src="favicon.png" @onclick="@(() => NavigationManager.NavigateTo("/"))"/>
+        <a href="/">
+            <MudImage Src="favicon.png" Class="pe-5 me-1"/>
+        </a>
         <MudAutocomplete
             T="MovieResult" @bind-Value="_movieResult" ResetValueOnEmptyText="true" OnInternalInputChanged="Navigate"
             SearchFuncWithCancel="@Search" Immediate="true" ToStringFunc="ToStringFunc" MinCharacters="2" Clearable="true"
