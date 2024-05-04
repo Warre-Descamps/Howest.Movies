@@ -15,7 +15,7 @@
         </a>
         <MudAutocomplete
             T="MovieResult" @bind-Value="_movieResult" ResetValueOnEmptyText="true" OnInternalInputChanged="Navigate"
-            SearchFuncWithCancel="@Search" Immediate="true" ToStringFunc="ToStringFunc" MinCharacters="2" Clearable="true"
+            SearchFuncWithCancel="SearchAsync" Immediate="true" ToStringFunc="ToStringFunc" MinCharacters="2" Clearable="true"
             AdornmentIcon="@Icons.Material.Filled.Search" Adornment="Adornment.Start" Placeholder="Search"
             Margin="Margin.Dense" Variant="Variant.Outlined" Dense="true" Style="background: #edfff2; color: black; border-radius: .3em;">
             <ItemTemplate>
@@ -65,7 +65,8 @@
     </MudMainContent>
 </MudLayout>
 
-@code {
+@code 
+{
     private MovieResult? _movieResult;
     
     [Inject] private IMoviesSdk MoviesSdk { get; init; } = null!;
@@ -83,7 +84,7 @@
             User = userInfo.Data;
     }
 
-    private async Task<IEnumerable<MovieResult>> Search(string value, CancellationToken token)
+    private async Task<IEnumerable<MovieResult>> SearchAsync(string value, CancellationToken token)
     {
         var result = await MoviesSdk.Movies.GetAsync(new MoviesFilter
         {
@@ -115,8 +116,8 @@
             return;
         
         User = result.Data as UserInfoResult;
-        StateHasChanged();
         Snackbar.Add("Login successful", Severity.Success);
+        StateHasChanged();
     }
     
     private async Task OpenRegisterDialogAsync()
@@ -136,8 +137,8 @@
         User = null;
         await LocalStorageService.RemoveItemAsync("user");
         await MoviesSdk.Identity.LogoutAsync();
-        StateHasChanged();
         Snackbar.Add("Logout successful", Severity.Success);
+        StateHasChanged();
     }
 
 }

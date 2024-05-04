@@ -90,6 +90,7 @@
         if (movieResult.IsSuccess)
         {
             _movieDetails = movieResult.Data!;
+            StateHasChanged();
         }
         else
         {
@@ -100,6 +101,7 @@
         if (reviewResult.IsSuccess)
         {
             _reviews = reviewResult.Data!;
+            StateHasChanged();
         }
     }
 
@@ -146,7 +148,7 @@
         if (movieResult.IsSuccess)
         {
             _movieDetails = movieResult.Data!;
+            StateHasChanged();
         }
-        StateHasChanged();
     }
 }
