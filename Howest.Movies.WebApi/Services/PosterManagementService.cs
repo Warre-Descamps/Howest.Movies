@@ -21,26 +21,47 @@ public class PosterManagementService : IPosterManagementService
     {
         _movieService = movieService;
     }
+
+    public static string GetTimeStamp(Guid id)
+    {
+        var result = GetFileInfo(id);
+        
+        return result.IsSuccess
+            ? result.Data.fileTime.Ticks.ToString()
+            : string.Empty;
+    }
     
-    private async Task<ServiceResult<(string fullPath, string fileName, string fileExtension)>> GetFileInfoAsync(Guid id)
+    private static ServiceResult<(string fullPath, string fileName, DateTime fileTime, string fileExtension)> GetFileInfo(Guid id)
     {
         var path = Path.Combine(PostersPath, id.ToString());
-        if (!Directory.Exists(path) || !await _movieService.ExistsAsync(id))
-            return new ServiceResult<(string, string, string)>().NotFound();
-
+        if (!Directory.Exists(path))
+            return new ServiceResult<(string, string, DateTime, string)>().NotFound();
+        
         var fileInfo = Directory.GetFiles(path)
             .Select(f => new FileInfo(f))
+            .Where(t => !t.Name.EndsWith(Thumbnail+t.Extension))
             .Select(f => (
                 fullPath: f.FullName,
                 fileName: f.Name[..^f.Extension.Length],
+                fileTime: DateTime.ParseExact(f.Name[..^f.Extension.Length], FileFormat, CultureInfo.InvariantCulture),
                 fileExtension: f.Extension
             ))
-            .Where(t => !t.fileName.EndsWith(Thumbnail))
-            .MaxBy(s => DateTime.ParseExact(s.fileName, FileFormat, CultureInfo.InvariantCulture));
+            .MaxBy(s => s.fileTime);
         
         return fileInfo.fileName is null
-            ? new ServiceResult<(string, string, string)>().NotFound()
+            ? new ServiceResult<(string, string, DateTime, string)>().NotFound()
             : fileInfo;
+    }
+    
+    private async Task<ServiceResult<(string fullPath, string fileName, string fileExtension)>> GetFileInfoAsync(Guid id)
+    {
+        if (!await _movieService.ExistsAsync(id))
+            return new ServiceResult<(string, string, string)>().NotFound();
+
+        var info = GetFileInfo(id);
+        return info.IsSuccess
+            ? new ServiceResult<(string, string, string)>((info.Data.fullPath, info.Data.fileName, info.Data.fileExtension))
+            : new ServiceResult<(string, string, string)>().NotFound();
     }
 
     private bool IsFileLocked(FileInfo file)
@@ -63,7 +84,6 @@ public class PosterManagementService : IPosterManagementService
         return false;
     }
 
-    // TODO: implement cache tag (timestamp) to prevent caching of old images
     public async Task<IResult> GetPosterThumbnail(Guid id)
     {
         var fileInfo = await GetFileInfoAsync(id);
