@@ -63,6 +63,7 @@ public class PosterManagementService : IPosterManagementService
         return false;
     }
 
+    // TODO: implement cache tag (timestamp) to prevent caching of old images
     public async Task<IResult> GetPosterThumbnail(Guid id)
     {
         var fileInfo = await GetFileInfoAsync(id);

@@ -4,7 +4,7 @@ using Howest.Movies.Sdk.Stores;
 
 namespace Howest.Movies.Sdk;
 
-public class MoviesSdk : IMoviesSdk
+internal class MoviesSdk : IMoviesSdk
 {
     private PeriodicTimer _tokenRefreshTimer;
     

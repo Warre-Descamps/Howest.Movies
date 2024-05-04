@@ -61,6 +61,9 @@ public class MovieService : IMovieService
 
     public async Task<ServiceResult<MovieDetailResult>> CreateAsync(MovieRequest request, Guid userId)
     {
+        if (string.IsNullOrWhiteSpace(request.Title))
+            return new ServiceResult<MovieDetailResult>().BadRequest();
+        
         var existingMovie = await _movieRepository.FindAsync(request.Title);
         if (existingMovie != null)
             return new ServiceResult<MovieDetailResult>().AlreadyExists();
