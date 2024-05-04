@@ -19,7 +19,7 @@ FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "Howest.Movies.WebApp.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
-FROM base AS final
-WORKDIR /app
-COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Howest.Movies.WebApp.dll"]
+FROM nginx:1.23-alpine AS final
+WORKDIR /usr/share/nginx/html
+COPY --from=publish /app/publish/wwwroot .
+COPY ["Howest.Movies.WebApp/nginx.conf", "/etc/nginx/nginx.conf"]
