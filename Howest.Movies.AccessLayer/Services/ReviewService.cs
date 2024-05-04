@@ -38,7 +38,7 @@ public class ReviewService : IReviewService
             Rating = request.Rating,
             Comment = request.Comment
         });
-        var reviewer = await _userManager.Users.FirstAsync(u => u.Id == userId);
+        var reviewer = await _userManager.FindByIdAsync(userId.ToString());
         review!.Reviewer = reviewer;
 
         return _mapper.Map<ReviewResult>(review);

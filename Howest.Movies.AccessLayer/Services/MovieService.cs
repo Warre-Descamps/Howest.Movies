@@ -129,7 +129,7 @@ public class MovieService : IMovieService
             Comment = request.Comment,
             ReviewerId = userId
         });
-        var reviewer = await _userManager.Users.FirstAsync(u => u.Id == userId);
+        var reviewer = await _userManager.FindByIdAsync(userId.ToString());
         review.Reviewer = reviewer;
         
         return _mapper.Map<ReviewResult>(review);
