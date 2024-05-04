@@ -103,5 +103,453 @@
     "ReleaseDate": "2009-12-18T00:00:00",
     "Director": "James Cameron",
     "Genres": ["Science Fiction", "Action", "Adventure"]
+  },
+  {
+    "Title": "Finding Nemo",
+    "Description": "After his son is captured in the Great Barrier Reef and taken to Sydney, a timid clownfish sets out on a journey to bring him home.",
+    "ReleaseDate": "2003-05-30T00:00:00",
+    "Director": "Andrew Stanton",
+    "Genres": ["Animation", "Adventure", "Comedy"]
+  },
+  {
+    "Title": "Toy Story",
+    "Description": "A cowboy doll is profoundly threatened and jealous when a new spaceman figure supplants him as top toy in a boy's room.",
+    "ReleaseDate": "1995-11-22T00:00:00",
+    "Director": "John Lasseter",
+    "Genres": ["Animation", "Adventure", "Comedy"]
+  },
+  {
+    "Title": "Up",
+    "Description": "Seventy-eight-year-old Carl Fredricksen travels to Paradise Falls in his house equipped with balloons, inadvertently taking a young stowaway.",
+    "ReleaseDate": "2009-05-29T00:00:00",
+    "Director": "Pete Docter",
+    "Genres": ["Animation", "Adventure", "Comedy"]
+  },
+  {
+    "Title": "The Incredibles",
+    "Description": "A family of undercover superheroes, while trying to live the quiet suburban life, are forced into action to save the world.",
+    "ReleaseDate": "2004-11-05T00:00:00",
+    "Director": "Brad Bird",
+    "Genres": ["Animation", "Action", "Adventure"]
+  },
+  {
+    "Title": "WALL-E",
+    "Description": "In the distant future, a small waste-collecting robot inadvertently embarks on a space journey that will ultimately decide the fate of mankind.",
+    "ReleaseDate": "2008-06-27T00:00:00",
+    "Director": "Andrew Stanton",
+    "Genres": ["Animation", "Adventure", "Family"]
+  },
+  {
+    "Title": "Monsters, Inc.",
+    "Description": "In order to power the city, monsters have to scare children so that they scream. However, the children are toxic to the monsters, and after a child gets through, 2 monsters realize things may not be what they think.",
+    "ReleaseDate": "2001-11-02T00:00:00",
+    "Director": "Pete Docter",
+    "Genres": ["Animation", "Adventure", "Comedy"]
+  },
+  {
+    "Title": "Frozen",
+    "Description": "When the newly crowned Queen Elsa accidentally uses her power to turn things into ice to curse her home in infinite winter, her sister Anna teams up with a mountain man, his playful reindeer, and a snowman to change the weather condition.",
+    "ReleaseDate": "2013-11-27T00:00:00",
+    "Director": "Chris Buck",
+    "Genres": ["Animation", "Adventure", "Comedy"]
+  },
+  {
+    "Title": "Moana",
+    "Description": "In Ancient Polynesia, when a terrible curse incurred by the Demigod Maui reaches Moana's island, she answers the Ocean's call to seek out the Demigod to set things right.",
+    "ReleaseDate": "2016-11-23T00:00:00",
+    "Director": "Ron Clements",
+    "Genres": ["Animation", "Adventure", "Comedy"]
+  },
+  {
+    "Title": "Shrek",
+    "Description": "A mean lord exiles fairytale creatures to the swamp of a grumpy ogre, who must go on a quest and rescue a princess for the lord in order to get his land back.",
+    "ReleaseDate": "2001-05-18T00:00:00",
+    "Director": "Andrew Adamson",
+    "Genres": ["Animation", "Adventure", "Comedy"]
+  },
+  {
+    "Title": "Ratatouille",
+    "Description": "A rat who can cook makes an unusual alliance with a young kitchen worker at a famous restaurant.",
+    "ReleaseDate": "2007-06-29T00:00:00",
+    "Director": "Brad Bird",
+    "Genres": ["Animation", "Adventure", "Comedy"]
+  },
+  {
+    "Title": "Beauty and the Beast",
+    "Description": "A prince cursed to spend his days as a hideous monster sets out to regain his humanity by earning a young woman's love.",
+    "ReleaseDate": "1991-11-22T00:00:00",
+    "Director": "Gary Trousdale",
+    "Genres": ["Animation", "Family", "Fantasy"]
+  },
+  {
+    "Title": "Coco",
+    "Description": "Aspiring musician Miguel, confronted with his family's ancestral ban on music, enters the Land of the Dead to find his great-great-grandfather, a legendary singer.",
+    "ReleaseDate": "2017-11-22T00:00:00",
+    "Director": "Lee Unkrich",
+    "Genres": ["Animation", "Adventure", "Family"]
+  },
+  {
+    "Title": "Toy Story 3",
+    "Description": "The toys are mistakenly delivered to a day-care center instead of the attic right before Andy leaves for college, and it's up to Woody to convince the other toys that they weren't abandoned and to return home.",
+    "ReleaseDate": "2010-06-18T00:00:00",
+    "Director": "Lee Unkrich",
+    "Genres": ["Animation", "Adventure", "Comedy"]
+  },
+  {
+    "Title": "Inside Out",
+    "Description": "After young Riley is uprooted from her Midwest life and moved to San Francisco, her emotions - Joy, Fear, Anger, Disgust, and Sadness - conflict on how best to navigate a new city, house, and school.",
+    "ReleaseDate": "2015-06-19T00:00:00",
+    "Director": "Pete Docter",
+    "Genres": ["Animation", "Adventure", "Comedy"]
+  },
+  {
+    "Title": "Zootopia",
+    "Description": "In a city of anthropomorphic animals, a rookie bunny cop and a cynical con artist fox must work together to uncover a conspiracy.",
+    "ReleaseDate": "2016-03-04T00:00:00",
+    "Director": "Byron Howard",
+    "Genres": ["Animation", "Adventure", "Comedy"]
+  },
+  {
+    "Title": "Aladdin",
+    "Description": "A kind-hearted street urchin and a power-hungry Grand Vizier vie for a magic lamp that has the power to make their deepest wishes come true.",
+    "ReleaseDate": "1992-11-25T00:00:00",
+    "Director": "Ron Clements",
+    "Genres": ["Animation", "Adventure", "Comedy"]
+  },
+  {
+    "Title": "Shrek 2",
+    "Description": "Princess Fiona's parents invite her and Shrek to dinner to celebrate her marriage. If only they knew the newlyweds were both ogres.",
+    "ReleaseDate": "2004-05-19T00:00:00",
+    "Director": "Andrew Adamson",
+    "Genres": ["Animation", "Adventure", "Comedy"]
+  },
+  {
+    "Title": "The Little Mermaid",
+    "Description": "A mermaid princess makes a Faustian bargain in an attempt to become human and win a prince's love.",
+    "ReleaseDate": "1989-11-17T00:00:00",
+    "Director": "Ron Clements",
+    "Genres": ["Animation", "Family", "Fantasy"]
+  },
+  {
+    "Title": "Big Hero 6",
+    "Description": "The special bond that develops between plus-sized inflatable robot Baymax, and prodigy Hiro Hamada, who team up with a group of friends to form a band of high-tech heroes.",
+    "ReleaseDate": "2014-11-07T00:00:00",
+    "Director": "Don Hall",
+    "Genres": ["Animation", "Action", "Adventure"]
+  },
+  {
+    "Title": "Tangled",
+    "Description": "The magically long-haired Rapunzel has spent her entire life in a tower, but now that a runaway thief has stumbled upon her, she is about to discover the world for the first time, and who she really is.",
+    "ReleaseDate": "2010-11-24T00:00:00",
+    "Director": "Nathan Greno",
+    "Genres": ["Animation", "Adventure", "Comedy"]
+  },
+  {
+    "Title": "Kung Fu Panda",
+    "Description": "The Dragon Warrior has to clash against the savage Tai Lung as China's fate hangs in the balance. However, the Dragon Warrior mantle is supposedly mistaken to be bestowed upon an obese panda who is a novice in martial arts.",
+    "ReleaseDate": "2008-06-06T00:00:00",
+    "Director": "Mark Osborne",
+    "Genres": ["Animation", "Action", "Adventure"]
+  },
+  {
+    "Title": "Mulan",
+    "Description": "To save her father from death in the army, a young maiden secretly goes in his place and becomes one of China's greatest heroines in the process.",
+    "ReleaseDate": "1998-06-19T00:00:00",
+    "Director": "Tony Bancroft",
+    "Genres": ["Animation", "Adventure", "Family"]
+  },
+  {
+    "Title": "The Princess and the Frog",
+    "Description": "A waitress, desperate to fulfill her dreams as a restaurant owner, is set on a journey to turn a frog prince back into a human being, but she has to face the same problem after she kisses him.",
+    "ReleaseDate": "2009-12-11T00:00:00",
+    "Director": "Ron Clements",
+    "Genres": ["Animation", "Adventure", "Comedy"]
+  },
+  {
+    "Title": "Ice Age",
+    "Description": "Set during the Ice Age, a sabertooth tiger, a sloth, and a wooly mammoth find a lost human infant, and they try to return him to his tribe.",
+    "ReleaseDate": "2002-03-15T00:00:00",
+    "Director": "Chris Wedge",
+    "Genres": ["Animation", "Adventure", "Comedy"]
+  },
+  {
+    "Title": "Brave",
+    "Description": "Determined to make her own path in life, Princess Merida defies a custom that brings chaos to her kingdom. Granted one wish, Merida must rely on her bravery and her archery skills to undo a beastly curse.",
+    "ReleaseDate": "2012-06-22T00:00:00",
+    "Director": "Mark Andrews",
+    "Genres": ["Animation", "Adventure", "Comedy"]
+  },
+  {
+    "Title": "How to Train Your Dragon 2",
+    "Description": "When Hiccup and Toothless discover an ice cave that is home to hundreds of new wild dragons and the mysterious Dragon Rider, the two friends find themselves at the center of a battle to protect the peace.",
+    "ReleaseDate": "2014-06-13T00:00:00",
+    "Director": "Dean DeBlois",
+    "Genres": ["Animation", "Action", "Adventure"]
+  },
+  {
+    "Title": "The Lego Movie",
+    "Description": "An ordinary LEGO construction worker, thought to be the prophesied as \"special,\" is recruited to join a quest to stop an evil tyrant from gluing the LEGO universe into eternal stasis.",
+    "ReleaseDate": "2014-02-07T00:00:00",
+    "Director": "Phil Lord",
+    "Genres": ["Animation", "Action", "Adventure"]
+  },
+  {
+    "Title": "Despicable Me",
+    "Description": "When a criminal mastermind uses a trio of orphan girls as pawns for a grand scheme, he finds their love is profoundly changing him for the better.",
+    "ReleaseDate": "2010-07-09T00:00:00",
+    "Director": "Pierre Coffin",
+    "Genres": ["Animation", "Adventure", "Comedy"]
+  },
+  {
+    "Title": "The Croods",
+    "Description": "After their cave is destroyed, a caveman family must trek through an unfamiliar fantastical world with the help of an inventive boy.",
+    "ReleaseDate": "2013-03-22T00:00:00",
+    "Director": "Kirk DeMicco",
+    "Genres": ["Animation", "Adventure", "Comedy"]
+  },
+  {
+    "Title": "Madagascar",
+    "Description": "A group of animals who have spent all their life in a New York zoo end up in the jungles of Madagascar, and must adjust to living in the wild.",
+    "ReleaseDate": "2005-05-27T00:00:00",
+    "Director": "Eric Darnell",
+    "Genres": ["Animation", "Adventure", "Comedy"]
+  },
+  {
+    "Title": "Cars",
+    "Description": "A hot-shot race-car named Lightning McQueen gets waylaid in Radiator Springs, where he finds the true meaning of friendship and family.",
+    "ReleaseDate": "2006-06-09T00:00:00",
+    "Director": "John Lasseter",
+    "Genres": ["Animation", "Adventure", "Comedy"]
+  },
+  {
+    "Title": "Wreck-It Ralph",
+    "Description": "A video game villain wants to be a hero and sets out to fulfill his dream, but his quest brings havoc to the whole arcade where he lives.",
+    "ReleaseDate": "2012-11-02T00:00:00",
+    "Director": "Rich Moore",
+    "Genres": ["Animation", "Adventure", "Comedy"]
+  },
+  {
+    "Title": "Rango",
+    "Description": "Rango is an ordinary chameleon who accidentally winds up in the town of Dirt, a lawless outpost in the Wild West in desperate need of a new sheriff.",
+    "ReleaseDate": "2011-03-04T00:00:00",
+    "Director": "Gore Verbinski",
+    "Genres": ["Animation", "Adventure", "Comedy"]
+  },
+  {
+    "Title": "The Jungle Book",
+    "Description": "Bagheera the Panther and Baloo the Bear have a difficult time trying to convince a boy to leave the jungle for human civilization.",
+    "ReleaseDate": "1967-10-18T00:00:00",
+    "Director": "Wolfgang Reitherman",
+    "Genres": ["Animation", "Adventure", "Family"]
+  },
+  {
+    "Title": "Flushed Away",
+    "Description": "The story of an uptown rat that gets flushed down the toilet from his penthouse apartment, ending in the sewers of London, where he has to learn a whole new and different way of life.",
+    "ReleaseDate": "2006-11-03T00:00:00",
+    "Director": "David Bowers",
+    "Genres": ["Animation", "Adventure", "Comedy"]
+  },
+  {
+    "Title": "Kung Fu Panda 2",
+    "Description": "Po and his friends fight to stop a peacock villain from conquering China with a deadly new weapon, but first the Dragon Warrior must come to terms with his past.",
+    "ReleaseDate": "2011-05-26T00:00:00",
+    "Director": "Jennifer Yuh Nelson",
+    "Genres": ["Animation", "Action", "Adventure"]
+  },
+  {
+    "Title": "The Secret Life of Pets",
+    "Description": "The quiet life of a terrier named Max is upended when his owner takes in Duke, a stray whom Max instantly dislikes.",
+    "ReleaseDate": "2016-07-08T00:00:00",
+    "Director": "Chris Renaud",
+    "Genres": ["Animation", "Adventure", "Comedy"]
+  },
+  {
+    "Title": "Finding Dory",
+    "Description": "Friendly but forgetful blue tang Dory begins a search for her long-lost parents, and everyone learns a few things about the real meaning of family along the way.",
+    "ReleaseDate": "2016-06-17T00:00:00",
+    "Director": "Andrew Stanton",
+    "Genres": ["Animation", "Adventure", "Comedy"]
+  },
+  {
+    "Title": "Happy Feet",
+    "Description": "Into the world of the Emperor Penguins, who find their soul mates through song, a penguin is born who cannot sing. But he can tap dance something fierce!",
+    "ReleaseDate": "2006-11-17T00:00:00",
+    "Director": "George Miller",
+    "Genres": ["Animation", "Adventure", "Comedy"]
+  },
+  {
+    "Title": "Tarzan",
+    "Description": "A man raised by gorillas must decide where he really belongs when he discovers he is a human.",
+    "ReleaseDate": "1999-06-18T00:00:00",
+    "Director": "Chris Buck",
+    "Genres": ["Animation", "Adventure", "Family"]
+  },
+  {
+    "Title": "Ice Age: Dawn of the Dinosaurs",
+    "Description": "When Sid's attempt to adopt three dinosaur eggs gets him abducted by their real mother to an underground lost world, his friends attempt to rescue him.",
+    "ReleaseDate": "2009-07-01T00:00:00",
+    "Director": "Carlos Saldanha",
+    "Genres": ["Animation", "Adventure", "Comedy"]
+  },
+  {
+    "Title": "Rio",
+    "Description": "When Blu, a domesticated macaw from small-town Minnesota, meets the fiercely independent Jewel, he takes off on an adventure to Rio de Janeiro with the bird of his dreams.",
+    "ReleaseDate": "2011-04-15T00:00:00",
+    "Director": "Carlos Saldanha",
+    "Genres": ["Animation", "Adventure", "Comedy"]
+  },
+  {
+    "Title": "Rio 2",
+    "Description": "It's a jungle out there for Blu, Jewel, and their three kids after they're hurtled from Rio de Janeiro to the wilds of the Amazon. As Blu tries to fit in, he goes beak-to-beak with the vengeful Nigel, and meets his father-in-law.",
+    "ReleaseDate": "2014-04-11T00:00:00",
+    "Director": "Carlos Saldanha",
+    "Genres": ["Animation", "Adventure", "Comedy"]
+  },
+  {
+    "Title": "Trolls",
+    "Description": "After the Bergens invade Troll Village, Poppy, the happiest Troll ever born, and the curmudgeonly Branch set off on a journey to rescue her friends.",
+    "ReleaseDate": "2016-11-04T00:00:00",
+    "Director": "Mike Mitchell",
+    "Genres": ["Animation", "Adventure", "Comedy"]
+  },
+  {
+    "Title": "Happy Feet Two",
+    "Description": "Mumble's son, Erik, is struggling to realize his talents in the Emperor Penguin world. Meanwhile, Mumble and his family and friends discover a new threat their home -- one that will take everyone working together to save them.",
+    "ReleaseDate": "2011-11-18T00:00:00",
+    "Director": "George Miller",
+    "Genres": ["Animation", "Adventure", "Comedy"]
+  },
+  {
+    "Title": "Over the Hedge",
+    "Description": "A scheming raccoon fools a mismatched family of forest creatures into helping him repay a debt of food, by invading the new suburban sprawl that popped up while they were hibernating – and learns a lesson about family himself.",
+    "ReleaseDate": "2006-05-19T00:00:00",
+    "Director": "Tim Johnson",
+    "Genres": ["Animation", "Adventure", "Comedy"]
+  },
+  {
+    "Title": "Cloudy with a Chance of Meatballs",
+    "Description": "A local scientist is often regarded as a failure until he invents a machine that can make food fall from the sky. But little does he know, that things are about to take a turn for the worst.",
+    "ReleaseDate": "2009-09-18T00:00:00",
+    "Director": "Phil Lord",
+    "Genres": ["Animation", "Adventure", "Comedy"]
+  },
+  {
+    "Title": "The Angry Birds Movie",
+    "Description": "When an island populated by happy, flightless birds is visited by mysterious green piggies, it's up to three unlikely outcasts - Red, Chuck, and Bomb - to figure out what the pigs are up to.",
+    "ReleaseDate": "2016-05-20T00:00:00",
+    "Director": "Clay Kaytis",
+    "Genres": ["Animation", "Adventure", "Comedy"]
+  },
+  {
+    "Title": "Mr. Peabody & Sherman",
+    "Description": "The time-travelling adventures of an advanced canine and his adopted son, as they endeavor to fix a time rift they created.",
+    "ReleaseDate": "2014-03-07T00:00:00",
+    "Director": "Rob Minkoff",
+    "Genres": ["Animation", "Adventure", "Comedy"]
+  },
+  {
+    "Title": "Rise of the Guardians",
+    "Description": "When the evil spirit Pitch launches an assault on Earth, the Immortal Guardians team up to protect the innocence of children all around the world.",
+    "ReleaseDate": "2012-11-21T00:00:00",
+    "Director": "Peter Ramsey",
+    "Genres": ["Animation", "Adventure", "Family"]
+  },
+  {
+    "Title": "Hotel Transylvania",
+    "Description": "Dracula, who operates a high-end resort away from the human world, goes into overprotective mode when a boy discovers the resort and falls for the count's teenaged daughter.",
+    "ReleaseDate": "2012-09-28T00:00:00",
+    "Director": "Genndy Tartakovsky",
+    "Genres": ["Animation", "Comedy", "Family"]
+  },
+  {
+    "Title": "The Lego Batman Movie",
+    "Description": "A cooler-than-ever Bruce Wayne must deal with the usual suspects as they plan to rule Gotham City, while discovering that he has accidentally adopted a teenage orphan who wishes to become his sidekick.",
+    "ReleaseDate": "2017-02-10T00:00:00",
+    "Director": "Chris McKay",
+    "Genres": ["Animation", "Action", "Comedy"]
+  },
+  {
+    "Title": "Sing",
+    "Description": "In a city of humanoid animals, a hustling theater impresario's attempt to save his theater with a singing competition becomes grander than he anticipates even as its finalists find that their lives will never be the same.",
+    "ReleaseDate": "2016-12-21T00:00:00",
+    "Director": "Garth Jennings",
+    "Genres": ["Animation", "Comedy", "Family"]
+  },
+  {
+    "Title": "The Boss Baby",
+    "Description": "A suit-wearing, briefcase-carrying baby pairs up with his 7-year-old brother to stop the dastardly plot of the CEO of Puppy Co.",
+    "ReleaseDate": "2017-03-31T00:00:00",
+    "Director": "Tom McGrath",
+    "Genres": ["Animation", "Adventure", "Comedy"]
+  },
+  {
+    "Title": "Ferdinand",
+    "Description": "After Ferdinand, a bull with a big heart, is mistaken for a dangerous beast, he is captured and torn from his home. Determined to return to his family, he rallies a misfit team on the ultimate adventure.",
+    "ReleaseDate": "2017-12-15T00:00:00",
+    "Director": "Carlos Saldanha",
+    "Genres": ["Animation", "Adventure", "Comedy"]
+  },
+  {
+    "Title": "The Emoji Movie",
+    "Description": "Gene, a multi-expressional emoji, sets out on a journey to become a normal emoji.",
+    "ReleaseDate": "2017-07-28T00:00:00",
+    "Director": "Tony Leondis",
+    "Genres": ["Animation", "Adventure", "Comedy"]
+  },
+  {
+    "Title": "Chicken Little",
+    "Description": "After ruining his reputation with the town, a courageous chicken must come to the rescue of his fellow citizens when aliens start an invasion.",
+    "ReleaseDate": "2005-11-04T00:00:00",
+    "Director": "Mark Dindal",
+    "Genres": ["Animation", "Adventure", "Comedy"]
+  },
+  {
+    "Title": "The Nut Job",
+    "Description": "An incorrigibly self-serving exiled squirrel finds himself helping his former park brethren survive by raiding a nut store, a location that also happens to be a front for a human gang's bank robbery.",
+    "ReleaseDate": "2014-01-17T00:00:00",
+    "Director": "Peter Lepeniotis",
+    "Genres": ["Animation", "Adventure", "Comedy"]
+  },
+  {
+    "Title": "The Angry Birds Movie 2",
+    "Description": "The flightless birds and scheming green pigs take their feud to the next level.",
+    "ReleaseDate": "2019-08-13T00:00:00",
+    "Director": "Thurop Van Orman",
+    "Genres": ["Animation", "Adventure", "Comedy"]
+  },
+  {
+    "Title": "The Lego Movie 2: The Second Part",
+    "Description": "It's been five years since everything was awesome and the citizens are facing a huge new threat: Lego Duplo invaders from outer space, wrecking everything faster than they can rebuild.",
+    "ReleaseDate": "2019-02-08T00:00:00",
+    "Director": "Mike Mitchell",
+    "Genres": ["Animation", "Action", "Adventure"]
+  },
+  {
+    "Title": "How to Train Your Dragon: The Hidden World",
+    "Description": "When Hiccup discovers Toothless isn't the only Night Fury, he must seek \"The Hidden World\", a secret Dragon Utopia before a hired tyrant named Grimmel finds it first.",
+    "ReleaseDate": "2019-02-22T00:00:00",
+    "Director": "Dean DeBlois",
+    "Genres": ["Animation", "Action", "Adventure"]
+  },
+  {
+    "Title": "Abominable",
+    "Description": "Three teenagers must help a Yeti return to his family while avoiding a wealthy man and a zoologist who want him for their own needs.",
+    "ReleaseDate": "2019-09-27T00:00:00",
+    "Director": "Jill Culton",
+    "Genres": ["Animation", "Adventure", "Comedy"]
+  },
+  {
+    "Title": "Onward",
+    "Description": "Two elven brothers embark on a quest to bring their father back for one day.",
+    "ReleaseDate": "2020-03-06T00:00:00",
+    "Director": "Dan Scanlon",
+    "Genres": ["Animation", "Adventure", "Comedy"]
+  },
+  {
+    "Title": "Soul",
+    "Description": "A musician who has lost his passion for music is transported out of his body and must find his way back with the help of an infant soul learning about herself.",
+    "ReleaseDate": "2020-12-25T00:00:00",
+    "Director": "Pete Docter",
+    "Genres": ["Animation", "Adventure", "Comedy"]
   }
 ]
