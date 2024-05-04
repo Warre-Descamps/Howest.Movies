@@ -50,6 +50,17 @@ public static class Initializer
         var movies = JsonConvert.DeserializeObject<JArray>(seedData);
         if (movies is null)
             throw new Exception("Could not read seed-data.json");
+
+        var user = await userManager.FindByEmailAsync("admin@example.com");
+        if (user is null)
+        {
+            await userManager.CreateAsync(new User
+            {
+                UserName = "admin",
+                Email = "admin@example.com"
+            }, "P@ssw0rd");
+            user = await userManager.FindByEmailAsync("admin@example.com");
+        }
         
         var existingGenres = dbContext.Genres.Select(g => g.Name).ToList();
         
@@ -70,6 +81,7 @@ public static class Initializer
             movies
             .Select(json => new Movie
             {
+                AddedById = user!.Id,
                 Title = json["Title"]?.ToString() ?? throw exeption,
                 Description = json["Description"]?.ToString() ?? throw exeption,
                 Director = json["Director"]?.ToString() ?? throw exeption,
