@@ -142,7 +142,11 @@
         if (result.Canceled)
             return;
         
-        _movieDetails!.Poster = _movieDetails.Poster;
+        var movieResult = await MovieEndpoint.GetByIdAsync(MovieId);
+        if (movieResult.IsSuccess)
+        {
+            _movieDetails = movieResult.Data!;
+        }
         StateHasChanged();
     }
 }
