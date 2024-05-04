@@ -21,10 +21,10 @@
     </ItemGroup>
 
     <ItemGroup>
+      <None Remove="posters\default.jpg" />
       <Content Include="..\.dockerignore">
         <Link>.dockerignore</Link>
       </Content>
-      <None Remove="posters\default.jpg" />
       <Content Include="posters\default.jpg">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>

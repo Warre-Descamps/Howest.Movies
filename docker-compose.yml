@@ -16,6 +16,19 @@
     build:
       context: .
       dockerfile: Howest.Movies.WebApi/Dockerfile
+    depends_on:
+        - db
+    volumes:
+      - posters:/app/posters
+    
+
+  web:
+    build:
+      context: .
+      dockerfile: Howest.Movies.WebApp/Dockerfile
+    depends_on:
+      - api
 
 volumes:
   db-mariadb:
+  posters:
