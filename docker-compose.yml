@@ -32,7 +32,7 @@
       db:
         condition: service_healthy
     volumes:
-      - posters:/app/posters
+      - ./Howest.Movies.WebApi/posters:/app/posters
       - ./Howest.Movies.WebApi/appsettings.Development.json:/app/appsettings.json
     ports:
       - 5000:8080
@@ -50,4 +50,3 @@
 
 volumes:
   db-mariadb:
-  posters:
