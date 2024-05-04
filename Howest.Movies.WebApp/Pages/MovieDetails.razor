@@ -16,21 +16,21 @@
     <MudStack Class="movie-details mt-5" Row="true" Spacing="10" Wrap="Wrap.NoWrap" AlignItems="AlignItems.Center">
         <div style="position: relative;display: inline-block">
             <MudImage ObjectFit="ObjectFit.Contain" ObjectPosition="ObjectPosition.Left" Width="300" Src="@_movieDetails.Poster" Alt="@_movieDetails.Title" Style="border-radius: .5em;"/>
-                @if (User is not null)
-                {
-                    <MudFileUpload T="IBrowserFile" FilesChanged="SelectPictureAsync" Style="position: absolute; bottom: 10px; right: 10px" Accept=".jpg" MaximumFileCount="1">
-                        <ButtonTemplate>
-                            <MudFab HtmlTag="label"
-                                    Color="Color.Primary"
-                                    StartIcon="@Icons.Material.Filled.CloudUpload"
-                                    Label="@_buttonText"
-                                    @onmouseenter="UpdateText"
-                                    @onmouseleave="UpdateText"
-                                    for="@context.Id"/>
-                        </ButtonTemplate>
-                    </MudFileUpload>
-                }
-            </div>
+            @if (User is not null)
+            {
+                <MudFileUpload T="IBrowserFile" FilesChanged="SelectPictureAsync" Style="position: absolute; bottom: 10px; right: 10px" Accept=".jpg" MaximumFileCount="1">
+                    <ButtonTemplate>
+                        <MudFab HtmlTag="label"
+                                Color="Color.Primary"
+                                StartIcon="@Icons.Material.Filled.CloudUpload"
+                                Label="@_buttonText"
+                                @onmouseenter="UpdateText"
+                                @onmouseleave="UpdateText"
+                                for="@context.Id"/>
+                    </ButtonTemplate>
+                </MudFileUpload>
+            }
+        </div>
         <MudStack>
             <MudText Typo="Typo.h3">@_movieDetails.Title</MudText>
             <MudText Class="pl-2" Typo="Typo.caption">Directed by @_movieDetails.Director</MudText>

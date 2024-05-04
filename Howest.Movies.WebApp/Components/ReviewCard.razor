@@ -1,7 +1,7 @@
 ﻿@using Howest.Movies.Sdk.Endpoints.Abstractions
 @using Howest.Movies.WebApp.Helpers
 <MudCard Style="display: block;min-width: 320px;max-width: 320px; min-height: 210px">
-    @if(Review is null)
+    @if (Review is null)
     {
         <MudCardContent>
             <MudText Typo="Typo.h6">Write a review</MudText>
@@ -16,23 +16,57 @@
     {
         <MudCardHeader>
             <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Stretch">
-                <MudRating ReadOnly="true" MaxValue="5" SelectedValue="@(Review.Rating / 2)"/>
+                @if (!_isEditing)
+                {
+                    <MudRating ReadOnly="@(!_isEditing)" MaxValue="5" SelectedValue="@(Review.Rating / 2)"/>
+                }
+                else
+                {
+                    <MudRating MaxValue="5" @bind-SelectedValue="_rating"/>
+                }
                 <MudText Class="d-inline-block text-truncate" Style="max-width: 154px">@Review.Reviewer</MudText>
             </MudStack>
         </MudCardHeader>
         <MudCardContent>
-            <MudText Style="text-wrap: normal">@Review.Comment</MudText>
+            @if (_isEditing)
+            {
+                <MudTextField Variant="Variant.Filled" Label="Review" @bind-Value="_comment" AutoGrow="true"/>
+            }
+            else
+            {
+                <MudText Style="text-wrap: normal">@Review.Comment</MudText>
+            }
         </MudCardContent>
+        <MudCardActions Class="justify-end">
+            @if (User?.Email == Review.Reviewer && !_isEditing)
+            {
+                <MudTooltip Text="Edit review">
+                    <MudFab Size="Size.Small" StartIcon="@Icons.Material.Filled.Edit" Color="Color.Primary" DisableElevation="true" OnClick="ToggleEditing"></MudFab>
+                </MudTooltip>
+            }
+            else if (User?.Email == Review.Reviewer && _isEditing)
+            {
+                <MudTooltip Text="Cancel edit">
+                    <MudFab Class="me-1" Size="Size.Small" StartIcon="@Icons.Material.Filled.Cancel" Color="Color.Error" DisableElevation="true" OnClick="ToggleEditing"></MudFab>
+                </MudTooltip>
+                <MudTooltip Text="Save edit">
+                    <MudFab Size="Size.Small" StartIcon="@Icons.Material.Filled.Save" Color="Color.Success" DisableElevation="true" OnClick="SaveChangesAsync"></MudFab>
+                </MudTooltip>
+            }
+        </MudCardActions>
     }
 </MudCard>
 
 @code {
     private int _rating = 0;
     private string _comment = string.Empty;
+    private bool _isEditing = false;
     
     [Inject] private IMovieEndpoint MovieEndpoint { get; set; } = null!;
+    [Inject] private IReviewEndpoint ReviewEndpoint { get; set; } = null!;
     [Inject] private ISnackbar Snackbar { get; set; } = null!;
     
+    [CascadingParameter] internal UserInfoResult? User { get; set; }
     [Parameter] public Guid? MovieId { get; set; }
     [Parameter] public ReviewResult? Review { get; set; }
     [Parameter] public EventCallback OnReviewAdded { get; set; }
@@ -74,5 +108,56 @@
         {
             Snackbar.Add("Failed to add review", Severity.Error);
         }
+    }
+    
+    private async Task SaveChangesAsync()
+    {
+        if (Review is null)
+        {
+            return;
+        }
+        
+        var result = await ReviewEndpoint.UpdateAsync(Review.Id, new ReviewRequest
+        {
+            Comment = _comment,
+            Rating = (byte)(_rating * 2)
+        });
+
+        if (result.Messages.Any(m => m.Type != MessageType.Info))
+        {
+            foreach (var message in result.Messages)
+            {
+                Snackbar.Add(message.Message, SeverityHelper.GetSeverityClass(message.Type));
+            }
+            return;
+        }
+        
+        if (result.IsSuccess)
+        {
+            Review = result.Data;
+            Snackbar.Add("Review updated", Severity.Success);
+            ToggleEditing();
+            await OnReviewAdded.InvokeAsync();
+        }
+        else
+        {
+            Snackbar.Add("Failed to update review", Severity.Error);
+        }
+    }
+
+    private void ToggleEditing()
+    {
+        if (Review is null)
+        {
+            return;
+        }
+        
+        if (!_isEditing)
+        {
+            _rating = Review.Rating / 2;
+            _comment = Review.Comment;
+        }
+        
+        _isEditing = !_isEditing;
     }
 }
