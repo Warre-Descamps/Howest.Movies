@@ -10,6 +10,7 @@ public static class ApiGroup
         var returnResolver = scope.ServiceProvider.GetRequiredService<IReturnResolver>();
         
         app.MapGroup("/api")
+            .AddGrpc()
             .AddMovies(returnResolver)
             .AddGenres(returnResolver)
             .AddReviews(returnResolver)

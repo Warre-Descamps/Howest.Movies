@@ -1,4 +1,5 @@
-﻿using Howest.Movies.Dtos.Results;
+﻿using Grpc.Core;
+using Howest.Movies.Dtos.Results;
 using Howest.Movies.WebApi.Services;
 
 namespace Howest.Movies.WebApi.Extensions;
@@ -16,6 +17,13 @@ public static class ModelExtensions
         foreach (var movie in movies)
         {
             movie.UpdatePosterInfo(request);
+        }
+    }
+    public static void UpdatePosterInfo(this IEnumerable<MovieResult> movies, ServerCallContext context)
+    {
+        foreach (var movie in movies)
+        {
+            movie.UpdatePosterInfo(context.GetHttpContext().Request);
         }
     }
 }

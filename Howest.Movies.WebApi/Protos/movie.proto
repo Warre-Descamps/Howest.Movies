@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+option csharp_namespace = "Howest.Movies.WebApi.Grpc";
+
+package Services;
+
+service MoviesService {
+    rpc GetMovies (GetMoviesRequest) returns (Response);
+}
+
+message GetMoviesRequest {
+    MoviesFilter movies_filter = 1;
+    PaginationFilter pagination_filter = 2;
+}
+
+message PaginationFilter {
+    uint32 page_number = 1;
+    uint32 page_size = 2;
+}
+
+message MoviesFilter {
+    string query = 1;
+    repeated string genres = 2;
+}
+
+message Response {
+    repeated ResponseMessage messages = 1;
+    bool is_success = 2;
+    PaginatedResponse data = 3;
+}
+
+message ResponseMessage {
+    string code = 1;
+    string message = 2;
+    uint32 type = 3;
+}
+
+message PaginatedResponse {
+    repeated Movie movies = 1;
+    uint32 from = 2;
+    uint32 size = 3;
+}
+
+message Movie {
+    string id = 1;
+    string title = 2;
+    string poster = 3;
+}

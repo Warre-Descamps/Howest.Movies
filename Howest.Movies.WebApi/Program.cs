@@ -43,7 +43,8 @@ builder.Services
         {
             ocpb.Expire(TimeSpan.FromSeconds(10));
         });
-    });
+    })
+    .AddGrpc();
 
 var app = builder.Build();
 
