@@ -20,39 +20,52 @@ internal class IdentityEndpoint : BaseEndpoint, IIdentityEndpoint
     {
         _tokenStore = tokenStore;
     }
-    
-    private static T ReadErrors<T>(HttpResponseMessage response) where T : ServiceResult, new()
+
+    private static async Task<ServiceResult> ReadErrors(HttpResponseMessage response)
     {
-        var result = new T();
+        var result = new ServiceResult();
         if (response.StatusCode == HttpStatusCode.OK) return result;
         
-        var errors = response.Content.ReadFromJsonAsync<ValidationError>();
-        result.Messages = errors.Result?.Errors
+        var validationResult = await response.Content.ReadFromJsonAsync<ValidationError>();
+        if (validationResult?.Status == 401)
+            result = result.Unauthorized();
+        result.Messages.AddRange(validationResult?.Errors
             .Select(pair => new ServiceMessage(pair.Key, pair.Value.First(), MessageType.Error))
-            .ToList() ?? [];
+            .ToList() ?? []);
 
         return result;
+    }
+    
+    private static async Task<ServiceResult<T>> ReadErrors<T>(HttpResponseMessage response) where T : class
+    {
+        var result = await ReadErrors(response);
+        if (result.IsSuccess)
+        {
+            var data = await response.Content.ReadFromJsonAsync<T>();
+            return new ServiceResult<T> { Data = data };
+        }
+        
+        return new ServiceResult<T>(result.Messages.ToArray());
     }
     
     public async Task<ServiceResult> RefreshAsync(bool fromBackground)
     {
         var token = await _tokenStore.GetTokenAsync();
         if (token is null)
-            return new ServiceResult<LoginResult>(new ServiceMessage("Refresh", "No refresh token found", MessageType.Error));
+            return new ServiceResult<LoginResult>(new ServiceMessage("Refresh", "No refresh token found.", MessageType.Error));
         
         var response = await HttpClient.PostAsJsonAsync("/api/identity/refresh", new { token.RefreshToken });
         
-        var result = ReadErrors<ServiceResult<LoginResult>>(response);
-        if (response.StatusCode == HttpStatusCode.OK)
+        var result = await ReadErrors<LoginResult>(response);
+        if (result.IsSuccess)
         {
-            var loginResult = await response.Content.ReadFromJsonAsync<LoginResult>();
-            await _tokenStore.SetTokenAsync(loginResult!);
+            await _tokenStore.SetTokenAsync(result.Data!);
             if (!fromBackground && OnLogin is not null)
                 await OnLogin.Invoke();
         }
         else
         {
-            result.Messages.Add(new ServiceMessage("Refresh", "Invalid refresh token", MessageType.Error));
+            result.Messages.Add(new ServiceMessage("Refresh", "Invalid refresh token.", MessageType.Error));
         }
 
         return result;
@@ -62,26 +75,23 @@ internal class IdentityEndpoint : BaseEndpoint, IIdentityEndpoint
     {
         var response = await HttpClient.PostAsJsonAsync("/api/identity/register", request);
         
-        return ReadErrors<ServiceResult>(response);
+        return await ReadErrors(response);
     }
 
     public async Task<ServiceResult<LoginResult>> LoginAsync(Request request)
     {
         var response = await HttpClient.PostAsJsonAsync("/api/identity/login", request);
         
-        var result = ReadErrors<ServiceResult<LoginResult>>(response);
-        if (response.StatusCode == HttpStatusCode.OK)
+        var result = await ReadErrors<LoginResult>(response);
+        if (result.IsSuccess)
         {
-            var loginResult = await response.Content.ReadFromJsonAsync<LoginResult>();
-            result.Data = loginResult;
-            
-            await _tokenStore.SetTokenAsync(loginResult!);
+            await _tokenStore.SetTokenAsync(result.Data!);
             if (OnLogin is not null)
                 await OnLogin.Invoke();
         }
         else
         {
-            result.Messages.Add(new ServiceMessage("login", "Invalid credentials", MessageType.Error));
+            result.Messages = [new ServiceMessage("login", "Invalid credentials.", MessageType.Error)];
         }
         
         return result;
@@ -93,14 +103,11 @@ internal class IdentityEndpoint : BaseEndpoint, IIdentityEndpoint
         {
             var client = await ApplyAuthentication(HttpClient);
             
-            var response = await client.GetAsync("/api/identity/manage/info");;
+            var response = await client.GetAsync("/api/identity/manage/info");
             switch (response.StatusCode)
             {
                 case HttpStatusCode.OK:
-                    return new ServiceResult<UserInfoResult>
-                    {
-                        Data = await response.Content.ReadFromJsonAsync<UserInfoResult>()
-                    };
+                    return await ReadErrors<UserInfoResult>(response);
                 case HttpStatusCode.Unauthorized:
                     await RefreshAsync(true);
                     client = await ApplyAuthentication(HttpClient);
@@ -112,7 +119,7 @@ internal class IdentityEndpoint : BaseEndpoint, IIdentityEndpoint
                         };
                     break;
             }
-            return ReadErrors<ServiceResult<UserInfoResult>>(response);
+            return await ReadErrors<UserInfoResult>(response);
         }
         catch
         {
