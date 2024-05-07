@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using Howest.Movies.Data;
 using Howest.Movies.WebApi.Extensions;
 using Howest.Movies.WebApi.Groups;
@@ -35,6 +36,7 @@ builder.Services
         options.OperationFilter<SecurityRequirementsOperationFilter>();
     });
 
+
 builder.Services
     .AddCors(options =>
     {
@@ -46,6 +48,13 @@ builder.Services
         {
             ocpb.Expire(TimeSpan.FromSeconds(10));
         });
+    })
+    .AddApiVersioning(options =>
+    {
+        options.ReportApiVersions = true;
+        options.AssumeDefaultVersionWhenUnspecified = true;
+        options.DefaultApiVersion = new ApiVersion(1, 0);
+        options.ApiVersionReader = new HeaderApiVersionReader("api-version");
     });
 
 var app = builder.Build();

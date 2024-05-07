@@ -1,4 +1,5 @@
-﻿using Howest.Movies.Dtos.Core.Abstractions;
+﻿using Asp.Versioning.Conventions;
+using Howest.Movies.Dtos.Core.Abstractions;
 
 namespace Howest.Movies.WebApi.Groups;
 
@@ -8,13 +9,19 @@ public static class ApiGroup
     {
         using var scope = app.Services.CreateScope();
         var returnResolver = scope.ServiceProvider.GetRequiredService<IReturnResolver>();
+
+        var versionSet = app.NewApiVersionSet()
+            .HasApiVersion(1, 0)
+            .Build();
         
         app.MapGroup("/api")
             .AddGrpc()
             .AddMovies(returnResolver)
             .AddGenres(returnResolver)
             .AddReviews(returnResolver)
-            .AddIdentity();
+            .AddIdentity()
+            .WithApiVersionSet(versionSet)
+            .MapToApiVersion(1.0);;
 
         return app;
     }
