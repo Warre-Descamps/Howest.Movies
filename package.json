@@ -1,0 +1,17 @@
+{
+  "name": "howest.movies",
+  "version": "1.0.0",
+  "description": "",
+  "main": "/Howest.Movies.Tests/LoadTests/loadTests.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Warre-Descamps/Howest.Movies.git"
+  },
+  "private": true,
+  "dependencies": {
+    "k6": "^0.0.0"
+  }
+}
