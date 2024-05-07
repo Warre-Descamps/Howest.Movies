@@ -10,7 +10,7 @@
 
 <MudLayout>
     <MudAppBar>
-        <a href="/">
+        <a @onclick="@(() => NavigationManager.NavigateTo("/"))">
             <MudImage Src="favicon.png" Class="pe-5 me-1"/>
         </a>
         <MudAutocomplete
@@ -26,6 +26,11 @@
             </NoItemsTemplate>
         </MudAutocomplete>
         <MudSpacer/>
+        <MudSpacer/>
+        @*@if (User is not null)
+        {
+            <MudButton Class="me-3" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add">Add Movie</MudButton>
+        }*@
         <MudMenu>
             <ActivatorContent>
                 @if (User is not null)
@@ -93,7 +98,7 @@
         return !result.IsSuccess ? new List<MovieResult>() : result.Data!.Items;
     }
 
-    private string ToStringFunc(MovieResult arg)
+    private static string ToStringFunc(MovieResult arg)
     {
         return arg.Title;
     }
@@ -140,5 +145,4 @@
         Snackbar.Add("Logout successful", Severity.Success);
         StateHasChanged();
     }
-
 }

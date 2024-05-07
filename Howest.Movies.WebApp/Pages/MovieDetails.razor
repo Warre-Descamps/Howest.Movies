@@ -1,13 +1,12 @@
-﻿@page "/movie/{MovieId:guid}"
+﻿@page "/movie/{NewMovieId:guid}"
 @using Howest.Movies.Dtos.Filters
 @using Howest.Movies.Sdk.Endpoints.Abstractions
 @using Howest.Movies.WebApp.Components.Dialogs
+@using Magyx.Common.Extensions
 
 <PageTitle>Movies</PageTitle>
 
-@* ReSharper disable ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract *@
 <MudOverlay Visible="@(_movieDetails == null)" DarkBackground="true" Absolute="true">
-    @* ReSharper restore ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract *@
     <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
 </MudOverlay>
 @if (_movieDetails != null)
@@ -50,7 +49,7 @@
         <MudStack Row="true" Spacing="10" Wrap="Wrap.NoWrap" AlignItems="AlignItems.Start" Style="overflow-x: auto">
             @if (User is not null)
             {
-                <ReviewCard OnReviewAdded="@OnReviewAddedAsync" MovieId="@MovieId"/>
+                <ReviewCard OnReviewAdded="@OnReviewAddedAsync" MovieId="@_movieId"/>
             }
             @if (_reviews.Items.Count > 0)
             {
@@ -71,40 +70,49 @@
     {
         Items = new List<ReviewResult>()
     };
+    private Guid _movieId;
 
     [Inject] private IMovieEndpoint MovieEndpoint { get; init; } = null!;
     [Inject] private NavigationManager NavigationManager { get; init; } = null!;
     [Inject] private IDialogService DialogService { get; init; } = null!;
 
     [CascadingParameter] internal UserInfoResult? User { get; set; }
-    [Parameter] public Guid MovieId { get; set; }
-    
-    protected override async Task OnInitializedAsync()
+    [Parameter] public Guid? NewMovieId { get; set; }
+
+    protected override async Task OnParametersSetAsync()
     {
-        if (MovieId == Guid.Empty)
+        if (NewMovieId == default)
         {
             NavigationManager.NavigateTo("/");
+            return;
         }
+        
+        if (NewMovieId == _movieId)
+            return;
+        
+        _movieId = NewMovieId.Value;
+        var tasks = (MovieEndpoint.GetByIdAsync(_movieId), MovieEndpoint.GetReviewsAsync(_movieId, new PaginationFilter()));
 
-        var movieResult = await MovieEndpoint.GetByIdAsync(MovieId);
+        var (movieResult, reviewResult) = await tasks;
+
         if (movieResult.IsSuccess)
         {
             _movieDetails = movieResult.Data!;
-            StateHasChanged();
         }
         else
         {
             NavigationManager.NavigateTo("/");
+            return;
         }
-        
-        var reviewResult = await MovieEndpoint.GetReviewsAsync(MovieId, new PaginationFilter());
+
         if (reviewResult.IsSuccess)
         {
             _reviews = reviewResult.Data!;
-            StateHasChanged();
         }
+        
+        StateHasChanged();
     }
-
+    
     private void UpdateText()
     {
         _buttonText = _buttonText == "" ? "Update picture" : "";
@@ -116,17 +124,14 @@
         var amount = _reviews.From + _reviews.Size;
         var maxReached = _reviews.Items.Count == _reviews.From + _reviews.Size;
         if (maxReached) amount += _reviews.Size;
-        var result = await MovieEndpoint.GetReviewsAsync(MovieId, new PaginationFilter
+        var result = await MovieEndpoint.GetReviewsAsync(_movieId, new PaginationFilter
         {
             From = 0,
             Size = amount
         });
         if (result.IsSuccess)
         {
-            if (maxReached)
-            {
-                _reviews.From += _reviews.Size;
-            }
+            if (maxReached) _reviews.From += _reviews.Size;
             _reviews.Items = result.Data!.Items;
             StateHasChanged();
         }
@@ -144,7 +149,7 @@
         if (result.Canceled)
             return;
         
-        var movieResult = await MovieEndpoint.GetByIdAsync(MovieId);
+        var movieResult = await MovieEndpoint.GetByIdAsync(_movieId);
         if (movieResult.IsSuccess)
         {
             _movieDetails = movieResult.Data!;

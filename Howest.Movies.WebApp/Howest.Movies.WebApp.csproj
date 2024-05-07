@@ -28,6 +28,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Howest.Movies.Sdk\Howest.Movies.Sdk.csproj" />
+      <ProjectReference Include="..\Magyx.Common.Extensions\Magyx.Common.Extensions.csproj" />
     </ItemGroup>
 
 </Project>
