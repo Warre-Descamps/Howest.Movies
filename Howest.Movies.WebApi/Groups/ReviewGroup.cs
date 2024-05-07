@@ -1,7 +1,9 @@
 ﻿using System.Security.Claims;
 using Howest.Movies.AccessLayer.Services.Abstractions;
+using Howest.Movies.Dtos.Core;
 using Howest.Movies.Dtos.Core.Abstractions;
 using Howest.Movies.Dtos.Requests;
+using Howest.Movies.Dtos.Results;
 using Howest.Movies.WebApi.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,8 +23,10 @@ public static class ReviewGroup
             var result = await reviewService.UpdateAsync(id, userId, reviewRequest);
 
             return result.GetReturn(resolver);
-        })
-        .RequireAuthorization();
+        }).RequireAuthorization()
+        .Produces<ServiceResult<ReviewResult>>()
+        .Produces<ServiceResult>(403)
+        .Produces<ServiceResult>(404);
 
         group.MapDelete("/{id:guid}", async ([FromRoute] Guid id, ClaimsPrincipal user, IReviewService reviewService) =>
         {
@@ -32,8 +36,10 @@ public static class ReviewGroup
             var result = await reviewService.DeleteAsync(id, userId);
 
             return result.GetReturn(resolver);
-        })
-        .RequireAuthorization();
+        }).RequireAuthorization()
+        .Produces<ServiceResult<ReviewResult>>()
+        .Produces<ServiceResult>(403)
+        .Produces<ServiceResult>(404);
 
         return endpoints;
     }

@@ -13,7 +13,8 @@ builder.Services
 
 builder.Services
     .AddAutoMapper(typeof(Program), typeof(Howest.Movies.AccessLayer.Installer))
-    .InstallServices();
+    .InstallServices()
+    .AddGrpc();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services
@@ -29,6 +30,8 @@ builder.Services
             Scheme = "Bearer",
         });
         
+        options.SwaggerDoc("v1", new OpenApiInfo { Title = "Movies API", Version = "v1" });
+        
         options.OperationFilter<SecurityRequirementsOperationFilter>();
     });
 
@@ -43,8 +46,7 @@ builder.Services
         {
             ocpb.Expire(TimeSpan.FromSeconds(10));
         });
-    })
-    .AddGrpc();
+    });
 
 var app = builder.Build();
 
@@ -57,7 +59,11 @@ app.AddApiGroup();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        options.DocumentTitle = "Movies API Documentation";
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "Movies API V1");
+    });
 }
 
 app.UseHttpsRedirection();
