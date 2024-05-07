@@ -1,0 +1,55 @@
+### Get a specific movie by id
+GET {{HostAddress}}/movie/{{MovieId}}
+Accept: application/json
+
+### Get movies with optional filter and pagination
+GET {{HostAddress}}/movie?{{filter}}&{{pagination}}
+Accept: application/json
+
+### Get top movies with optional pagination
+GET {{HostAddress}}/movie/top?{{pagination}}
+Accept: application/json
+
+### Create a new movie
+POST {{HostAddress}}/movie
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "title": "New Movie",
+  "description": "New Movie Description",
+  "director": "New Director",
+  "releaseDate": "2022-01-01",
+  "genres": ["Action", "Adventure"]
+}
+
+### Upload a poster for a movie
+POST {{HostAddress}}/movie/{{MovieId}}/poster
+Content-Type: multipart/form-data
+Authorization: Bearer {{token}}
+
+<file>
+
+### Get a movie's poster thumbnail
+GET {{HostAddress}}/movie/poster-thumbnail/{{MovieId}}
+Accept: application/json
+
+### Get a movie's poster
+GET {{HostAddress}}/movie/poster/{{MovieId}}
+Accept: application/json
+
+### Get a movie's reviews with optional pagination
+GET {{HostAddress}}/movie/{{MovieId}}/review?{{pagination}}
+Accept: application/json
+
+### Add a review to a movie
+POST {{HostAddress}}/movie/{{MovieId}}/review
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "comment": "Great movie!",
+  "rating": 5
+}
+
+###

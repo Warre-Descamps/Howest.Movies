@@ -1,0 +1,15 @@
+﻿### Update a review
+PUT {{HostAddress}}/review/{{MovieId}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "comment": "Updated comment",
+  "rating": 4
+}
+
+### Delete a review
+DELETE {{HostAddress}}/review/{{MovieId}}
+Authorization: Bearer {{token}}
+
+###

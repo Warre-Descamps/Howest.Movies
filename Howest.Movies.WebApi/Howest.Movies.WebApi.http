@@ -1,6 +1,0 @@
-@Howest.Movies.WebApi_HostAddress = http://localhost:5280
-
-GET {{Howest.Movies.WebApi_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

@@ -1,0 +1,14 @@
+﻿### Get all genres
+GET {{HostAddress}}/genre
+Accept: application/json
+
+### Create a new genre
+POST {{HostAddress}}/genre
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "New Genre"
+}
+
+###
